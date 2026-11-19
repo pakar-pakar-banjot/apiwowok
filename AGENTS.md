@@ -21,4 +21,5 @@ Jika STATUS.md bertentangan dengan dokumen yang dirujuknya, **dokumen yang diruj
 - **Jangan pernah** mencetak, men-commit, atau menyalin isi `.env` (berisi `FIRMS_MAP_KEY`).
 - Commit/push hanya bila diminta. Jangan mengedit file yang sedang dikerjakan agen lain.
 - Perbarui `docs/STATUS.md` setiap kali sebuah gerbang fase dilewati atau ada keputusan baru.
+- **Catat progres setiap tugas** di [`docs/10-execution-plan/13-progress-tracker.md`](docs/10-execution-plan/13-progress-tracker.md). Saat tugas selesai, ubah baris task ID-mu dari `- [ ]` menjadi `- [x]` dan isi `bukti:` (PR/commit + tanggal), di commit yang sama. Jangan pernah mengisi `disetujui:`; kolom itu hanya untuk reviewer manusia. Lalu jalankan `python -I docs/10-execution-plan/tools/build_plan.py` (harus `ISSUES: 0`).
 - Dokumentasi dalam bahasa Indonesia; identifier kode, path API, dan konvensi teknis dalam bahasa Inggris.

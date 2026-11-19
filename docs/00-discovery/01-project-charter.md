@@ -152,6 +152,12 @@ Keputusan tim (OQ-03): dokumen memakai kode peran **R1–R4**; nama anggota dite
 
 Peran tambahan (dirangkap): **Integrator/PM mingguan** (bergilir atau R4) yang menjaga papan tugas, gerbang persetujuan, dan jadwal. Setiap area wajib memiliki *reviewer* kedua dari anggota lain untuk mengurangi *bus factor*.
 
+> **Amandemen GATE-EP (2026-11-19).** Teks di atas dipertahankan sebagai catatan sejarah.
+> - **Anggota (HD-01):** R1 = Lanang, R2 = Abi Funn, R3 = Zita, R4 = Abigail.
+> - **Integrator/koordinator (HD-02):** R2 (Abi Funn), bukan bergilir/R4.
+> - **Kepemilikan `docs/` (CR-01):** setiap peran memiliki subfolder dokumennya; R4 merakit `docs/08-delivery/` ([07-file-ownership-matrix](../10-execution-plan/07-file-ownership-matrix.md)).
+> - **Reviewer (HD-06):** R1 ↔ R2, R3 ↔ R4.
+
 ## 10. Jadwal tingkat tinggi (usulan)
 
 Asumsi kalender (A-22): D1 = 2026-11-19, D21 = 2026-12-09. Fase 4 dijalankan paralel dengan Fase 2–3 karena tidak bergantung pada skema.
@@ -172,10 +178,12 @@ Asumsi kalender (A-22): D1 = 2026-11-19, D21 = 2026-12-09. Fase 4 dijalankan par
 
 Prinsip: **integrasi end-to-end lokal paling lambat D13**. Jika pada D10 ETL belum memuat data nyata ke Cassandra, aktifkan kontingensi R-14. Jika deployment cloud belum berhasil pada D17, aktifkan kontingensi R-23.
 
+> **Amandemen GATE-EP (2026-11-19, CR-04, HD-07).** Jadwal yang berlaku adalah [05-project-schedule](../10-execution-plan/05-project-schedule.md). Kapasitasnya 4 jam/hari, dengan R1 dan R3 ±5 jam/hari pada D9–D15. Hasilnya: G5/G6 (integrasi lokal) **D14**, feature freeze **D17**, G7 D18, G8 **D20**. Checkpoint D10 (R-14) dan D17 (R-23) tetap berlaku.
+
 ## 11. Pemangku kepentingan dan persetujuan
 
 | Pihak | Peran dalam persetujuan |
 |---|---|
-| Empat anggota tim | Menyetujui seluruh gerbang fase; keputusan konsekuensial butuh kesepakatan tim (mekanisme: `PENDING`, usulan: mayoritas + pemilik area setuju) |
+| Empat anggota tim | Menyetujui seluruh gerbang fase; keputusan konsekuensial butuh kesepakatan tim (mekanisme: **mayoritas 3 dari 4 + pemilik area setuju**, asinkron ≤ ½ hari; HD-05, disetujui 2026-11-19) |
 | Dosen/asisten | Tidak ada rubrik tertulis (OQ-01); berhubungan langsung dengan tim |
 | Agen AI | Mengusulkan, mengimplementasi, me-review — **tidak** menyetujui |

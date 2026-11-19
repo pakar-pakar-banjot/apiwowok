@@ -4,18 +4,24 @@
 > File ini adalah **ringkasan dan penunjuk**. Sumber kebenaran tetap dokumen yang dirujuk. Jika ada konflik, dokumen yang dirujuk yang berlaku, dan file ini wajib diperbaiki.
 > Diperbarui setiap kali melewati gerbang fase atau ada keputusan baru.
 
-Terakhir diperbarui: **2026-11-19** (setelah G0).
+Terakhir diperbarui: **2026-11-19** (setelah GATE-EP).
 
 ## 1. Posisi saat ini
 
 | Item | Nilai |
 |---|---|
-| Fase aktif | **Fase 1 — Dataset Feasibility** (siap dimulai; belum ada pekerjaan Fase 1) |
-| Gerbang terakhir | **G0 disetujui 2026-11-19** |
-| Kalender kerja | D1 = 2026-11-19 … D21 = 2026-12-09 (asumsi A-22; jadwal di [charter §10](00-discovery/01-project-charter.md#10-jadwal-tingkat-tinggi-usulan)) |
-| Tim | 4 orang, peran R1–R4 (nama belum ditetapkan), ±4 jam/hari/orang |
-| Repo | `github.com/pakar-pakar-banjot/apiwowok`; dokumen Fase 0 di branch `docs/phase-0-discovery` |
+| Fase aktif | **Fase 1 — Dataset Feasibility** (berjalan: draf inventaris sumber & evaluasi batas, unduhan sampel selesai, poller latensi sampai ±2026-11-20 09:09 UTC; profiling dan dokumen sisa belum dikerjakan) |
+| Gerbang terakhir | **GATE-EP (rencana eksekusi) disetujui 2026-11-19**; sebelumnya G0 disetujui 2026-11-19 |
+| Kalender kerja | D1 = 2026-11-19 … D21 = 2026-12-09 (asumsi A-22; presentasi diasumsikan 2026-12-10, HD-23). Jadwal yang berlaku: [05-project-schedule](10-execution-plan/05-project-schedule.md) (CR-04): G1 D3 · G2 D7 · G3/G4 D8 · G5/G6 D14 · freeze D17 · G7 D18 · G8 D20 |
+| Tim | R1/A **Lanang** (Data/ETL) · R2/B **Abi Funn** (Cassandra + **koordinator**) · R3/C **Zita** (Backend & DevOps) · R4/D **Abigail** (Frontend & Delivery). 4 jam/hari; R1 & R3 ±5 jam/hari pada D9–D15 ([01-role-charters](10-execution-plan/01-role-charters.md)) |
+| Repo | `github.com/pakar-pakar-banjot/apiwowok`; dokumen Fase 0 dan pekerjaan Fase 1 di `main` |
 | Kode aplikasi | Belum ada |
+
+## 1a. Rencana eksekusi & progres
+
+- **Rencana kerja tim:** [docs/10-execution-plan/](10-execution-plan/00-execution-plan-overview.md). Berisi 110 tugas dengan pemilik, dependensi, jadwal, kontrak antarmuka, kepemilikan file, dan prompt agen per peran ([11-role-prompts/](10-execution-plan/11-role-prompts/)).
+- **Progres:** [13-progress-tracker.md](10-execution-plan/13-progress-tracker.md). Implementer mencentang task ID-nya dan mengisi `bukti:`; reviewer manusia mengisi `disetujui:`.
+- **Keputusan tim:** [12-human-decision-register.md](10-execution-plan/12-human-decision-register.md) · **Change request:** [docs/change-requests/](change-requests/).
 
 ## 2. Aturan kerja (wajib)
 
@@ -81,6 +87,7 @@ Detail lengkap dan tautan sumber: [08 §7](00-discovery/08-data-source-alternati
 | Aturan backfill untuk periode tumpang tindih NRT/SP NOAA-21 | Fase 1 (P1-09) |
 | OQ-23–OQ-27 (cloud: penyedia, Cassandra di cloud, lokasi poller, keamanan, alur kerja tanpa Docker) | Fase 3–4 / ≤ D12 |
 | NA-05 repo privat; NA-06 ritme komunikasi; NA-07 opsi cloud | Tim |
+| Keputusan G1–G4 lainnya: HD-08–HD-21 | [12](10-execution-plan/12-human-decision-register.md) |
 
 ## 7. Rencana Fase 1 (Dataset Feasibility)
 
@@ -106,3 +113,4 @@ Batasan Fase 1:
 | Tanggal | Peristiwa |
 |---|---|
 | 2026-11-19 | Fase 0 disusun; jawaban open questions diterima; NRT dinaikkan ke Must (dua mode); kajian sumber data selesai; S-NPP diganti NOAA-20/21; MAP_KEY teruji; **G0 disetujui**. |
+| 2026-11-19 | Fase 1 dimulai (inventaris sumber, evaluasi batas, unduhan sampel; di `main` `9214337`). Rencana eksekusi disusun; **GATE-EP disetujui**: semua rekomendasi HD-01–07 dan HD-22–24 diterima, termasuk anggota↔peran, koordinator R2, mekanisme gerbang 3/4 + pemilik area, dan HD-07(b). CR-01, CR-02, CR-04 disetujui. |
