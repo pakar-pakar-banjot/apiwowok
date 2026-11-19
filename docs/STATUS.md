@@ -10,7 +10,7 @@ Terakhir diperbarui: **2026-11-19** (setelah GATE-EP).
 
 | Item | Nilai |
 |---|---|
-| Fase aktif | **Fase 1 — Dataset Feasibility** (berjalan: draf inventaris sumber & evaluasi batas, unduhan sampel selesai, poller latensi sampai ±2026-11-20 09:09 UTC; profiling dan dokumen sisa belum dikerjakan) |
+| Fase aktif | **Fase 1 — Dataset Feasibility**: semua draf G1 selesai ([laporan Fase 1](01-dataset/README.md)); menunggu review R1 dan keputusan G1. Latensi NRT final setelah poller selesai (±2026-11-20 09:09 UTC). C-P1-001 (toolchain & cloud) belum dikerjakan. |
 | Gerbang terakhir | **GATE-EP (rencana eksekusi) disetujui 2026-11-19**; sebelumnya G0 disetujui 2026-11-19 |
 | Kalender kerja | D1 = 2026-11-19 … D21 = 2026-12-09 (asumsi A-22; presentasi diasumsikan 2026-12-10, HD-23). Jadwal yang berlaku: [05-project-schedule](10-execution-plan/05-project-schedule.md) (CR-04): G1 D3 · G2 D7 · G3/G4 D8 · G5/G6 D14 · freeze D17 · G7 D18 · G8 D20 |
 | Tim | R1/A **Lanang** (Data/ETL) · R2/B **Abi Funn** (Cassandra + **koordinator**) · R3/C **Zita** (Backend & DevOps) · R4/D **Abigail** (Frontend & Delivery). 4 jam/hari; R1 & R3 ±5 jam/hari pada D9–D15 ([01-role-charters](10-execution-plan/01-role-charters.md)) |

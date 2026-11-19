@@ -28,15 +28,15 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 
 | Bagian | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | Semua |
 |---|---|---|---|---|---|---|---|---|---|
-| Role A (R1) | 0 / 0 / 10 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **0 / 0 / 31** |
-| Role B (R2) | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **0 / 0 / 20** |
+| Role A (R1) | 0 / 6 / 10 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **0 / 6 / 31** |
+| Role B (R2) | 0 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **0 / 1 / 20** |
 | Role C (R3) | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 0 / 25** |
-| Role D (R4) | 0 / 0 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **0 / 0 / 23** |
+| Role D (R4) | 0 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **0 / 1 / 23** |
 | Koordinator integrasi (tugas X-) | 1 / 1 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **1 / 1 / 11** |
-| **Tim** | 1 / 1 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **1 / 1 / 110** |
+| **Tim** | 1 / 9 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **1 / 9 / 110** |
 
 Gerbang disetujui: GATE-EP.
-Menunggu review manusia: tidak ada.
+Menunggu review manusia: A-P1-002, A-P1-003, A-P1-004, A-P1-005, A-P1-007, A-P1-009, B-P1-001, D-P1-001.
 <!-- progress:summary:end -->
 
 ## Gerbang
@@ -56,15 +56,15 @@ Menunggu review manusia: tidak ada.
 ### P1 — Dataset Feasibility
 
 - [ ] **A-P1-001** Review inventaris sumber FIRMS · R1 → review R2 · bukti: draf agen `docs/01-dataset/01-source-inventory.md` (2026-11-19), menunggu review R1 · disetujui: —
-- [ ] **A-P1-002** Unduh sampel nyata + checksum · R1 → review R2 · bukti: unduhan agen selesai 2026-11-19 (manifest lokal `data/firms/manifest.csv`, tidak di-commit); verifikasi checksum belum · disetujui: —
-- [ ] **A-P1-003** Data dictionary dari header & nilai nyata · R1 → review R2 · bukti: — · disetujui: —
-- [ ] **A-P1-004** Laporan profiling dataset · R1 → review R2 · bukti: — · disetujui: —
-- [ ] **A-P1-005** Verifikasi asumsi AI-PRIOR A-06–A-09 · R1 → review R2 · bukti: — · disetujui: —
+- [x] **A-P1-002** Unduh sampel nyata + checksum · R1 → review R2 · bukti: skrip di main 9214337; 629/629 file cocok SHA-256 manifest, semua HTTP 200, 0 MAP_KEY di log (2026-11-19) · disetujui: —
+- [x] **A-P1-003** Data dictionary dari header & nilai nyata · R1 → review R2 · bukti: draf agen, PR #1 (2026-11-19): docs/01-dataset/02-data-dictionary.md; menunggu review · disetujui: —
+- [x] **A-P1-004** Laporan profiling dataset · R1 → review R2 · bukti: draf agen, PR #1 (2026-11-19): docs/01-dataset/03-profiling-report.md + scratch/phase1/extra_checks.py; menunggu review · disetujui: —
+- [x] **A-P1-005** Verifikasi asumsi AI-PRIOR A-06–A-09 · R1 → review R2 · bukti: draf agen, PR #1 (2026-11-19): 02-data-dictionary §5 + docs/change-requests/CR-03.md; menunggu review · disetujui: —
 - [ ] **A-P1-006** Review evaluasi sumber batas provinsi · R1 → review R2 · bukti: draf agen `docs/01-dataset/05-boundary-sources.md` (2026-11-19), menunggu review R1 · disetujui: —
-- [ ] **A-P1-007** Perbandingan NRT vs SP + aturan tumpang tindih · R1 → review R2 · bukti: — · disetujui: —
-- [ ] **A-P1-008** Pengamatan latensi NRT · R1 → review R2 · bukti: poller agen berjalan sejak 2026-11-19 09:09 UTC (`scratch/phase1/latency_poller.py`), selesai otomatis setelah 24 jam · disetujui: —
-- [ ] **A-P1-009** Aturan kualitas data awal · R1 → review R2 · bukti: — · disetujui: —
-- [ ] **A-P1-010** Rekomendasi dataset + laporan Fase 1 (12 bagian) · R1 → review R2 · bukti: — · disetujui: —
+- [x] **A-P1-007** Perbandingan NRT vs SP + aturan tumpang tindih · R1 → review R2 · bukti: draf agen, PR #1 (2026-11-19): docs/01-dataset/04-nrt-vs-sp-and-latency.md §1–§2; menunggu review · disetujui: —
+- [ ] **A-P1-008** Pengamatan latensi NRT · R1 → review R2 · bukti: poller agen berjalan sejak 2026-11-19 09:09 UTC sampai ±2026-11-20 09:09 UTC; hasil sementara di 04 §3; skrip scratch/phase1/latency_report.py · disetujui: —
+- [x] **A-P1-009** Aturan kualitas data awal · R1 → review R2 · bukti: draf agen, PR #1 (2026-11-19): docs/01-dataset/06-data-quality-rules.md; menunggu review · disetujui: —
+- [ ] **A-P1-010** Rekomendasi dataset + laporan Fase 1 (12 bagian) · R1 → review R2 · bukti: draf agen, PR #1 (2026-11-19): docs/01-dataset/07-dataset-recommendation.md + README.md; latensi final menyusul; belum dicentang karena latensi final menyusul · disetujui: —
 
 ### P2 — Requirements Engineering
 
@@ -109,7 +109,7 @@ Menunggu review manusia: tidak ada.
 
 ### P1 — Dataset Feasibility
 
-- [ ] **B-P1-001** Estimasi volume per provinsi per hari/bulan · R2 → review R1 · bukti: — · disetujui: —
+- [x] **B-P1-001** Estimasi volume per provinsi per hari/bulan · R2 → review R1 · bukti: draf agen, PR #1 (2026-11-19): docs/03-specs/database/00-volume-estimates.md; menunggu review · disetujui: —
 
 ### P2 — Requirements Engineering
 
@@ -200,7 +200,7 @@ Menunggu review manusia: tidak ada.
 
 ### P1 — Dataset Feasibility
 
-- [ ] **D-P1-001** Draf user stories & FR dari charter · R4 → review R3 · bukti: — · disetujui: —
+- [x] **D-P1-001** Draf user stories & FR dari charter · R4 → review R3 · bukti: draf agen, PR #1 (2026-11-19): docs/02-requirements/00-draft-user-stories.md; menunggu review · disetujui: —
 
 ### P2 — Requirements Engineering
 

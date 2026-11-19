@@ -34,10 +34,10 @@ Fakta tambahan B1, diukur dari data yang diunduh:
 
 Penetapan provinsi diuji dengan point-in-polygon (numpy, ray casting) terhadap B1 tergeneralisasi:
 
-- Seluruh koordinat unik hasil unduhan Fase 1 diproses dalam hitungan detik. Angka akhirnya ada di [03-profiling-report.md](03-profiling-report.md).
+- Seluruh **2.555.369 koordinat unik** hasil unduhan Fase 1 diproses dalam 48 detik di satu laptop; 2.234.753 di antaranya masuk poligon kab/kota. Rincian per sumber ada di [03 §7](03-profiling-report.md#7-penetapan-wilayah-big-kabkota-edisi-juni-2026-generalisasi-0001).
 - Uji acak: titik di Kupang/Belu → NTT, Indramayu → Jawa Barat, Tanjung Jabung Barat → Jambi. Titik di Timor-Leste, Australia utara, dan Malaysia → di luar.
-- Hanya 15 dari ±300 ribu koordinat (uji awal) yang jatuh di dua poligon sekaligus, akibat generalisasi tepi. Aturannya: ambil poligon pertama, lalu laporkan jumlahnya.
-- Titik yang tidak masuk poligon mana pun dihitung jaraknya ke tepi poligon terdekat. Distribusinya dipakai untuk aturan kualitas DQ-07 (lihat [06-data-quality-rules.md](06-data-quality-rules.md)).
+- Hanya **101 dari 2.555.369** koordinat yang jatuh di dua poligon sekaligus, akibat generalisasi tepi. Aturannya: ambil poligon pertama, lalu laporkan jumlahnya (DQ-07b).
+- Titik yang tidak masuk poligon mana pun dihitung jaraknya ke tepi poligon terdekat. Distribusinya dipakai untuk aturan kualitas DQ-07 ([06-data-quality-rules.md](06-data-quality-rules.md)). Semua 38 kode provinsi muncul di data deteksi.
 
 ## 4. Analisis
 

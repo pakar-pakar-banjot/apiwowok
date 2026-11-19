@@ -9,7 +9,7 @@
 | `VIIRS_NOAA20_SP` | NOAA-20 (`N20`) | Standard Processing (arsip, kualitas sains) | 2018-04-01 … 2026-07-31 | Backfill utama | `VERIFIED` |
 | `VIIRS_NOAA20_NRT` | NOAA-20 | Near Real-Time | 2026-08-01 … 2026-11-18 | Backfill sesudah SP + polling | `VERIFIED` |
 | `VIIRS_NOAA21_SP` | NOAA-21 (`N21`) | Standard Processing | 2023-03-01 … 2026-07-31 | Backfill kedua | `VERIFIED` |
-| `VIIRS_NOAA21_NRT` | NOAA-21 | Near Real-Time | 2024-01-17 … 2026-11-19 | Polling; tumpang tindih dengan SP 2024-01-17 … 2026-07-31 | `VERIFIED` |
+| `VIIRS_NOAA21_NRT` | NOAA-21 | Near Real-Time | 2024-01-17 … 2026-11-19 | Polling; tumpang tindih dengan SP 2024-01-17 … 2026-07-31. Fase 1 mengunduh NRT mulai 2025-08-01 untuk perbandingan 12 bulan ([04](04-nrt-vs-sp-and-latency.md)) | `VERIFIED` |
 | `VIIRS_SNPP_*`, `MODIS_*` | S-NPP, Terra/Aqua | — | S-NPP berhenti 2026-11-02 | **Tidak dipakai** (OQ-04) | `VERIFIED` |
 
 ### 1.1 Mekanisme akses

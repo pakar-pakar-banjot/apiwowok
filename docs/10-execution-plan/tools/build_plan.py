@@ -725,7 +725,7 @@ SHOULD = {T["id"] for T in TASKS if T["prio"] == "Should"}
 for _pass in (0, 1):
   pending = set(n for n in NODES if (n in SHOULD) == bool(_pass))
   while pending:
-      cand = sorted((n for n in pending if eligible(n)), key=lambda n: -rank[n])
+      cand = sorted((n for n in pending if eligible(n)), key=lambda n: (-rank[n], n))  # ID breaks ties: deterministic across runs
       if not cand:
           sys.exit("DEADLOCK: a Must task depends on a Should task: " + ", ".join(sorted(pending)))
       n = cand[0]
