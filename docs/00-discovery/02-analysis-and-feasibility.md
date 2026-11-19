@@ -9,9 +9,9 @@ Seluruh pernyataan tentang NASA FIRMS dan perilaku Cassandra di dokumen ini berl
 | ID | Temuan | Mengapa penting | Usulan penyelesaian (`RECOMMENDATION`) | Terkait |
 |---|---|---|---|---|
 | **C-01** | "Distributed event analytics" vs Cassandra single-node untuk pengembangan. | Satu node tidak dapat mendemonstrasikan distribusi, replikasi, atau toleransi kegagalan. | Single-node untuk pengembangan dan hosting. Cluster 3 node hanya untuk eksperimen replikasi, **boleh di laptop** yang memenuhi spesifikasi minimum ([07](07-three-node-laptop-spec.md)) atau di cloud berumur pendek. Jika tidak tersedia, nyatakan sebagai keterbatasan, jangan klaim. | OQ-14, OQ-23, OQ-24, R-11 |
-| **C-02** | "Observasi satelit baru terus tersedia" / Near Real-Time vs tidak ada orkestrator (Airflow dilarang tanpa justifikasi). | Ingestion berkelanjutan butuh penjadwal, penanganan kuota API, dan logika NRT→arsip. | MVP: batch historis + perintah incremental manual dengan checkpoint. NRT otomatis = *Could*. Hindari istilah "real-time". | OQ-10 |
+| **C-02** | "Observasi satelit baru terus tersedia" / Near Real-Time vs tidak ada orkestrator (Airflow dilarang tanpa justifikasi). | Ingestion berkelanjutan butuh penjadwal, penanganan kuota API, dan logika NRT→arsip. | **Diputuskan 2026-11-19 (OQ-10):** satu pipeline, dua mode (backfill SP + polling NRT), keduanya Must. FIRMS adalah REST API pull (`VERIFIED`), bukan stream, sehingga "near real-time" diwujudkan sebagai **micro-batch polling** berkala dengan loop sederhana di container. Kafka/Airflow tidak dijustifikasi: satu sumber pull, volume kecil, data datang per lintasan satelit. Hindari istilah "real-time" di UI. | OQ-10, OQ-25 |
 | **C-03** | Filter confidence tunggal vs semantik confidence yang berbeda antar produk. `AI-PRIOR`: MODIS memakai angka 0–100, VIIRS memakai kategori (low/nominal/high). | Filter "confidence ≥ 80" tidak bermakna untuk VIIRS; menggabungkan keduanya menghasilkan filter yang menyesatkan. | Pilih satu keluarga sensor untuk MVP sehingga semantik confidence seragam. | OQ-04, OQ-09 |
-| **C-04** | "Filter satelit" vs kemungkinan hanya satu satelit dipakai. | Jika hanya satu satelit, filter tersebut kosong makna. | Filter satelit hanya relevan jika ≥2 satelit sekeluarga (mis. VIIRS S-NPP + NOAA-20). Keputusan setelah Fase 1 menilai volume. | OQ-04 |
+| **C-04** | "Filter satelit" vs kemungkinan hanya satu satelit dipakai. | Jika hanya satu satelit, filter tersebut kosong makna. | Filter satelit hanya relevan jika ≥2 satelit sekeluarga (mis. VIIRS NOAA-20 + NOAA-21; S-NPP sudah berhenti 2026-11-02). Keputusan setelah Fase 1 menilai volume. | OQ-04 |
 | **C-05** | "Perbandingan periode historis" vs integritas metodologis. | Jumlah deteksi berubah karena jumlah satelit aktif, gangguan data satelit, tutupan awan, dan perubahan batas provinsi — bukan hanya karena aktivitas api. | Perbandingan hanya untuk produk & satelit yang sama, batas wilayah yang sama, panjang periode yang sama; tampilkan peringatan metodologis. Prioritas *Should*. | R-15, R-21 |
 | **C-06** | "Sharding experiments" vs cara kerja Cassandra. Cassandra sudah mendistribusikan partisi antar node secara otomatis melalui token/consistent hashing. | Tanpa definisi, eksperimen bisa menjadi tidak bermakna atau keliru secara konsep. | Definisikan ulang sebagai: (a) eksperimen *bucketing* partisi di tingkat aplikasi (mis. menambah komponen waktu/bucket ke partition key) dan (b) observasi distribusi token/data pada cluster multi-node. | OQ-13 |
 | **C-07** | Zona waktu belum ditentukan. `AI-PRIOR`: `acq_date`/`acq_time` FIRMS dalam UTC; VIIRS melintas sekitar pukul ~01:30 dan ~13:30 waktu lokal. | Deteksi malam ~01:30 WIB = ~18:30 UTC **hari sebelumnya**. Agregasi per tanggal UTC akan memindahkan deteksi malam ke hari sebelumnya. Untuk WIT, efeknya lebih besar. Indonesia memiliki 3 zona waktu, sehingga WIB nasional pun keliru untuk wilayah timur. | Simpan timestamp kanonis UTC + tanggal lokal turunan berdasarkan zona waktu provinsi (WIB/WITA/WIT). Dokumentasikan aturan ini. | OQ-08, R-07 |
@@ -56,7 +56,7 @@ Skala: **Layak** · **Layak bersyarat** · **Berisiko**.
 | Deployment cloud | Layak bersyarat | Satu server dengan container yang sama seperti lokal cukup untuk demo. Penyedia dan anggaran `UNKNOWN`. | Integrasi lokal berjalan dulu (≥D13); penyedia dipilih ≤D12; keamanan minimum OQ-26 disetujui. |
 | FastAPI | Layak | Endpoint read-only, jumlah kecil. | Kontrak API disepakati D5 agar frontend dapat memakai mock. |
 | React + Leaflet + grafik | Layak bersyarat | Volume titik peta `UNKNOWN`. | Batas titik per respons; filter wajib. |
-| Ingestion NRT | Berisiko (untuk MVP) | Kuota API, logika penggantian NRT→arsip, penjadwalan. | Jadikan *Should* (manual) / *Could* (otomatis). |
+| Ingestion incremental NRT | Layak bersyarat | `VERIFIED`: REST API dengan kuota 5000 transaksi/10 menit, lebih dari cukup untuk polling. Tantangan utamanya bukan kuota, tetapi deduplikasi NRT vs SP, checkpoint berbasis waktu, dan mendeteksi poller yang diam-diam berhenti. | Kode transformasi sama dengan backfill; dibangun setelah backfill teruji; monitoring kesegaran data (R-27). |
 | Tim & waktu | Layak bersyarat | Kapasitas ±4 jam/hari/orang (≈336 jam-orang, batas atas); overhead proses tinggi; ada tambahan workstream deployment. | MVP dipatuhi; feature freeze D17; integrasi lokal pertama D13. |
 | Koordinasi dua agen AI | Layak bersyarat | Risiko konflik file & kode yang tidak dipahami tim. | Satu implementer per tugas, branch per tugas, review lintas agen + manusia. |
 
@@ -70,7 +70,8 @@ Estimasi kasar, bukan komitmen. Kapasitas tim `UNKNOWN` (lihat A-03).
 | Requirements + spesifikasi UI | S | R4 |
 | Access patterns + model Cassandra + ADR | M | R2 |
 | Harness repo + Docker Compose + test runner | M | R3 |
-| ETL lengkap (validasi, normalisasi, spatial join, dedup, rejected, checkpoint) | **L** | R1 |
+| ETL lengkap (validasi, normalisasi, spatial join, dedup, rejected, checkpoint), mode backfill | **L** | R1 |
+| Mode incremental NRT (poller, checkpoint waktu, status poll di monitoring) | M | R1 (+R3 untuk container & deploy) |
 | Ingestion Cassandra + read model agregat | M | R2 |
 | FastAPI + test API | M | R3 |
 | Dashboard (peta, timeline, ranking, filter, state loading/error) | **L** | R4 |
@@ -88,7 +89,7 @@ Dua workstream berukuran L (ETL dan dashboard) adalah jalur kritis. Keduanya har
 **Layak bersyarat.** NusaFire realistis diselesaikan dalam 21 hari oleh 4 orang **jika**:
 1. Ruang lingkup dikunci ke MVP 6 kapabilitas.
 2. Satu keluarga sensor (VIIRS 375 m) dipakai untuk MVP.
-3. Ingestion historis batch menjadi prioritas; NRT ditunda.
+3. Pipeline dibangun dan diuji dengan backfill historis terlebih dahulu, lalu mode polling NRT ditambahkan memakai kode transformasi yang sama. Keduanya Must (OQ-10, direvisi 2026-11-19).
 4. Pengayaan spasial hanya sampai provinsi.
 5. Fase 0–3 dibatasi waktu dan Fase 4 berjalan paralel.
 6. Pertanyaan pemblokir dijawab dalam 1–2 hari. *(Terpenuhi 2026-11-19.)*

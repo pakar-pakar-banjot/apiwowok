@@ -6,7 +6,7 @@ Status: **DIPERBARUI 2026-11-19** setelah jawaban tim. Kode peran (R1–R4) meng
 
 | ID | Tindakan | Pemilik | Keluaran | Terkait | Status |
 |---|---|---|---|---|---|
-| NA-01 | Mendaftar **MAP_KEY NASA FIRMS** (dan akun lain yang dibutuhkan untuk unduhan arsip). Simpan hanya di catatan pribadi/`.env` lokal — **jangan** ditulis di repo, chat publik, atau dokumen. | R1 | MAP_KEY aktif | R-04, R-17 | **Menunggu konfirmasi** |
+| NA-01 | Mendaftar **MAP_KEY NASA FIRMS** (dan akun lain yang dibutuhkan untuk unduhan arsip). Simpan hanya di catatan pribadi/`.env` lokal — **jangan** ditulis di repo, chat publik, atau dokumen. | R1 | MAP_KEY aktif | R-04, R-17 | **Selesai** (2026-11-19): key tersimpan di `.env` lokal (diabaikan Git) dan lolos uji `data_availability` (HTTP 200) |
 | NA-02 | ~~Meminta rubrik penilaian.~~ Tidak ada rubrik (OQ-01). | — | — | OQ-01 | Selesai / tidak berlaku |
 | NA-03 | Tinjau dokumen Fase 0 dan jawab open questions. | Semua | Kolom *Keputusan* terisi | OQ-01–OQ-22 | **Selesai** (2026-11-19) |
 | NA-04 | ~~Survei hardware anggota.~~ Tidak relevan (OQ-15). | — | — | OQ-15 | Dibatalkan |
@@ -24,7 +24,7 @@ Sumber: halaman resmi FIRMS API (dibaca 2026-11-19). Tampilan halaman dapat beru
 4. Buka inbox email tersebut (cek juga folder **Spam/Promosi**). MAP_KEY **dikirim lewat email**, bukan ditampilkan di layar.
 5. **Simpan MAP_KEY secara aman**, misalnya di password manager. Jangan menaruhnya di repo, dokumen, grup chat, atau percakapan dengan agen AI. Setelah harness Fase 4 tersedia, MAP_KEY diletakkan di `.env` lokal sebagai `FIRMS_MAP_KEY=...` (file `.env` diabaikan Git).
 6. **Uji MAP_KEY.** Buka URL berikut di browser, ganti `<MAP_KEY>` dengan key Anda:
-   `https://firms.modaps.eosdis.nasa.gov/api/data_availability/csv/<MAP_KEY>/VIIRS_SNPP_SP`
+   `https://firms.modaps.eosdis.nasa.gov/api/data_availability/csv/<MAP_KEY>/VIIRS_NOAA20_NRT`
    Jika key valid, browser menampilkan/mengunduh CSV berisi rentang tanggal data yang tersedia. Jangan membagikan URL ini karena memuat key.
 7. **Cek sisa kuota** lewat kontrol **"Check status"** di halaman MAP_KEY (langkah 1). Batas resmi: **5000 transaksi per 10 menit**; request dengan rentang hari lebih besar dapat dihitung sebagai beberapa transaksi.
 8. Jika muncul pesan *"Email is already registered"*, kirim ulang/ubah key dengan login melalui **https://firms.modaps.eosdis.nasa.gov/download/** sesuai petunjuk pesan tersebut.
@@ -45,6 +45,9 @@ Fase 1 hanya menginspeksi dan memprofil data. **Belum** ada kode aplikasi, skema
 | P1-06 | Evaluasi sumber batas provinsi (jumlah provinsi, lisensi termasuk untuk aplikasi publik, ukuran, CRS). | R1 | Rekomendasi sumber batas |
 | P1-07 | Estimasi volume per provinsi per hari/bulan untuk masukan desain partisi di Fase 3 (hanya angka hasil ukur). | R2 | Tabel volume |
 | P1-08 | Draf requirements awal (Fase 2) dapat dimulai paralel, berdasarkan MVP charter. | R4 | Draf FR/NFR |
+| P1-09 | ~~Panggil `data_availability` untuk sumber SP & NRT kandidat.~~ **Sudah dilakukan saat uji MAP_KEY (2026-11-19)**; hasil di A-27/OQ-04. Sisa tugas: tentukan aturan backfill untuk periode tumpang tindih NRT/SP NOAA-21. | R1 | Aturan batas SP/NRT |
+| P1-10 | Amati perilaku NRT selama ±1–2 hari: kapan data baru muncul, berapa latensinya terhadap `acq_time`, apakah rekaman lama berubah (A-26). Hasilnya menjadi masukan interval polling. | R1 | Catatan pengamatan latensi |
+| P1-11 | Uji tumpang tindih: ambil tanggal yang sama dari sumber NRT dan SP, lalu bandingkan untuk kandidat natural key dedup (C-15, R-06). | R1 + R2 | Laporan perbandingan NRT vs SP |
 
 Catatan tooling: skrip profiling sekali pakai boleh dibuat di Fase 1 (di folder `notebooks/` atau `scratch/` yang disepakati), tetapi dependensi proyek dan struktur repo resmi baru ditetapkan di Fase 4.
 
@@ -65,6 +68,7 @@ Fase 1 dimulai hanya setelah semua butir berikut dicentang:
 - [x] Waktu: sisa 21 hari; kalender kerja D1 = 2026-11-19 s.d. D21 = 2026-12-09 (A-22, mohon koreksi bila berbeda).
 - [x] Rubrik: tidak ada; Cassandra wajib (OQ-01).
 - [x] Jawaban sementara: kandidat produk (OQ-04), kandidat periode (OQ-05), cakupan geografis (OQ-06).
-- [ ] **MAP_KEY FIRMS sudah diminta (NA-01).** Satu-satunya butir yang belum terkonfirmasi.
+- [x] MAP_KEY FIRMS aktif dan teruji (NA-01).
+- [x] Produk satelit (OQ-04, diputuskan ulang: NOAA-20 + NOAA-21) dan sumber data (OQ-28: FIRMS) diputuskan.
 
-**Format persetujuan yang disarankan:** balas "G0 disetujui" + status MAP_KEY. Jika MAP_KEY belum ada, Fase 1 tetap dapat dimulai dengan inventaris sumber dan unduhan yang tidak memerlukan MAP_KEY (bila ada), tetapi bagian yang memakai API ditunda.
+**G0 DISETUJUI — 2026-11-19.** Tim menyetujui rekomendasi dan meminta lanjut ke Fase 1.

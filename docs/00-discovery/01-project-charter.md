@@ -43,10 +43,10 @@ Brief menyebut 5 kelompok pengguna. MVP 21 hari tidak dapat melayani kelimanya s
 | Analis lingkungan | Tren & sebaran per wilayah, filter kualitas deteksi | "Provinsi mana yang deteksinya naik bulan ini?" | Timeline, ranking, filter confidence | **Primer** |
 | Peneliti | Data yang dapat ditelusuri asal-usulnya, metodologi jelas | "Dari produk & versi mana data ini?" | Provenance, dokumentasi metodologi | **Primer** |
 | Pemerintah daerah | Ringkasan wilayahnya | "Berapa deteksi di provinsi saya minggu ini?" | Eksplorasi per provinsi | Sekunder |
-| Relawan bencana | Lokasi deteksi terbaru | "Di mana deteksi terbaru?" | Peta; butuh data NRT agar bermakna | Sekunder (bergantung NRT) |
+| Relawan bencana | Lokasi deteksi terbaru | "Di mana deteksi terbaru?" | Peta dengan data NRT dan indikator kesegaran data | Sekunder |
 | Masyarakat umum | Gambaran sederhana | "Apakah daerah saya ada hotspot?" | Bahasa sederhana + disclaimer | Tersier |
 
-Catatan: kebutuhan relawan bencana akan data terkini **bergantung pada ingestion NRT** (OQ-10). Jika NRT tidak masuk MVP, aplikasi tidak boleh diklaim sebagai alat tanggap darurat.
+Catatan: ingestion NRT masuk MVP (OQ-10), tetapi data tetap tertunda sesuai jadwal lintasan satelit dan latensi pemrosesan FIRMS. Aplikasi **tidak boleh** diklaim sebagai alat tanggap darurat real-time. UI wajib menampilkan waktu pembaruan data terakhir.
 
 ## 5. Tujuan proyek
 
@@ -60,6 +60,7 @@ Catatan: kebutuhan relawan bencana akan data terkini **bergantung pada ingestion
 - **O-E2** Model data Cassandra berbasis query: setiap tabel memiliki query aplikasi yang jelas; tidak ada `ALLOW FILTERING` maupun full-table scan di jalur aplikasi.
 - **O-E3** Minimal satu eksperimen Cassandra yang terdokumentasi lengkap (hipotesis → hasil aktual → interpretasi → keterbatasan).
 - **O-E4** Reproduksibilitas: anggota tim lain dapat menjalankan sistem dari nol mengikuti README.
+- **O-E5** Ingestion incremental near real-time: poller NRT berjalan berkala, memuat observasi baru tanpa duplikasi, dan kegagalan polling terlihat di monitoring.
 
 Target kuantitatif (latensi, volume, cakupan test) **belum ditetapkan** — akan ditetapkan di Fase 2 setelah volume data diketahui di Fase 1.
 
@@ -80,12 +81,17 @@ Target kuantitatif (latensi, volume, cakupan test) **belum ditetapkan** — akan
 | 9 | Monitoring pipeline | **Must (minimal)** | Log per run: waktu, file sumber, jumlah diterima/ditolak/duplikat; endpoint + tabel sederhana | Bukti engineering; murah jika dirancang sejak awal |
 | 10 | Eksperimen engineering Cassandra | **Must** (≥1 eksperimen partisi) / **Should** (replikasi & failure) | Lihat O-E3 | Cassandra wajib (OQ-01); eksperimen adalah bukti rekayasa utama |
 | 11 | *(baru)* Hosting di cloud | **Must**, dijadwalkan **setelah** integrasi lokal (≥D13) | Satu server, image container yang sama dengan lokal, HTTPS, Cassandra tidak terekspos publik | Diminta tim (OQ-21); prioritas saat ini lokal |
+| 12 | *(baru)* Ingestion incremental NRT (polling micro-batch) | **Must** (keputusan tim, OQ-10) | Poller berkala dengan checkpoint waktu dan upsert idempoten; status poll terakhir di monitoring; waktu pembaruan terakhir di UI | Menjawab "observasi satelit baru terus tersedia" di problem statement |
 
 ### 6.2 Definisi MVP yang diusulkan
 
 MVP = enam kapabilitas yang dapat didemonstrasikan end-to-end:
 
-1. **ETL batch** untuk satu keluarga produk (usulan: VIIRS 375 m) dan satu periode historis: ekstraksi → validasi → normalisasi → pengayaan provinsi → deduplikasi → Cassandra, idempoten, dengan rejected records dan checkpoint.
+1. **Satu pipeline ETL, dua mode** untuk satu keluarga produk (usulan: VIIRS 375 m): ekstraksi → validasi → normalisasi → pengayaan provinsi → deduplikasi → Cassandra, idempoten, dengan rejected records dan checkpoint.
+   - **Backfill**: arsip SP untuk periode historis (konteks, riwayat, dan volume eksperimen).
+   - **Incremental**: polling NRT berkala (micro-batch) untuk observasi baru.
+
+   Urutan pembangunan: pipeline dibangun dan diuji dengan data backfill dahulu karena hasilnya deterministik, lalu mode incremental ditambahkan dengan kode transformasi yang sama.
 2. **Read model Cassandra** untuk access pattern MVP (ditetapkan di Fase 3, bukan sekarang).
 3. **FastAPI** dengan endpoint untuk ringkasan, timeline, ranking, titik peta, dan status pipeline.
 4. **Dashboard React + Leaflet**: ringkasan + timeline, peta, ranking, filter tanggal/provinsi/confidence, disclaimer ilmiah.
@@ -104,8 +110,8 @@ Urutan pengiriman: keenam kapabilitas di atas harus berjalan **lokal** terlebih 
 - **Laporan akhir, presentasi, dan video demo**: ditangani tim, di luar tugas agen AI. Agen menyediakan dokumentasi teknis sebagai bahan (§7).
 
 ### 6.4 Could (jika waktu tersisa)
-- Ingestion NRT terjadwal otomatis (cron sederhana) — versi manual adalah *Should*.
-- Produk satelit kedua (mis. NOAA-20 di samping S-NPP).
+- Rekonsiliasi otomatis NRT→SP terjadwal. Versi yang dijalankan manual = *Should*.
+- Sumber push/event-driven (NOAA NODD + SNS) sebagai adapter tambahan setelah D13 (OQ-28).
 - Pengayaan kabupaten/kota.
 - Clustering/heatmap di peta.
 
@@ -116,7 +122,8 @@ Urutan pengiriman: keenam kapabilitas di atas harus berjalan **lokal** terlebih 
 4. Eksperimen memiliki hasil aktual yang dapat direproduksi.
 5. Disclaimer ilmiah tampil di aplikasi.
 6. Aplikasi dapat diakses di cloud melalui HTTPS, dengan Cassandra tidak terekspos ke internet.
-7. Dokumentasi teknis tersedia sebagai bahan laporan tim: panduan instalasi, reproduksibilitas, dokumentasi database, ADR, dan hasil eksperimen.
+7. Poller NRT berjalan di cloud. Observasi baru muncul di dashboard tanpa duplikasi, dan waktu pembaruan terakhir terlihat.
+8. Dokumentasi teknis tersedia sebagai bahan laporan tim: panduan instalasi, reproduksibilitas, dokumentasi database, ADR, dan hasil eksperimen.
 
 ## 8. Kendala (constraints)
 
@@ -155,9 +162,9 @@ Asumsi kalender (A-22): D1 = 2026-11-19, D21 = 2026-12-09. Fase 4 dijalankan par
 | D2–D3 | 11-20 – 11-21 | 1 | Profil dataset nyata, rekomendasi produk & periode | G1 |
 | D3–D5 | 11-21 – 11-23 | 2 + 3 | Requirements + access patterns + model Cassandra + kontrak API + ADR deployment | G2, G3 |
 | D3–D5 | 11-21 – 11-23 | 4 (paralel) | Kerangka repo, Docker Compose, AGENTS.md/CLAUDE.md, test runner, mock API | G4 |
-| D6–D12 | 11-24 – 11-30 | 5 + 6 (paralel) | ETL + Cassandra; API; frontend dengan mock lalu data nyata | Review mingguan |
+| D6–D12 | 11-24 – 11-30 | 5 + 6 (paralel) | ETL mode backfill + Cassandra; mode incremental NRT mulai ±D10; API; frontend dengan mock lalu data nyata | Review mingguan |
 | D12 | 11-30 | — | Penyedia cloud dipilih (OQ-23) | |
-| D13 | 12-01 | — | **Integrasi end-to-end lokal pertama** (titik kritis) | |
+| D13 | 12-01 | — | **Integrasi end-to-end lokal pertama**, termasuk poller NRT (titik kritis) | |
 | D13–D16 | 12-01 – 12-04 | 7 | Test integrasi, idempotensi, eksperimen Cassandra; **deployment cloud pertama** | |
 | D17 | 12-05 | — | **Feature freeze**; aplikasi sudah berjalan di cloud | |
 | D17–D19 | 12-05 – 12-07 | 7 | Perbaikan bug, hardening deployment, hasil eksperimen | |

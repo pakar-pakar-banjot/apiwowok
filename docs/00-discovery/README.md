@@ -4,7 +4,7 @@
 |---|---|
 | Proyek | NusaFire — Indonesian Hotspot Intelligence |
 | Fase | 0 — Project Discovery |
-| Status | **DIPERBARUI 2026-11-19** — open questions dijawab tim; menunggu konfirmasi G0 (status MAP_KEY) |
+| Status | **SELESAI — G0 disetujui 2026-11-19.** Fase berikutnya: Fase 1. Ringkasan konteks terkini: [docs/STATUS.md](../STATUS.md) |
 | Tanggal penyusunan | 2026-11-19 |
 | Penyusun | Claude Code (AI), untuk ditinjau oleh tim (4 anggota) |
 | Kode aplikasi | Tidak ada (sesuai aturan Fase 0) |
@@ -20,6 +20,7 @@
 | 05 | [05-risk-register.md](05-risk-register.md) | Register risiko teknis & proyek |
 | 06 | [06-next-actions.md](06-next-actions.md) | Tindakan berikutnya per peran, langkah mendapatkan MAP_KEY, gerbang persetujuan |
 | 07 | [07-three-node-laptop-spec.md](07-three-node-laptop-spec.md) | Spesifikasi minimum laptop dan smoke test untuk eksperimen Cassandra 3 node |
+| 08 | [08-data-source-alternatives.md](08-data-source-alternatives.md) | Kajian alternatif sumber data (FIRMS, NOAA NODD, ASMC WIS2, JAXA, CDSE, sumber RI, GFW), tradeoff, dan rekomendasi |
 
 ## Label status informasi
 
@@ -67,14 +68,14 @@ Lihat jadwal tingkat tinggi di [01-project-charter.md §10](01-project-charter.m
 ### 6. Rekomendasi teknis (ringkas)
 1. Perkecil ruang lingkup ke MVP 6 kapabilitas wajib (lihat charter §6).
 2. Gunakan **satu keluarga sensor (VIIRS 375 m)** untuk MVP; jangan membandingkan MODIS vs VIIRS.
-3. Ingestion **batch historis dahulu**, NRT sebagai *Should*.
+3. ~~Ingestion batch historis dahulu, NRT sebagai *Should*.~~ **Direvisi oleh tim:** satu pipeline, dua mode: backfill SP dan polling NRT micro-batch, keduanya Must (OQ-10).
 4. Simpan waktu kanonis dalam **UTC**; tanggal agregasi harian berdasarkan **zona waktu lokal provinsi** (WIB/WITA/WIT) — lihat C-07.
 5. Agregat dibangun ulang secara deterministik oleh pipeline, **bukan** dengan counter table (counter tidak idempoten).
 6. Cassandra single-node untuk pengembangan dan hosting; cluster 3 node berumur pendek **hanya** untuk eksperimen replikasi.
 7. Fase dokumentasi 0–3 dibatasi waktu (*time-boxed*) maksimal ±4 hari total.
 8. Satu set image container untuk lokal dan cloud; deployment cloud dimulai setelah integrasi lokal (≥D13).
 
-Rekomendasi 1–7 diterima tim sebagai default (2026-11-19). Rekomendasi 8 berasal dari jawaban OQ-21 dan dirinci di OQ-23–OQ-27 (`OPEN`).
+Rekomendasi 1–7 diterima tim sebagai default (2026-11-19), dengan revisi tim pada butir 3. Rekomendasi 8 berasal dari jawaban OQ-21 dan dirinci di OQ-23–OQ-27 (`OPEN`).
 
 ### 7. Artefak yang dihasilkan
 Enam dokumen pada daftar di atas + file README ini. Tidak ada kode, dependensi, atau skema yang dibuat. `README.md` di root repositori diisi penunjuk singkat ke folder ini.
@@ -92,14 +93,15 @@ Fase 0 dianggap selesai bila:
 1. ✅ Tim menyetujui piagam proyek dan MVP (melalui default/rekomendasi, dengan revisi hosting).
 2. ✅ Pertanyaan pemblokir Fase 1 (OQ-01–OQ-06) dijawab.
 3. ✅ Peran disepakati sebagai R1–R4 (nama ditetapkan kemudian).
-4. ⏳ MAP_KEY FIRMS sudah diminta (NA-01).
+4. ✅ MAP_KEY FIRMS aktif dan teruji (NA-01).
+5. ✅ Produk satelit (NOAA-20 + NOAA-21) dan sumber data (FIRMS) diputuskan setelah kajian [08](08-data-source-alternatives.md).
 
 ### 10. Risiko tersisa
 Risiko teratas (skor tertinggi) — detail di [05-risk-register.md](05-risk-register.md):
-R-01 scope creep, R-02 overhead proses/dokumentasi, R-23 deployment cloud menyita waktu MVP, R-25 keamanan aplikasi publik, R-06 deduplikasi NRT vs arsip, R-03 struktur data FIRMS berbeda dari asumsi. R-19 (rubrik) turun ke prioritas rendah.
+R-01 scope creep, R-02 overhead proses/dokumentasi, R-06 deduplikasi (naik ke 9 karena NRT + SP sama-sama di-ingest), R-23 deployment cloud menyita waktu MVP, R-25 keamanan aplikasi publik, R-06 deduplikasi NRT vs arsip, R-03 struktur data FIRMS berbeda dari asumsi. R-19 (rubrik) turun ke prioritas rendah.
 
 ### 11. Gerbang persetujuan
-**STOP.** Fase 1 belum dimulai. Dibutuhkan konfirmasi eksplisit "G0 disetujui" beserta status MAP_KEY.
+**G0 DISETUJUI (2026-11-19).** Tim menyetujui rekomendasi dan meminta lanjut ke Fase 1.
 
 ### 12. Tindakan berikutnya yang direkomendasikan
 Lihat [06-next-actions.md](06-next-actions.md). Yang paling mendesak: daftar MAP_KEY FIRMS dan atur repo menjadi privat. Inventaris opsi cloud (NA-07) dapat menyusul paling lambat D12.
