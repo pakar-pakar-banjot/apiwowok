@@ -229,5 +229,5 @@ Buffer eksplisit tambahan: tugas *hardening* time-box D17–D19 (A-P7-004, B-P7-
 | D10 | Belum ada data nyata di Cassandra (R-14) | Aktifkan kontingensi R-14: pairing A+B pada loader; C/D tetap di mock; potong semua Should Fase 6. |
 | D13 | Integrasi lokal gagal | Freeze fitur Should; C membantu integrasi; deploy cloud mundur maksimal ke D15. |
 | D17 | Deploy cloud belum berhasil (R-23) | Kontingensi R-23: demo lokal + rekaman; cloud jadi upaya terbaik sampai D19. |
-| Kapan saja | Anggota tidak tersedia >1 hari (R-18) | Reviewer peran tersebut mengambil alih tugas di jalur kritis; urutan pemotongan sesuai D-P2-003. |
+| Kapan saja | Anggota tidak tersedia >1 hari (R-18) | Koordinator menunjuk anggota pengganti untuk tugas di jalur kritis; urutan pemotongan sesuai D-P2-003. |
 

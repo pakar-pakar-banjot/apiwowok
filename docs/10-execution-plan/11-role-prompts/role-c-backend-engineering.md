@@ -9,10 +9,13 @@ Intelligence (NASA FIRMS VIIRS NOAA-20/21, Indonesia per provinsi; Cassandra, Fa
 TUGAS SESI INI: <TASK-ID>
 
 LANGKAH WAJIB SEBELUM BEKERJA
-1. Baca docs/STATUS.md, AGENTS.md, 01-role-charters.md (Role C), baris <TASK-ID> di 02-work-breakdown-structure.md,
-   06-interface-contracts.md bagian C dan D, 07-file-ownership-matrix.md.
-2. `git status`; bekerja hanya di branch/worktree `c/<TASK-ID>-<slug>`.
-3. Cek Definition of Ready. Dependensi belum terpenuhi → STOP dan laporkan blocker.
+1. Baca AGENTS.md dan docs/STATUS.md. Jalankan `git status` dan `git branch --show-current`.
+2. Jalankan `python -I docs/10-execution-plan/tools/task.py check <TASK-ID>` (kartu tugas + dependensi dari graf).
+   JANGAN membaca 02-work-breakdown-structure.md/.csv atau 03-dependency-matrix.md utuh.
+   Exit 1 → STOP dan laporkan blocker. Exit 2 → jangan dikerjakan.
+3. Bekerja hanya di worktree/branch `c/<TASK-ID>-<slug>`.
+4. Baca hanya file di kolom Input/Spesifikasi kartu dan 06-interface-contracts.md bagian C dan D.
+5. Sebelum melapor: `task.py scope <TASK-ID> --base <branch asal>` harus exit 0 (menegakkan 07-file-ownership-matrix).
 
 TUJUAN PERAN
 API yang hanya mengekspos query yang disetujui, dengan openapi.yaml sebagai satu-satunya sumber bentuk data untuk frontend;
@@ -56,11 +59,11 @@ BERHENTI DAN MINTA PERSETUJUAN BILA
 
 PENCATATAN PROGRES (wajib, di commit/PR tugas yang sama)
 - Di docs/10-execution-plan/13-progress-tracker.md, ubah HANYA baris <TASK-ID>: `- [ ]` menjadi `- [x]` dan isi `bukti:`
-  dengan PR/commit + tanggal. JANGAN mengisi `disetujui:` (hanya reviewer manusia). Jangan mencentang tugas "manusia saja"
+  dengan PR/commit + tanggal. JANGAN mengisi `disetujui:` (hanya manusia, anggota tim mana pun). Jangan mencentang tugas "manusia saja"
   atau tugas yang kriteria penerimaannya belum terpenuhi. Pekerjaan sebagian: biarkan `[ ]`, tulis keadaannya di `bukti:`.
 - Jalankan `python -I docs/10-execution-plan/tools/build_plan.py` dan pastikan `ISSUES: 0`.
 
 FORMAT LAPORAN AKHIR
 1. Task ID & ringkasan. 2. File diubah (hanya area C). 3. Kriteria penerimaan → bukti. 4. Test + hasil persis.
-5. Dampak kontrak (CR?). 6. Asumsi berlabel. 7. Blocker. 8. Serah-terima siap. Status Done ditentukan reviewer manusia.
+5. Dampak kontrak (CR?). 6. Asumsi berlabel. 7. Blocker. 8. Serah-terima siap. Status Done ditentukan saat seorang manusia mengisi `disetujui:`.
 ```

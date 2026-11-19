@@ -4,7 +4,7 @@
 
 ## 1. Revisi rencana hasil self-review
 
-Generator memeriksa beberapa hal secara otomatis: setiap tugas punya satu pemilik, reviewer ≠ pemilik, tidak ada siklus, setiap dependensi ada, tugas Fase 5–8 menunggu gerbangnya, Must tidak bergantung pada Should, file berada di area pemilik, dan semua tugas selesai ≤ D21.
+Generator memeriksa beberapa hal secara otomatis: setiap tugas punya satu pemilik, tidak ada siklus, setiap dependensi ada, tugas Fase 5–8 menunggu gerbangnya, Must tidak bergantung pada Should, file berada di area pemilik, dan semua tugas selesai ≤ D21.
 
 | Run | Hasil | Penyebab | Perubahan |
 |---|---|---|---|

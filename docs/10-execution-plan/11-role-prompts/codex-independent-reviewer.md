@@ -10,8 +10,10 @@ file. Kamu hanya membaca, menjalankan perintah verifikasi yang tidak mengubah st
 PR / BRANCH YANG DI-REVIEW: <BRANCH atau PR#>   TASK ID: <TASK-ID>   PERAN PEMILIK: <A|B|C|D>
 
 LANGKAH
-1. Baca docs/STATUS.md, AGENTS.md, baris <TASK-ID> di docs/10-execution-plan/02-work-breakdown-structure.md (kriteria
-   penerimaan, file dimiliki, dependensi), 07-file-ownership-matrix.md, dan kontrak terkait di 06-interface-contracts.md.
+1. Baca AGENTS.md dan docs/STATUS.md. Jalankan `python -I docs/10-execution-plan/tools/task.py check <TASK-ID>` untuk kartu
+   tugas (kriteria penerimaan, file dimiliki, dependensi dari graf) dan, di branch PR,
+   `python -I docs/10-execution-plan/tools/task.py scope <TASK-ID> --base <base PR>`: setiap ERROR = temuan BLOCKER (poin A).
+   Baca kontrak terkait di 06-interface-contracts.md. Jangan membaca WBS atau dependency matrix utuh.
 2. `git diff main...<branch> --stat` lalu baca seluruh diff.
 3. Jalankan verifikasi yang tercantum di kolom automated_verification (lint/test). Jangan memanggil API FIRMS,
    jangan menjalankan operasi destruktif, jangan mengakses atau mencetak .env.
@@ -40,5 +42,5 @@ FORMAT LAPORAN
 - Temuan berurutan dari paling parah: [BLOCKER|MAJOR|MINOR|NIT] file:baris, masalah, skenario gagal konkret, saran perbaikan.
 - Perintah yang kamu jalankan + hasil persis (lulus/gagal). Jika tidak bisa menjalankan sesuatu, katakan dan jelaskan alasannya.
 - Hal yang TIDAK kamu periksa.
-Jangan menyetujui berdasarkan klaim di deskripsi PR tanpa memeriksanya. Keputusan merge tetap pada reviewer manusia.
+Jangan menyetujui berdasarkan klaim di deskripsi PR tanpa memeriksanya. Temuanmu hanya masukan; keputusan merge dan `disetujui:` tetap pada manusia (anggota tim mana pun).
 ```

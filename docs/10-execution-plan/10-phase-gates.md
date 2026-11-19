@@ -58,8 +58,8 @@
 ## 3. Definition of Ready & Definition of Done
 
 **Definition of Ready.** Sebuah tugas boleh dimulai hanya bila:
-1. ID, pemilik, dan reviewer ada di WBS.
-2. Input tersedia, dan dependensi *hard*/*interface*/*human approval* sudah terpenuhi (03-dependency-matrix).
+1. ID dan pemilik ada di WBS.
+2. Input tersedia, dan dependensi *hard*/*interface*/*human approval* sudah disetujui seorang manusia (`disetujui:` terisi). Dicek dengan `tools/task.py check <ID>`.
 3. Output dan path file jelas serta berada di area pemilik.
 4. Kriteria penerimaan dapat diuji.
 5. Spesifikasi yang relevan sudah disetujui. Untuk tugas implementasi Fase 5–6: G3 dan G4.
@@ -69,10 +69,10 @@
 2. Semua kriteria penerimaan terpenuhi, dengan bukti berupa output perintah di PR.
 3. Test otomatis yang relevan lulus di CI (setelah G4).
 4. Dokumentasi yang terdampak diperbarui (README komponen, kontrak bila ada CR).
-5. Reviewer manusia yang ditunjuk menyetujui PR. Review Codex ditempel bila tugas berupa kode.
+5. Seorang manusia (anggota tim mana pun) menyetujui. Review atau persetujuan dari peran lain **tidak wajib**. Review Codex boleh ditempel sebagai masukan.
 6. Persetujuan manusia tercatat bila kolom *human approval* mensyaratkannya.
 7. Tidak ada secret, MAP_KEY, atau data mentah di diff.
-8. Baris tugas di [13-progress-tracker.md](13-progress-tracker.md) dicentang `[x]` dengan `bukti:` terisi, di PR yang sama (implementer). Tugas **Done** saat reviewer manusia mengisi `disetujui:`.
+8. Baris tugas di [13-progress-tracker.md](13-progress-tracker.md) dicentang `[x]` dengan `bukti:` terisi, di PR yang sama (implementer). Tugas **Done** saat seorang manusia mengisi `disetujui:`.
 
 > Tugas **tidak** dianggap Done hanya karena agen sudah membuat filenya atau mencentang barisnya.
 

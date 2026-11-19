@@ -10,7 +10,7 @@ Terakhir diperbarui: **2026-11-19** (setelah GATE-EP).
 
 | Item | Nilai |
 |---|---|
-| Fase aktif | **Fase 1 — Dataset Feasibility**: semua draf G1 selesai ([laporan Fase 1](01-dataset/README.md)); menunggu review R1 dan keputusan G1. Latensi NRT final setelah poller selesai (±2026-11-20 09:09 UTC). C-P1-001 (toolchain & cloud) belum dikerjakan. |
+| Fase aktif | **Fase 1 — Dataset Feasibility**: semua draf G1 selesai ([laporan Fase 1](01-dataset/README.md)); menunggu persetujuan manusia dan keputusan G1. Latensi NRT final setelah poller selesai (±2026-11-20 09:09 UTC). C-P1-001 (toolchain & cloud) belum dikerjakan. |
 | Gerbang terakhir | **GATE-EP (rencana eksekusi) disetujui 2026-11-19**; sebelumnya G0 disetujui 2026-11-19 |
 | Kalender kerja | D1 = 2026-11-19 … D21 = 2026-12-09 (asumsi A-22; presentasi diasumsikan 2026-12-10, HD-23). Jadwal yang berlaku: [05-project-schedule](10-execution-plan/05-project-schedule.md) (CR-04): G1 D3 · G2 D7 · G3/G4 D8 · G5/G6 D14 · freeze D17 · G7 D18 · G8 D20 |
 | Tim | R1/A **Lanang** (Data/ETL) · R2/B **Abi Funn** (Cassandra + **koordinator**) · R3/C **Zita** (Backend & DevOps) · R4/D **Abigail** (Frontend & Delivery). 4 jam/hari; R1 & R3 ±5 jam/hari pada D9–D15 ([01-role-charters](10-execution-plan/01-role-charters.md)) |
@@ -20,7 +20,8 @@ Terakhir diperbarui: **2026-11-19** (setelah GATE-EP).
 ## 1a. Rencana eksekusi & progres
 
 - **Rencana kerja tim:** [docs/10-execution-plan/](10-execution-plan/00-execution-plan-overview.md). Berisi 110 tugas dengan pemilik, dependensi, jadwal, kontrak antarmuka, kepemilikan file, dan prompt agen per peran ([11-role-prompts/](10-execution-plan/11-role-prompts/)).
-- **Progres:** [13-progress-tracker.md](10-execution-plan/13-progress-tracker.md). Implementer mencentang task ID-nya dan mengisi `bukti:`; reviewer manusia mengisi `disetujui:`.
+- **Progres:** [13-progress-tracker.md](10-execution-plan/13-progress-tracker.md). Implementer mencentang task ID-nya dan mengisi `bukti:`; seorang manusia (anggota tim mana pun) mengisi `disetujui:`. Review peran lain tidak wajib.
+- **Cek tugas (manusia & agen):** `python -I docs/10-execution-plan/tools/task.py brief --role <A|B|C|D>` (apa yang siap/terblokir), `check <ID>` (kartu tugas + dependensi dari graf), `scope <ID>` (file yang diubah). Status juga tampil sebagai ikon di [graf dependensi](10-execution-plan/04-dependency-graph.mmd). Protokol agen: [AGENTS.md](../AGENTS.md).
 - **Keputusan tim:** [12-human-decision-register.md](10-execution-plan/12-human-decision-register.md) · **Change request:** [docs/change-requests/](change-requests/).
 
 ## 2. Aturan kerja (wajib)
@@ -114,3 +115,4 @@ Batasan Fase 1:
 |---|---|
 | 2026-11-19 | Fase 0 disusun; jawaban open questions diterima; NRT dinaikkan ke Must (dua mode); kajian sumber data selesai; S-NPP diganti NOAA-20/21; MAP_KEY teruji; **G0 disetujui**. |
 | 2026-11-19 | Fase 1 dimulai (inventaris sumber, evaluasi batas, unduhan sampel; di `main` `9214337`). Rencana eksekusi disusun; **GATE-EP disetujui**: semua rekomendasi HD-01–07 dan HD-22–24 diterima, termasuk anggota↔peran, koordinator R2, mekanisme gerbang 3/4 + pemilik area, dan HD-07(b). CR-01, CR-02, CR-04 disetujui. |
+| 2026-11-19 | **HD-06 diganti:** tidak ada review wajib antar peran; tugas selesai saat seorang manusia mengisi `disetujui:`, dan dependensi Hard hanya butuh persetujuan itu. Protokol agen wajib di [AGENTS.md](../AGENTS.md) + `tools/task.py` (cek tugas dari graf dependensi). |

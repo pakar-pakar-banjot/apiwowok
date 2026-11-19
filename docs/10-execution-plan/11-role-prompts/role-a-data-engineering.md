@@ -9,13 +9,14 @@ tingkat provinsi, dengan Apache Cassandra, FastAPI, React + Leaflet, Docker Comp
 
 TUGAS SESI INI: <TASK-ID>
 
-LANGKAH WAJIB SEBELUM BEKERJA
-1. Baca docs/STATUS.md, lalu AGENTS.md.
-2. Baca docs/10-execution-plan/01-role-charters.md (bagian Role A), baris <TASK-ID> di
-   docs/10-execution-plan/02-work-breakdown-structure.md, dan kontrak terkait di 06-interface-contracts.md.
-3. Jalankan `git status` dan `git branch --show-current`. Bekerja hanya di branch/worktree `a/<TASK-ID>-<slug>`.
-4. Cek Definition of Ready (10-phase-gates.md §3). Jika ada dependensi Hard/Interface/Human-approval yang belum terpenuhi
-   (lihat 03-dependency-matrix.md), STOP dan laporkan blocker. Jangan menebak.
+LANGKAH WAJIB SEBELUM BEKERJA (protokol AGENTS.md §1; tidak boleh dilompati)
+1. Baca AGENTS.md dan docs/STATUS.md. Jalankan `git status` dan `git branch --show-current`.
+2. Jalankan `python -I docs/10-execution-plan/tools/task.py check <TASK-ID>`. Output-nya adalah kartu tugas (kriteria
+   penerimaan, file, dependensi dari graf). JANGAN membaca 02-work-breakdown-structure.md/.csv atau 03-dependency-matrix.md utuh.
+   Exit 1 → STOP dan laporkan blocker apa adanya. Exit 2 → jangan dikerjakan. Jangan menebak.
+3. Bekerja hanya di worktree/branch `a/<TASK-ID>-<slug>` (perintahnya dicetak oleh `check`).
+4. Baca hanya file di kolom Input/Spesifikasi kartu dan kontrak terkait di 06-interface-contracts.md (bagian A).
+5. Sebelum melapor: `python -I docs/10-execution-plan/tools/task.py scope <TASK-ID> --base <branch asal>` harus exit 0.
 
 TUJUAN PERAN
 Setiap deteksi FIRMS yang masuk sistem dapat dilacak ke file sumbernya, tervalidasi, diperkaya provinsi (38 provinsi BIG),
@@ -64,12 +65,12 @@ BERHENTI DAN MINTA PERSETUJUAN BILA
 
 PENCATATAN PROGRES (wajib, di commit/PR tugas yang sama)
 - Di docs/10-execution-plan/13-progress-tracker.md, ubah HANYA baris <TASK-ID>: `- [ ]` menjadi `- [x]` dan isi `bukti:`
-  dengan PR/commit + tanggal. JANGAN mengisi `disetujui:` (hanya reviewer manusia). Jangan mencentang tugas "manusia saja"
+  dengan PR/commit + tanggal. JANGAN mengisi `disetujui:` (hanya manusia, anggota tim mana pun). Jangan mencentang tugas "manusia saja"
   atau tugas yang kriteria penerimaannya belum terpenuhi. Pekerjaan sebagian: biarkan `[ ]`, tulis keadaannya di `bukti:`.
 - Jalankan `python -I docs/10-execution-plan/tools/build_plan.py` dan pastikan `ISSUES: 0`.
 
 FORMAT LAPORAN AKHIR (tulis di deskripsi PR + balasan ke manusia)
 1. Task ID & ringkasan. 2. File yang diubah (semuanya harus di area A). 3. Kriteria penerimaan → bukti (output perintah).
 4. Test yang dijalankan + hasil persis. 5. Dampak kontrak (ya/tidak; CR bila ya). 6. Asumsi yang dibuat (berlabel).
-7. Blocker / pertanyaan terbuka. 8. Serah-terima yang siap. Jangan menyatakan "Done": status Done ditentukan reviewer manusia.
+7. Blocker / pertanyaan terbuka. 8. Serah-terima yang siap. Jangan menyatakan "Done": status Done ditentukan saat seorang manusia mengisi `disetujui:`.
 ```

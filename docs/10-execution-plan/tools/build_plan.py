@@ -63,7 +63,8 @@ ROLE_DIRS = {
 }
 COORD_DIRS = ["docs/STATUS.md", "docs/10-execution-plan/", "docs/03-specs/README.md", "docs/change-requests/"]
 ALWAYS_PROHIBITED = [".env", "docs/00-discovery/ (hanya lewat change request)"]
-DEFAULT_REVIEWER = {"A": "B", "B": "A", "C": "D", "D": "C"}
+# No mandatory review by another role (team decision 2026-11-19, replaces HD-06): a task is Done when any human
+# fills `disetujui:` in 13-progress-tracker.md. Gate approval (HD-05) is unchanged.
 DEP_TYPES = {"H": "Hard", "S": "Soft", "I": "Interface", "R": "Review", "HA": "Human approval"}
 PHASES = {
     "P1": "Dataset Feasibility", "P2": "Requirements Engineering", "P3": "Architecture & Technical Specs",
@@ -85,10 +86,10 @@ GATE_DEPS = {}
 TASKS = []
 
 
-def t(id, title, est, deps="", rev=None, prio="Must", status="Belum mulai", collab="", obj="", why="", inputs="",
+def t(id, title, est, deps="", prio="Must", status="Belum mulai", collab="", obj="", why="", inputs="",
       outputs="", files="", steps=(), spec="", ac="", verify="", evidence="", approval="Tidak (review PR cukup)",
       handoff="", legacy="", nb=None, agent="Claude Code implementasi; Codex review"):
-    TASKS.append(dict(id=id, title=title, est=est, deps=deps, rev=rev, prio=prio, status=status, collab=collab, obj=obj,
+    TASKS.append(dict(id=id, title=title, est=est, deps=deps, prio=prio, status=status, collab=collab, obj=obj,
                       why=why, inputs=inputs, outputs=outputs, files=files, steps=list(steps), spec=spec, ac=ac,
                       verify=verify, evidence=evidence, approval=approval, handoff=handoff, legacy=legacy, nb=nb,
                       agent=agent))
@@ -159,29 +160,29 @@ t("A-P1-010", "Rekomendasi dataset + laporan Fase 1 (12 bagian)", (1, 1.5, 2), "
   inputs="Semua dokumen 01-dataset", outputs="docs/01-dataset/07-dataset-recommendation.md, docs/01-dataset/README.md",
   files="docs/01-dataset/README.md, docs/01-dataset/07-dataset-recommendation.md", steps=["Tulis rekomendasi", "Susun laporan 12 bagian", "Daftar keputusan untuk G1"],
   spec="Format 12 bagian (00-discovery/README.md)", ac="Semua keputusan G1 punya opsi + rekomendasi + bukti.", verify="Cek tautan relatif", approval="G1")
-t("B-P1-001", "Estimasi volume per provinsi per hari/bulan", (1.5, 2, 3), "A-P1-004:H", legacy="P1-07", rev="A",
+t("B-P1-001", "Estimasi volume per provinsi per hari/bulan", (1.5, 2, 3), "A-P1-004:H", legacy="P1-07",
   obj="Mengukur baris per provinsi-hari dan provinsi-bulan (median, p99, maks).", why="Masukan ukuran partisi Fase 3 (R-05).",
   inputs="data/firms/profile/prov_day.csv, prov_month.csv", outputs="docs/03-specs/database/00-volume-estimates.md", files="docs/03-specs/database/00-volume-estimates.md",
   steps=["Hitung distribusi baris per kandidat kunci partisi", "Estimasi byte per baris dari ukuran CSV", "Tandai provinsi/bulan puncak"],
   spec="Hanya angka hasil ukur; proyeksi ditandai ASSUMPTION", ac="Tabel per kandidat partisi dengan p50/p99/maks baris dan perkiraan MB.",
   verify="Skrip analisis dapat dijalankan ulang", approval="Tidak (masukan G3)")
-t("C-P1-001", "Inventaris toolchain & opsi cloud (NA-07)", (2, 3, 4), rev="B",
+t("C-P1-001", "Inventaris toolchain & opsi cloud (NA-07)", (2, 3, 4),
   obj="Mendaftar versi Python/Node/Cassandra/driver yang kompatibel dan opsi cloud tim.", why="Masukan ADR stack (C-P3-001) dan OQ-23 sebelum D12.",
   inputs="Charter §8, OQ-23–OQ-27, dokumen 07", outputs="docs/03-specs/architecture/00-toolchain-and-cloud-options.md",
   files="docs/03-specs/architecture/00-toolchain-and-cloud-options.md", steps=["Cek kompatibilitas versi dari dokumentasi resmi", "Kumpulkan opsi cloud/kredit dari anggota", "Bandingkan biaya & memori minimum Cassandra"],
   spec="Setiap versi diberi sumber resmi + tanggal baca", ac="Matriks versi terverifikasi + ≥2 opsi cloud dengan biaya/batas.", verify="Review manual",
   approval="Tidak (masukan HD-16)")
-t("D-P1-001", "Draf user stories & FR dari charter", (2, 3, 4), rev="C", legacy="P1-08",
+t("D-P1-001", "Draf user stories & FR dari charter", (2, 3, 4), legacy="P1-08",
   obj="Menulis draf user story dan FR untuk 12 fitur MoSCoW.", why="Memulai Fase 2 paralel agar G2 tidak terlambat (R-02).",
   inputs="Charter §4–§7", outputs="docs/02-requirements/00-draft-user-stories.md", files="docs/02-requirements/00-draft-user-stories.md",
   steps=["Satu story per fitur Must/Should", "Kaitkan ke persona OQ-19", "Tandai hal yang menunggu data Fase 1"],
   spec="Format: Sebagai <persona>, saya ingin …, agar …", ac="Setiap fitur Must punya ≥1 story.", verify="Review manual", approval="Tidak (masukan G2)")
-t("X-P1-901", "Tetapkan anggota↔peran, koordinator, ketersediaan; setujui rencana eksekusi", (1, 1.5, 2), rev="D",
+t("X-P1-901", "Tetapkan anggota↔peran, koordinator, ketersediaan; setujui rencana eksekusi", (1, 1.5, 2),
   obj="Mengisi HD-01–HD-06 dan menyetujui docs/10-execution-plan/.", why="Tanpa pemilik nyata, tugas tidak bisa mulai.",
   inputs="docs/10-execution-plan/", outputs="12-human-decision-register.md terisi; catatan persetujuan", files="docs/10-execution-plan/12-human-decision-register.md",
   steps=["Rapat/obrolan tim 30–45 menit", "Isi matriks skill di 01-role-charters.md", "Catat keputusan"],
   spec="Mekanisme persetujuan HD-05", ac="HD-01–HD-06 berstatus DECIDED.", verify="Review manual", approval="Tim (GATE-EP)", agent="Manusia (agen hanya mencatat)")
-t("X-P1-902", "Paket gerbang G1 + catat keputusan + perbarui STATUS", (0.5, 1, 1.5), "A-P1-010:H", rev="A",
+t("X-P1-902", "Paket gerbang G1 + catat keputusan + perbarui STATUS", (0.5, 1, 1.5), "A-P1-010:H",
   obj="Mengumpulkan keputusan G1 dan memperbarui docs/STATUS.md.", why="Fase 2/3 butuh keputusan dataset final.",
   inputs="Laporan Fase 1", outputs="Keputusan G1 tercatat; STATUS.md diperbarui", files="docs/STATUS.md",
   steps=["Bagikan paket", "Kumpulkan persetujuan", "Perbarui STATUS + register lewat CR"], spec="Checklist G1 (10-phase-gates)",
@@ -200,35 +201,35 @@ t("D-P2-002", "Acceptance criteria per FR", (2, 3, 4), "D-P2-001:H",
   inputs="FR", outputs="Bagian AC di 01-functional-requirements.md", files="docs/02-requirements/01-functional-requirements.md",
   steps=["≥1 AC per FR", "Sertakan kasus kosong/error", "Tandai AC yang butuh data nyata"], spec="Given/When/Then",
   ac="Setiap FR Must punya AC terukur.", verify="Review manual", approval="G2")
-t("C-P2-001", "Non-functional requirements kuantitatif", (2, 3, 4), "GATE-G1:HA, B-P1-001:H, A-P1-008:S", rev="D", collab="A, B",
+t("C-P2-001", "Non-functional requirements kuantitatif", (2, 3, 4), "GATE-G1:HA, B-P1-001:H, A-P1-008:S", collab="A, B",
   obj="Menetapkan target latensi API, batas titik peta, kesegaran data, interval polling, keamanan, reproduksibilitas.", why="Charter menunda target angka ke Fase 2.",
   inputs="Volume terukur, latensi NRT", outputs="docs/02-requirements/02-non-functional-requirements.md", files="docs/02-requirements/02-non-functional-requirements.md",
   steps=["Usulkan angka dengan dasar terukur", "Tentukan cara ukur tiap NFR", "Tandai yang hanya berlaku di cloud"], spec="NFR-xx: target, metode ukur, alasan",
   ac="Setiap NFR punya angka dan metode verifikasi.", verify="Review manual", approval="G2")
-t("A-P2-001", "Semantik data & aturan perhitungan", (2, 3, 4), "GATE-G1:HA", rev="D",
+t("A-P2-001", "Semantik data & aturan perhitungan", (2, 3, 4), "GATE-G1:HA",
   obj="Menetapkan definisi 'jumlah deteksi': tanggal lokal, default confidence, titik luar provinsi, sumber statis, presedensi SP/NRT, penggabungan satelit.",
   why="Mencegah agregat yang salah tafsir (R-15) dan perbedaan antar lapisan.", inputs="Keputusan G1, OQ-08–OQ-12",
   outputs="docs/03-specs/data/01-data-semantics.md", files="docs/03-specs/data/01-data-semantics.md",
   steps=["Tulis aturan SEM-xx", "Beri contoh numerik", "Tandai keputusan yang butuh persetujuan"], spec="Mengikuti OQ-08–OQ-12",
   ac="Setiap angka di dashboard dapat dijelaskan oleh satu aturan SEM-xx.", verify="Review manual", approval="G2 (kebijakan data)")
-t("B-P2-001", "Kebutuhan query aplikasi (Q-xx)", (2, 3, 4), "D-P2-001:H, A-P2-001:S", rev="C", collab="C, D",
+t("B-P2-001", "Kebutuhan query aplikasi (Q-xx)", (2, 3, 4), "D-P2-001:H, A-P2-001:S", collab="C, D",
   obj="Menerjemahkan setiap FR menjadi kebutuhan query: parameter, filter, urutan, kardinalitas, ukuran hasil.", why="Input access patterns; mencegah desain relasional (R-09).",
   inputs="FR, semantik data, volume", outputs="docs/03-specs/database/01-query-requirements.md", files="docs/03-specs/database/01-query-requirements.md",
   steps=["Satu Q-xx per kebutuhan baca", "Estimasi baris hasil dari volume", "Tandai query yang butuh pra-agregasi"], spec="Q-xx ↔ FR-xx",
   ac="Setiap FR yang membaca data ↔ ≥1 Q-xx.", verify="Matriks FR↔Q lengkap", approval="G2")
-t("D-P2-003", "Kunci MVP + urutan pemotongan cakupan", (1, 1.5, 2.5), "D-P2-002:H, C-P2-001:H, B-P2-001:H", rev="C",
+t("D-P2-003", "Kunci MVP + urutan pemotongan cakupan", (1, 1.5, 2.5), "D-P2-002:H, C-P2-001:H, B-P2-001:H",
   obj="Mengunci daftar Must final dan urutan fitur yang dipotong bila terlambat.", why="Mitigasi scope creep (R-01).",
   inputs="FR, NFR, Q", outputs="docs/02-requirements/03-mvp-lock.md", files="docs/02-requirements/03-mvp-lock.md",
   steps=["Tulis daftar Must final", "Tulis urutan descoping", "Ajukan ke G2"], spec="Charter §6", ac="Daftar descoping berurutan disetujui tim.",
   verify="Review manual", approval="G2 (ruang lingkup)")
-t("X-P2-901", "Paket gerbang G2", (0.5, 1, 1.5), "D-P2-003:H, A-P2-001:H", rev="D",
+t("X-P2-901", "Paket gerbang G2", (0.5, 1, 1.5), "D-P2-003:H, A-P2-001:H",
   obj="Mengumpulkan persetujuan G2.", why="Fase 3 tidak boleh mulai tanpa requirements.", inputs="Dokumen Fase 2", outputs="Keputusan G2; STATUS.md",
   files="docs/STATUS.md", steps=["Bagikan paket", "Catat keputusan"], spec="Checklist G2", ac="Checklist G2 lengkap.", verify="Review manual",
   approval="Tim (G2)", agent="Manusia + agen pencatat")
 gate("GATE-G2", "X-P2-901:H")
 
 # ---------------------------------------------------------------- PHASE 3
-t("B-P3-001", "Access pattern matrix", (2, 3, 4), "GATE-G2:HA, B-P2-001:H", rev="C", collab="A",
+t("B-P3-001", "Access pattern matrix", (2, 3, 4), "GATE-G2:HA, B-P2-001:H", collab="A",
   obj="Memetakan Q-xx ke tabel, kunci partisi, kunci clustering, dan estimasi ukuran partisi.", why="Skema hanya boleh mengikuti access pattern yang disetujui.",
   inputs="Q-xx, volume", outputs="docs/03-specs/database/02-access-patterns.md", files="docs/03-specs/database/02-access-patterns.md",
   steps=["Satu baris per Q-xx", "Pilih partisi + bucketing bila perlu", "Hitung ukuran partisi p99 dari volume"], spec="Tanpa ALLOW FILTERING/scan penuh",
@@ -239,7 +240,7 @@ t("A-P3-001", "Kontrak canonical event v1 + sampel record", (2, 3, 5), "GATE-G2:
   files="docs/03-specs/data/02-canonical-event-contract.md, docs/03-specs/data/samples/", steps=["Tabel field", "Definisikan detection_id deterministik", "Hasilkan ≥20 contoh dari data nyata (termasuk luar provinsi & malam lintas tanggal)"],
   spec="Versi kontrak semver; perubahan lewat CR", ac="B mengonfirmasi tiap field dapat dipetakan ke CQL; contoh lolos validasi skema JSON.",
   verify="Validasi sampel terhadap JSON Schema", approval="G3 (kontrak antarmuka)")
-t("A-P3-002", "Spesifikasi ETL (dua mode)", (3, 4, 5.5), "A-P3-001:S, A-P1-009:H", rev="C",
+t("A-P3-002", "Spesifikasi ETL (dua mode)", (3, 4, 5.5), "A-P3-001:S, A-P1-009:H",
   obj="Menentukan tahap, mode backfill & incremental, checkpoint, run log, rejected records, semantik re-run, penjaga kuota.", why="Dasar implementasi Fase 5.",
   inputs="Aturan DQ, kontrak canonical", outputs="docs/03-specs/data/03-etl-spec.md", files="docs/03-specs/data/03-etl-spec.md",
   steps=["Diagram tahap", "Definisikan checkpoint per mode", "Definisikan reason code & run log"], spec="Source adapter (OQ-28)",
@@ -254,32 +255,32 @@ t("B-P3-003", "Strategi read model/agregat & rebuild", (2, 3, 4), "B-P3-002:H",
   inputs="Model data", outputs="docs/03-specs/database/04-aggregates.md", files="docs/03-specs/database/04-aggregates.md",
   steps=["Pilih granularitas agregat", "Definisikan pemicu hitung ulang", "Definisikan rebuild penuh"], spec="Nilai absolut, bukan increment",
   ac="Re-run input yang sama menghasilkan agregat identik (dapat diuji).", verify="Review manual", approval="G3")
-t("C-P3-001", "Arsitektur end-to-end + ADR stack", (3, 4, 5), "GATE-G2:HA, C-P1-001:S", rev="B",
+t("C-P3-001", "Arsitektur end-to-end + ADR stack", (3, 4, 5), "GATE-G2:HA, C-P1-001:S",
   obj="Menulis arsitektur, diagram aliran data, dan ADR versi stack serta paritas lokal↔cloud.", why="Semua peran butuh gambaran komponen yang sama.",
   inputs="Charter, NFR, inventaris toolchain", outputs="docs/03-specs/architecture/01-architecture.md, docs/03-specs/architecture/adr/ADR-001..002",
   files="docs/03-specs/architecture/", steps=["Diagram komponen & aliran", "ADR-001 versi stack", "ADR-002 paritas lokal/cloud"], spec="Format ADR: konteks, keputusan, konsekuensi",
   ac="Setiap komponen punya pemilik dan antarmuka tertaut ke 06-interface-contracts.", verify="Review manual", approval="G3 (arsitektur)")
-t("D-P3-001", "Spesifikasi UI + wireframe low-fi", (3, 4, 6), "D-P2-002:H, GATE-G2:HA", rev="C",
+t("D-P3-001", "Spesifikasi UI + wireframe low-fi", (3, 4, 6), "D-P2-002:H, GATE-G2:HA",
   obj="Inventaris halaman, wireframe, perilaku filter, drill-down, state loading/empty/error, indikator kesegaran, disclaimer.", why="Masukan kontrak API dan dasar implementasi UI.",
   inputs="FR + AC", outputs="docs/03-specs/ui/01-ui-spec.md, docs/03-specs/ui/wireframes/", files="docs/03-specs/ui/",
   steps=["Inventaris halaman", "Wireframe tiap halaman", "Tabel interaksi → kebutuhan data"], spec="Bahasa UI Indonesia (OQ-20)",
   ac="Setiap elemen data di wireframe ↔ field API yang diminta.", verify="Review silang C", approval="G3 (perilaku UI)")
-t("C-P3-002", "Kontrak API v1 (OpenAPI)", (3, 4, 6), "B-P3-001:I, D-P3-001:S, C-P2-001:H", rev="D", collab="B",
+t("C-P3-002", "Kontrak API v1 (OpenAPI)", (3, 4, 6), "B-P3-001:I, D-P3-001:S, C-P2-001:H", collab="B",
   obj="Menulis openapi.yaml: endpoint, parameter, skema respons, skema error, contoh, batas jumlah titik.", why="Memungkinkan backend & frontend paralel dengan mock.",
   inputs="Access patterns, UI spec, NFR", outputs="docs/03-specs/api/openapi.yaml, docs/03-specs/api/01-api-notes.md", files="docs/03-specs/api/",
   steps=["Endpoint per kebutuhan UI", "Contoh respons dari sampel canonical", "Skema error seragam"], spec="OpenAPI 3.1; path bahasa Inggris",
   ac="openapi.yaml valid; setiap endpoint ↔ Q-xx; D menyetujui cakupan kebutuhan UI.", verify="Validator OpenAPI (CLI) → 0 error", approval="G3 (kontrak antarmuka)")
-t("C-P3-003", "ADR deployment & keamanan (OQ-24–OQ-26)", (2, 3, 4), "C-P3-001:H", rev="B", nb=9,
+t("C-P3-003", "ADR deployment & keamanan (OQ-24–OQ-26)", (2, 3, 4), "C-P3-001:H", nb=9,
   obj="Mengusulkan cara Cassandra & poller berjalan di cloud dan kontrol keamanan minimum, netral penyedia.", why="Cloud Must setelah D13; keputusan penyedia ≤ D12.",
   inputs="Opsi cloud, NFR", outputs="docs/03-specs/architecture/adr/ADR-003-deployment.md, ADR-004-security.md", files="docs/03-specs/architecture/adr/",
   steps=["Opsi + rekomendasi per OQ", "Kontrol keamanan minimum", "Kriteria pemilihan penyedia"], spec="R-23, R-25", ac="Setiap kontrol keamanan punya cara verifikasi.",
   verify="Review manual", approval="G3 + persetujuan keamanan (HD-16)")
-t("B-P3-004", "Rencana eksperimen Cassandra", (2, 3, 4), "B-P3-002:S", rev="A", nb=9,
+t("B-P3-004", "Rencana eksperimen Cassandra", (2, 3, 4), "B-P3-002:S", nb=9,
   obj="Hipotesis, variabel, metrik, protokol, lingkungan untuk eksperimen bucketing (Must) dan replikasi (Should).", why="O-E3; mencegah benchmark tidak valid (R-16).",
   inputs="Model data, dokumen 07", outputs="docs/03-specs/database/05-experiment-plan.md", files="docs/03-specs/database/05-experiment-plan.md",
   steps=["Hipotesis terukur", "Protokol warm-up & repetisi", "Lingkungan & versi dicatat"], spec="Tidak ada hasil sebelum dijalankan",
   ac="Rencana dapat dijalankan orang lain tanpa bertanya.", verify="Review manual", approval="G3")
-t("X-P3-901", "Paket G3 + cek konsistensi lintas kontrak", (1, 2, 3), "A-P3-001:H, A-P3-002:H, B-P3-002:H, B-P3-003:H, C-P3-001:H, C-P3-002:H, C-P3-003:H, D-P3-001:H, B-P3-004:S", rev="C",
+t("X-P3-901", "Paket G3 + cek konsistensi lintas kontrak", (1, 2, 3), "A-P3-001:H, A-P3-002:H, B-P3-002:H, B-P3-003:H, C-P3-001:H, C-P3-002:H, C-P3-003:H, D-P3-001:H, B-P3-004:S",
   obj="Memastikan nama field, tipe, dan semantik konsisten dari canonical → CQL → OpenAPI → UI.", why="Kesalahan integrasi paling murah dicegah di sini.",
   inputs="Semua spesifikasi Fase 3", outputs="Laporan konsistensi + keputusan G3", files="docs/03-specs/README.md, docs/STATUS.md",
   steps=["Tabel jejak field lintas lapisan", "Catat ketidakcocokan sebagai CR", "Kumpulkan persetujuan"], spec="06-interface-contracts.md",
@@ -287,291 +288,291 @@ t("X-P3-901", "Paket G3 + cek konsistensi lintas kontrak", (1, 2, 3), "A-P3-001:
 gate("GATE-G3", "X-P3-901:H")
 
 # ---------------------------------------------------------------- PHASE 4
-t("C-P4-001", "Kerangka repo + CODEOWNERS + template PR", (2, 3, 4), "GATE-EP:HA", rev="B",
+t("C-P4-001", "Kerangka repo + CODEOWNERS + template PR", (2, 3, 4), "GATE-EP:HA",
   obj="Membuat struktur direktori sesuai 07-file-ownership-matrix, CODEOWNERS, dan template PR.", why="Kepemilikan file ditegakkan oleh alat, bukan ingatan.",
   inputs="07-file-ownership-matrix.md", outputs="Direktori kosong ber-README, .github/CODEOWNERS, .github/pull_request_template.md", files=".github/, README.md",
   steps=["Buat direktori", "CODEOWNERS per direktori", "Template PR dengan checklist DoD"], spec="07-file-ownership-matrix", ac="CODEOWNERS mencakup semua direktori di matriks.",
   verify="Skrip cek setiap direktori di matriks ada di CODEOWNERS", approval="G4")
-t("D-P4-003", "AGENTS.md & CLAUDE.md lengkap", (3, 4, 5), "GATE-EP:HA", rev="C", collab="A, B, C",
+t("D-P4-003", "AGENTS.md & CLAUDE.md lengkap", (3, 4, 5), "GATE-EP:HA", collab="A, B, C",
   obj="Menulis coding standards, git workflow, DoD, protokol Claude Code/Codex, aturan worktree.", why="OQ-18; mencegah konflik agen (R-13).",
   inputs="Dokumen 07, 08, 11 di rencana ini", outputs="AGENTS.md, CLAUDE.md", files="AGENTS.md, CLAUDE.md",
   steps=["Gabungkan aturan minimum saat ini", "Tambah standar per bahasa", "Tambah protokol agen & stop conditions"], spec="Tidak mengubah keputusan Fase 0",
   ac="Setiap prompt peran di 11-role-prompts konsisten dengan AGENTS.md.", verify="Review manual", approval="G4")
-t("A-P4-002", "Tooling Python bersama (lint, format, test, pre-commit)", (2, 3, 4), "C-P4-001:H", rev="C",
+t("A-P4-002", "Tooling Python bersama (lint, format, test, pre-commit)", (2, 3, 4), "C-P4-001:H",
   obj="Mengunci versi Python dan konfigurasi ruff/pytest/pre-commit.", why="Lingkungan heterogen (R-12).",
   inputs="ADR-001 (draf)", outputs="ruff.toml, .pre-commit-config.yaml, panduan venv", files="ruff.toml, .pre-commit-config.yaml",
   steps=["Pilih versi", "Konfigurasi lint/format", "Hook pre-commit: lint, deteksi secret"], spec="Tanpa alat yang tidak perlu",
   ac="`pre-commit run --all-files` lulus di repo bersih.", verify="pre-commit run --all-files", approval="G4")
-t("C-P4-004", "Docker Compose dasar + validasi environment", (3, 4, 5), "C-P4-001:H, B-P4-001:I", rev="B",
+t("C-P4-004", "Docker Compose dasar + validasi environment", (3, 4, 5), "C-P4-001:H, B-P4-001:I",
   obj="Compose dengan service cassandra (fragmen B), api placeholder, web dev; healthcheck; .env.example; skrip cek env.", why="Kriteria keberhasilan #1.",
   inputs="Fragmen konfigurasi Cassandra dari B", outputs="docker-compose.yml, .env.example, deploy/scripts/check_env.*", files="docker-compose.yml, .env.example, deploy/",
   steps=["Service + healthcheck", "Variabel env terdokumentasi", "Skrip cek env tanpa mencetak nilai secret"], spec="Konfigurasi lewat env (A-24)",
   ac="`docker compose up` → semua service healthy di mesin bersih.", verify="docker compose ps (healthy) di CI atau mesin anggota", approval="G4")
-t("C-P4-005", "CI: lint + unit test per komponen", (2, 3, 5), "A-P4-002:H, D-P4-001:S", rev="D",
+t("C-P4-005", "CI: lint + unit test per komponen", (2, 3, 5), "A-P4-002:H, D-P4-001:S",
   obj="Pipeline CI tanpa secret yang menjalankan lint dan unit test.", why="Gerbang mutu otomatis sebelum merge.",
   inputs="Tooling Python & web", outputs=".github/workflows/ci.yml", files=".github/workflows/",
   steps=["Job per komponen dengan path filter", "Cache dependensi", "Wajibkan status hijau sebelum merge"], spec="HD-15 (pemakaian GitHub Actions)",
   ac="PR contoh menunjukkan CI hijau; CI gagal bila test gagal.", verify="PR uji dengan test gagal sengaja", approval="G4")
-t("B-P4-001", "Konfigurasi Cassandra single-node untuk dev", (2, 3, 5), "GATE-EP:HA", rev="C",
+t("B-P4-001", "Konfigurasi Cassandra single-node untuk dev", (2, 3, 5), "GATE-EP:HA",
   obj="Image versi terkunci, heap terbatas, healthcheck, skrip tunggu-siap, keyspace dev (tanpa skema produksi).", why="Dasar semua pekerjaan DB.",
   inputs="ADR-001 (draf), dokumen 07", outputs="db/docker/, db/scripts/, db/README.md", files="db/",
   steps=["Pilih versi (ADR)", "Fragmen Compose untuk C", "Skrip readiness"], spec="Heap ±1 GB", ac="Cassandra siap < N menit dan lolos `cqlsh -e 'describe keyspaces'`.",
   verify="Skrip readiness exit 0", approval="Tidak")
-t("B-P4-002", "Smoke test 3 node di laptop (dokumen 07 §4)", (2, 3, 4), "B-P4-001:H", rev="C", prio="Should",
+t("B-P4-002", "Smoke test 3 node di laptop (dokumen 07 §4)", (2, 3, 4), "B-P4-001:H", prio="Should",
   obj="Membuktikan laptop memenuhi spesifikasi 3 node untuk eksperimen replikasi.", why="Validasi A-25 sebelum B-P7-003.",
   inputs="Dokumen 07", outputs="experiments/env-3node/SMOKE.md", files="experiments/env-3node/",
   steps=["Jalankan 3 node", "nodetool status", "Catat hardware & waktu"], spec="Dokumen 07 §4", ac="3 node UN atau laporan kegagalan dengan bukti.",
   verify="Output nodetool status", approval="Tidak")
-t("A-P4-001", "Skeleton paket pipeline + fixtures uji dari data nyata", (2, 3, 4), "C-P4-001:H, A-P1-004:S", rev="B",
+t("A-P4-001", "Skeleton paket pipeline + fixtures uji dari data nyata", (2, 3, 4), "C-P4-001:H, A-P1-004:S",
   obj="pyproject, struktur modul, dan fixtures kecil (CSV nyata + golden output).", why="Test deterministik tanpa memanggil API.",
   inputs="Data mentah Fase 1", outputs="pipeline/pyproject.toml, pipeline/src/, pipeline/tests/fixtures/", files="pipeline/",
   steps=["Struktur modul per tahap ETL", "Pilih subset fixtures (≤1 MB) mencakup kasus tepi", "Test contoh lulus"], spec="Fixtures data FIRMS publik + atribusi",
   ac="`pytest pipeline` lulus; fixtures mencakup malam lintas tanggal, luar provinsi, NRT & SP.", verify="pytest pipeline", approval="Tidak")
-t("D-P4-001", "Scaffold React + Leaflet + lint/test", (2, 3, 5), "C-P4-001:H", rev="C",
+t("D-P4-001", "Scaffold React + Leaflet + lint/test", (2, 3, 5), "C-P4-001:H",
   obj="Proyek web (Vite), lint/format, test runner, peta dasar statis dengan atribusi.", why="Frontend dapat mulai tanpa backend.",
   inputs="ADR-001 (draf), HD-14", outputs="web/", files="web/", steps=["Scaffold", "Lint & test runner", "Halaman peta dasar"], spec="HD-14 (TypeScript, library chart)",
   ac="`npm run lint && npm test && npm run build` lulus.", verify="Perintah tersebut di CI", approval="Tidak")
-t("D-P4-002", "Mock API dari contoh OpenAPI", (2, 3, 4), "C-P3-002:I, D-P4-001:H", rev="C",
+t("D-P4-002", "Mock API dari contoh OpenAPI", (2, 3, 4), "C-P3-002:I, D-P4-001:H",
   obj="Mock layer (mis. MSW) yang mengembalikan contoh openapi.yaml + toggle mock/real.", why="Frontend paralel dengan backend (OQ-27 opsi A).",
   inputs="openapi.yaml v1", outputs="web/src/mocks/", files="web/src/mocks/", steps=["Muat contoh dari openapi.yaml", "Handler per endpoint", "Flag env untuk mock/real"],
   spec="Tidak menambah field di luar kontrak", ac="Setiap endpoint di kontrak punya handler; flag mematikan mock.", verify="Test: respons mock lolos validasi skema OpenAPI", approval="Tidak")
-t("X-P4-901", "Paket G4: uji fresh clone", (0.5, 1, 1.5), "D-P4-003:H, C-P4-004:H, C-P4-005:H, B-P4-001:H, A-P4-001:H, D-P4-001:H", rev="C",
+t("X-P4-901", "Paket G4: uji fresh clone", (0.5, 1, 1.5), "D-P4-003:H, C-P4-004:H, C-P4-005:H, B-P4-001:H, A-P4-001:H, D-P4-001:H",
   obj="Anggota yang bukan pemilik harness meng-clone ulang dan menjalankan semua cek.", why="Bukti reproduksibilitas sejak awal (O-E4).",
   inputs="Repo", outputs="Catatan uji fresh clone + keputusan G4", files="docs/STATUS.md", steps=["Clone bersih", "compose up + lint + test", "Catat hambatan"],
   spec="Checklist G4", ac="Semua cek lulus tanpa bantuan pemilik.", verify="Log perintah", approval="Tim (G4)", agent="Manusia")
 gate("GATE-G4", "X-P4-901:H")
 
 # ---------------------------------------------------------------- PHASE 5
-t("A-P5-001", "Source adapter + extractor FIRMS (kuota, retry, raw zone)", (3, 4, 6), "GATE-G3:HA, GATE-G4:HA, A-P4-001:H", rev="C",
+t("A-P5-001", "Source adapter + extractor FIRMS (kuota, retry, raw zone)", (3, 4, 6), "GATE-G3:HA, GATE-G4:HA, A-P4-001:H",
   obj="Antarmuka source adapter dan implementasi Area API dengan penjaga kuota, retry, manifest SHA-256.", why="OQ-28; raw zone (R-04).",
   inputs="ETL spec, inventaris sumber", outputs="pipeline/src/.../extract/", files="pipeline/", steps=["Interface adapter", "Extractor + manifest", "Test dengan respons tiruan (tanpa API)"],
   spec="03-etl-spec.md", ac="Test unit lulus tanpa jaringan; MAP_KEY tidak pernah muncul di log (test).", verify="pytest + test redaksi log", approval="Tidak")
-t("A-P5-002", "Parsing & validasi + rejected records", (3, 4, 6), "A-P5-001:S, A-P3-002:H", rev="B",
+t("A-P5-002", "Parsing & validasi + rejected records", (3, 4, 6), "A-P5-001:S, A-P3-002:H",
   obj="Parser per sumber dan aturan DQ dengan reason code.", why="Kualitas data terukur (O-E1).", inputs="Aturan DQ, fixtures", outputs="pipeline/src/.../validate/",
   files="pipeline/", steps=["Parser per header", "Aturan DQ-xx", "Simpan rejected + alasan"], spec="06-data-quality-rules.md",
   ac="Setiap aturan DQ punya test positif & negatif.", verify="pytest", approval="Tidak")
-t("A-P5-003", "Normalisasi waktu & atribut", (2, 3, 5), "A-P5-002:H", rev="B",
+t("A-P5-003", "Normalisasi waktu & atribut", (2, 3, 5), "A-P5-002:H",
   obj="UTC timestamp, padding acq_time, tanggal lokal per provinsi, normalisasi confidence & processing level.", why="R-07; OQ-08.",
   inputs="Kontrak canonical, semantik data", outputs="pipeline/src/.../normalize/", files="pipeline/",
   steps=["Konversi waktu", "Tanggal lokal butuh provinsi → setelah enrichment", "Test kasus malam lintas tanggal"], spec="SEM-xx",
   ac="Test malam lintas tanggal WIB/WITA/WIT lulus.", verify="pytest", approval="Tidak")
-t("A-P5-004", "Pengayaan spasial (provinsi, status luar provinsi)", (3, 4, 6), "A-P5-002:S", rev="B",
+t("A-P5-004", "Pengayaan spasial (provinsi, status luar provinsi)", (3, 4, 6), "A-P5-002:S",
   obj="Assign provinsi (dan kab/kota bila Could disetujui) dari snapshot batas ber-checksum.", why="OQ-06, OQ-11.",
   inputs="Snapshot batas (HD-08)", outputs="pipeline/src/.../enrich/", files="pipeline/", steps=["Loader snapshot + checksum", "Point-in-polygon", "Status wilayah khusus"],
   spec="05-boundary-sources.md", ac="Hasil cocok dengan coord_assign Fase 1 pada fixtures (selisih 0 kecuali tepi yang terdokumentasi).", verify="pytest golden", approval="Tidak")
-t("A-P5-005", "Deduplikasi & identitas deteksi", (3, 4, 6), "A-P5-003:H, A-P5-004:H", rev="B", collab="B",
+t("A-P5-005", "Deduplikasi & identitas deteksi", (3, 4, 6), "A-P5-003:H, A-P5-004:H", collab="B",
   obj="detection_id deterministik dan aturan presedensi SP>NRT.", why="R-06 (skor 9).", inputs="Kontrak canonical, hasil A-P1-007",
   outputs="pipeline/src/.../dedup/", files="pipeline/", steps=["Implementasi kunci", "Presedensi sumber", "Property test: urutan input tidak mengubah hasil"],
   spec="02-canonical-event-contract.md", ac="Dua run dengan urutan input berbeda → set detection_id identik.", verify="pytest (property test)", approval="Tidak")
-t("A-P5-006", "Mode backfill (checkpoint, resume, run log)", (3, 4, 5), "A-P5-005:H, B-P5-002:I, B-P5-004:I", rev="C",
+t("A-P5-006", "Mode backfill (checkpoint, resume, run log)", (3, 4, 5), "A-P5-005:H, B-P5-002:I, B-P5-004:I",
   obj="CLI backfill rentang tanggal dengan checkpoint dan run log memakai writer B.", why="MVP kapabilitas 1.",
   inputs="Writer & run-log API dari B", outputs="pipeline/src/.../modes/backfill.py", files="pipeline/", steps=["CLI", "Checkpoint per chunk tanggal", "Run log"],
   spec="03-etl-spec.md", ac="Backfill terputus dapat dilanjutkan tanpa duplikat.", verify="Test integrasi dengan Cassandra container", approval="Tidak")
-t("A-P5-007", "Mode incremental NRT (polling)", (3, 4, 6), "A-P5-006:H", rev="C",
+t("A-P5-007", "Mode incremental NRT (polling)", (3, 4, 6), "A-P5-006:H",
   obj="Poller berkala dengan jendela overlap, checkpoint waktu, dan pencatatan kegagalan.", why="Fitur #12 Must; target berjalan ±D10.",
   inputs="NFR interval polling", outputs="pipeline/src/.../modes/incremental.py", files="pipeline/", steps=["Loop poll", "Overlap window", "Catat sukses/gagal ke run log"],
   spec="03-etl-spec.md, NFR", ac="Poll berulang pada jendela sama tidak menambah baris.", verify="Test integrasi: 2 poll tumpang tindih → jumlah sama", approval="Tidak")
-t("A-P5-008", "Test ETL + harness idempotensi", (3, 4, 5), "A-P5-005:H", rev="B",
+t("A-P5-008", "Test ETL + harness idempotensi", (3, 4, 5), "A-P5-005:H",
   obj="Test unit kasus tepi dan harness yang membandingkan dua run.", why="Kriteria keberhasilan #2.", inputs="Fixtures", outputs="pipeline/tests/",
   files="pipeline/tests/", steps=["Edge cases waktu/dedup", "Harness: run 2× → bandingkan jumlah & checksum", "Masuk CI"], spec="O-E1",
   ac="Harness gagal bila ada perbedaan; lulus pada kode saat ini.", verify="pytest di CI", approval="Tidak")
-t("A-P5-009", "Publikasi batas provinsi tersederhanakan untuk web", (1, 2, 3), "A-P5-004:H", rev="D",
+t("A-P5-009", "Publikasi batas provinsi tersederhanakan untuk web", (1, 2, 3), "A-P5-004:H",
   obj="GeoJSON tersederhanakan kecil + atribusi untuk lapisan peta.", why="Dibutuhkan D-P6-004.", inputs="Snapshot batas",
   outputs="pipeline/resources/boundaries/provinces-simplified.geojson", files="pipeline/resources/",
   steps=["Simplify", "Ukur ukuran file", "Serahkan ke D"], spec="HD-08 (lisensi sebelum commit)", ac="Ukuran ≤ batas NFR; 38 provinsi.", verify="Skrip hitung fitur & ukuran", approval="HD-08")
-t("A-P5-010", "Dokumentasi pipeline", (1, 2, 3), "A-P5-007:H", rev="C",
+t("A-P5-010", "Dokumentasi pipeline", (1, 2, 3), "A-P5-007:H",
   obj="pipeline/README: instalasi, mode, konfigurasi, run log, rejected records.", why="O-E4.", inputs="Kode pipeline", outputs="pipeline/README.md",
   files="pipeline/README.md", steps=["Cara jalan per mode", "Variabel env", "Troubleshooting"], spec="—", ac="Anggota lain menjalankan backfill kecil hanya dari README.",
-  verify="Uji oleh reviewer", approval="Tidak")
-t("B-P5-001", "Implementasi skema CQL v1 + migrasi", (2, 3, 4), "GATE-G3:HA, B-P4-001:H", rev="A",
+  verify="Uji oleh manusia", approval="Tidak")
+t("B-P5-001", "Implementasi skema CQL v1 + migrasi", (2, 3, 4), "GATE-G3:HA, B-P4-001:H",
   obj="File migrasi bernomor dan skrip apply idempoten sesuai skema yang disetujui G3.", why="Skema versi terkontrol.",
   inputs="schema-v1.cql (G3)", outputs="db/migrations/0001_*.cql, db/scripts/migrate.*", files="db/",
   steps=["Salin skema disetujui ke migrasi", "Skrip apply (IF NOT EXISTS)", "Test apply 2×"], spec="Tanpa drop/truncate otomatis",
   ac="Apply 2× tanpa error; skema identik dengan spesifikasi.", verify="Test: describe schema vs spesifikasi", approval="Operasi destruktif butuh persetujuan manusia")
-t("B-P5-002", "Writer adapter Cassandra (idempoten)", (3, 4, 6), "B-P5-001:H, A-P3-001:I", rev="A", collab="A",
+t("B-P5-002", "Writer adapter Cassandra (idempoten)", (3, 4, 6), "B-P5-001:H, A-P3-001:I", collab="A",
   obj="Library penulis dengan prepared statements, upsert idempoten, batch per partisi, consistency level terdokumentasi.", why="Antarmuka ETL→Cassandra.",
   inputs="Kontrak canonical, skema", outputs="db/src/.../writer.py", files="db/", steps=["API write_events(events)", "Prepared statements", "Test tulis 2× → jumlah sama"],
   spec="06 kontrak B", ac="Menulis ulang event yang sama tidak menambah baris.", verify="Test integrasi container", approval="Tidak")
-t("B-P5-003", "Builder read model/agregat", (3, 4, 6), "B-P5-002:H, B-P3-003:H", rev="A",
+t("B-P5-003", "Builder read model/agregat", (3, 4, 6), "B-P5-002:H, B-P3-003:H",
   obj="Hitung ulang agregat provinsi-hari/bulan secara absolut setelah load.", why="Ranking & timeline (fitur #1, #3, #4).",
   inputs="04-aggregates.md", outputs="db/src/.../aggregates.py", files="db/", steps=["Hitung per partisi terdampak", "Tulis nilai absolut", "Rebuild penuh"],
   spec="Tanpa counter", ac="Agregat = jumlah dari tabel detail untuk sampel provinsi/hari.", verify="Test konsistensi agregat vs detail", approval="Tidak")
-t("B-P5-004", "Tabel run log & checkpoint + writer", (2, 3, 4), "B-P5-001:H", rev="C",
+t("B-P5-004", "Tabel run log & checkpoint + writer", (2, 3, 4), "B-P5-001:H",
   obj="Tabel dan API untuk run log, checkpoint, status poll.", why="Monitoring (fitur #9) dan resume ETL.", inputs="ETL spec",
   outputs="db/src/.../runlog.py", files="db/", steps=["Tabel", "API tulis/baca", "Test"], spec="06 kontrak B/C", ac="Endpoint status (C) dapat membaca run terakhir dengan 1 query partisi.",
   verify="Test integrasi", approval="Tidak")
-t("B-P5-005", "Test database per access pattern", (2, 3, 5), "B-P5-003:H", rev="C",
+t("B-P5-005", "Test database per access pattern", (2, 3, 5), "B-P5-003:H",
   obj="Smoke test setiap Q-xx dan pemeriksaan bahwa tidak ada ALLOW FILTERING.", why="O-E2.", inputs="Access patterns",
   outputs="db/tests/", files="db/tests/", steps=["Satu test per Q-xx", "Grep ALLOW FILTERING di repo → 0", "Masuk CI (job dengan Cassandra)"],
   spec="02-access-patterns.md", ac="Semua Q-xx lulus; 0 ALLOW FILTERING.", verify="pytest db + grep", approval="Tidak")
-t("B-P5-006", "Load backfill penuh + inspeksi ukuran partisi", (2, 3, 5), "A-P5-006:H, B-P5-003:H", rev="A", collab="A",
+t("B-P5-006", "Load backfill penuh + inspeksi ukuran partisi", (2, 3, 5), "A-P5-006:H, B-P5-003:H", collab="A",
   obj="Memuat periode final dan membandingkan ukuran partisi nyata dengan estimasi.", why="Validasi model (R-05) dan data untuk G5.",
   inputs="Pipeline backfill, data mentah", outputs="Catatan load + tabel ukuran partisi di db/README.md", files="db/README.md",
   steps=["Jalankan backfill", "nodetool tablestats/tablehistograms", "Bandingkan dengan 00-volume-estimates"], spec="—",
   ac="Jumlah baris di Cassandra = jumlah event lolos ETL; ukuran partisi maks tercatat.", verify="Query hitung vs run log", approval="Tidak")
-t("B-P5-007", "Dokumentasi database", (1, 2, 3), "B-P5-005:H", rev="C",
+t("B-P5-007", "Dokumentasi database", (1, 2, 3), "B-P5-005:H",
   obj="db/README: setup, skema, contoh query, migrasi.", why="O-E4.", inputs="Kode db", outputs="db/README.md", files="db/README.md",
-  steps=["Setup", "Contoh query per Q-xx", "Prosedur rebuild agregat"], spec="—", ac="Reviewer menjalankan contoh query dari README.", verify="Uji oleh reviewer", approval="Tidak")
-t("X-P5-901", "Checkpoint D10 (R-14) + paket G5", (0.5, 1, 1.5), "A-P5-007:H, A-P5-008:H, B-P5-005:H, B-P5-006:H", rev="A",
+  steps=["Setup", "Contoh query per Q-xx", "Prosedur rebuild agregat"], spec="—", ac="Anggota lain menjalankan contoh query dari README.", verify="Uji oleh manusia", approval="Tidak")
+t("X-P5-901", "Checkpoint D10 (R-14) + paket G5", (0.5, 1, 1.5), "A-P5-007:H, A-P5-008:H, B-P5-005:H, B-P5-006:H",
   obj="Memastikan data nyata ada di Cassandra dan poller berjalan; aktifkan kontingensi bila tidak.", why="Titik kritis charter §10.",
   inputs="Hasil Fase 5", outputs="Keputusan G5", files="docs/STATUS.md", steps=["Cek kriteria", "Putuskan kontingensi", "Catat"], spec="Checklist G5",
   ac="Checklist G5 lengkap.", verify="Review manual", approval="Tim (G5)", agent="Manusia + agen pencatat")
 gate("GATE-G5", "X-P5-901:H")
 
 # ---------------------------------------------------------------- PHASE 6
-t("C-P6-001", "Skeleton FastAPI (config, health, logging, error, CORS)", (2, 3, 4), "GATE-G3:HA, GATE-G4:HA", rev="D",
+t("C-P6-001", "Skeleton FastAPI (config, health, logging, error, CORS)", (2, 3, 4), "GATE-G3:HA, GATE-G4:HA",
   obj="Aplikasi dasar dengan readiness yang memeriksa Cassandra, skema error seragam.", why="Dasar semua endpoint.", inputs="openapi.yaml, ADR-004",
   outputs="api/", files="api/", steps=["Struktur app", "Health/readiness", "Error handler sesuai skema"], spec="openapi.yaml",
   ac="GET /health 200; error mengikuti skema kontrak.", verify="pytest api", approval="Tidak")
-t("C-P6-002", "Interface repository + fake dari contoh kontrak", (2, 3, 4), "C-P6-001:H, C-P3-002:I", rev="B",
+t("C-P6-002", "Interface repository + fake dari contoh kontrak", (2, 3, 4), "C-P6-001:H, C-P3-002:I",
   obj="Protokol repository per Q-xx dan implementasi fake in-memory.", why="Backend tidak menunggu Cassandra.", inputs="Access patterns, contoh OpenAPI",
   outputs="api/src/.../repositories/", files="api/", steps=["Interface", "Fake dari sampel canonical", "Dependency injection"], spec="06 kontrak C",
   ac="Semua endpoint dapat diuji dengan fake.", verify="pytest", approval="Tidak")
-t("C-P6-003", "Endpoint ringkasan + timeline", (2, 3, 5), "C-P6-002:H", rev="D", obj="Endpoint fitur #1 & #3.", why="Must.",
+t("C-P6-003", "Endpoint ringkasan + timeline", (2, 3, 5), "C-P6-002:H", obj="Endpoint fitur #1 & #3.", why="Must.",
   inputs="Kontrak", outputs="api/ endpoint", files="api/", steps=["Validasi parameter", "Service", "Test"], spec="openapi.yaml",
   ac="Respons lolos validasi skema; tanggal memakai aturan SEM.", verify="pytest + contract test", approval="Tidak")
-t("C-P6-004", "Endpoint ranking + detail provinsi", (2, 3, 5), "C-P6-002:H", rev="D", obj="Endpoint fitur #4 & #8.", why="Must.",
+t("C-P6-004", "Endpoint ranking + detail provinsi", (2, 3, 5), "C-P6-002:H", obj="Endpoint fitur #4 & #8.", why="Must.",
   inputs="Kontrak", outputs="api/ endpoint", files="api/", steps=["Validasi", "Service (luar provinsi dikecualikan)", "Test"], spec="OQ-11",
   ac="Wilayah khusus tidak masuk ranking; lolos skema.", verify="pytest + contract test", approval="Tidak")
-t("C-P6-005", "Endpoint titik peta (terbatas)", (2, 3, 5), "C-P6-002:H", rev="D", obj="Endpoint fitur #2 dengan batas jumlah titik.", why="C-10.",
+t("C-P6-005", "Endpoint titik peta (terbatas)", (2, 3, 5), "C-P6-002:H", obj="Endpoint fitur #2 dengan batas jumlah titik.", why="C-10.",
   inputs="Kontrak, NFR batas titik", outputs="api/ endpoint", files="api/", steps=["Validasi rentang", "Batas + flag truncated", "Test"], spec="NFR",
   ac="Respons tidak pernah melebihi batas; flag truncated benar.", verify="pytest", approval="Tidak")
-t("C-P6-006", "Endpoint status pipeline & kesegaran data", (1, 2, 3), "C-P6-002:H, B-P5-004:I", rev="D", obj="Fitur #9 dan waktu pembaruan terakhir.",
+t("C-P6-006", "Endpoint status pipeline & kesegaran data", (1, 2, 3), "C-P6-002:H, B-P5-004:I", obj="Fitur #9 dan waktu pembaruan terakhir.",
   why="R-27.", inputs="Kontrak run log", outputs="api/ endpoint", files="api/", steps=["Baca run terakhir", "Hitung umur data", "Test"], spec="OQ-22",
   ac="Poll gagal terakhir terlihat di respons.", verify="pytest", approval="Tidak")
-t("C-P6-007", "Repository Cassandra nyata", (3, 4, 6), "C-P6-003:H, C-P6-004:H, C-P6-005:H, C-P6-006:H, B-P5-001:H, B-P5-003:I", rev="B",
+t("C-P6-007", "Repository Cassandra nyata", (3, 4, 6), "C-P6-003:H, C-P6-004:H, C-P6-005:H, C-P6-006:H, B-P5-001:H, B-P5-003:I",
   obj="Implementasi repository dengan prepared statements sesuai access patterns.", why="Mengganti fake dengan data nyata.",
   inputs="Skema, access patterns", outputs="api/src/.../repositories/cassandra.py", files="api/", steps=["Satu metode per Q-xx", "Prepared statements", "Test integrasi"],
   spec="06 kontrak C", ac="Hasil fake vs Cassandra konsisten untuk fixture yang sama.", verify="Test integrasi container", approval="Tidak")
-t("C-P6-008", "Test API (unit, kontrak, integrasi)", (2, 3, 5), "C-P6-007:H", rev="B", obj="Suite test API di CI.", why="Kriteria mutu.",
+t("C-P6-008", "Test API (unit, kontrak, integrasi)", (2, 3, 5), "C-P6-007:H", obj="Suite test API di CI.", why="Kriteria mutu.",
   inputs="openapi.yaml", outputs="api/tests/", files="api/tests/", steps=["Contract test vs openapi.yaml", "Integrasi Cassandra", "CI"], spec="—",
   ac="Setiap endpoint punya test sukses + error.", verify="pytest di CI", approval="Tidak")
-t("C-P6-009", "Dokumentasi API", (1, 1.5, 2), "C-P6-008:H", rev="D", obj="api/README + contoh curl.", why="O-E4.", inputs="Kode API",
-  outputs="api/README.md", files="api/README.md", steps=["Cara jalan", "Contoh request", "Kode error"], spec="—", ac="Reviewer menjalankan contoh.", verify="Uji oleh reviewer", approval="Tidak")
-t("C-P6-010", "Endpoint distribusi FRP (Should)", (2, 3, 4), "C-P6-007:H", rev="D", prio="Should", obj="Fitur #7.", why="Should.",
+t("C-P6-009", "Dokumentasi API", (1, 1.5, 2), "C-P6-008:H", obj="api/README + contoh curl.", why="O-E4.", inputs="Kode API",
+  outputs="api/README.md", files="api/README.md", steps=["Cara jalan", "Contoh request", "Kode error"], spec="—", ac="Anggota lain menjalankan contoh.", verify="Uji oleh manusia", approval="Tidak")
+t("C-P6-010", "Endpoint distribusi FRP (Should)", (2, 3, 4), "C-P6-007:H", prio="Should", obj="Fitur #7.", why="Should.",
   inputs="Kontrak (bila disetujui)", outputs="api/ endpoint", files="api/", steps=["Bin FRP", "Test"], spec="Butuh CR bila belum ada di kontrak v1",
   ac="Lolos skema.", verify="pytest", approval="CR bila mengubah kontrak")
-t("D-P6-001", "Layout, routing, state filter, klien API", (3, 4, 5), "GATE-G3:HA, GATE-G4:HA, D-P4-002:H", rev="C",
+t("D-P6-001", "Layout, routing, state filter, klien API", (3, 4, 5), "GATE-G3:HA, GATE-G4:HA, D-P4-002:H",
   obj="Kerangka aplikasi, filter global (tanggal, provinsi, confidence, satelit), klien API dari kontrak.", why="Dasar semua halaman.",
   inputs="UI spec, openapi.yaml", outputs="web/src/", files="web/", steps=["Routing", "State filter + sinkron URL", "Klien API bertipe"], spec="01-ui-spec.md",
   ac="Filter tercermin di URL; klien hanya memakai field kontrak.", verify="npm test", approval="Tidak")
-t("D-P6-002", "Kartu KPI + timeline", (3, 4, 6), "D-P6-001:H", rev="C", obj="Fitur #1 & #3.", why="Must.", inputs="Mock API",
+t("D-P6-002", "Kartu KPI + timeline", (3, 4, 6), "D-P6-001:H", obj="Fitur #1 & #3.", why="Must.", inputs="Mock API",
   outputs="web/src/features/summary/", files="web/", steps=["Komponen", "Format tanggal lokal", "Test"], spec="UI spec", ac="Sesuai wireframe; label 'deteksi hotspot'.",
   verify="npm test", approval="Tidak")
-t("D-P6-003", "Ranking + drill-down provinsi", (3, 4, 6), "D-P6-001:H", rev="C", obj="Fitur #4 & #8.", why="Must.", inputs="Mock API",
+t("D-P6-003", "Ranking + drill-down provinsi", (3, 4, 6), "D-P6-001:H", obj="Fitur #4 & #8.", why="Must.", inputs="Mock API",
   outputs="web/src/features/ranking/", files="web/", steps=["Tabel ranking", "Drill-down", "Test"], spec="UI spec", ac="Klik provinsi memfilter semua tampilan.",
   verify="npm test", approval="Tidak")
-t("D-P6-004", "Peta Leaflet (titik, batas, popup, notice batas)", (3, 5, 6), "D-P6-001:H, A-P5-009:S", rev="C", obj="Fitur #2.", why="Must.",
+t("D-P6-004", "Peta Leaflet (titik, batas, popup, notice batas)", (3, 5, 6), "D-P6-001:H, A-P5-009:S", obj="Fitur #2.", why="Must.",
   inputs="Mock API, GeoJSON batas", outputs="web/src/features/map/", files="web/", steps=["Lapisan titik", "Lapisan batas", "Notice truncated"], spec="UI spec",
   ac="Peta tetap responsif pada jumlah titik maksimum NFR.", verify="npm test + uji manual terukur", approval="Tidak")
-t("D-P6-005", "Status pipeline + kesegaran + disclaimer + atribusi", (2, 3, 4), "D-P6-001:H", rev="A", obj="Fitur #9, disclaimer, atribusi FIRMS & BIG.",
+t("D-P6-005", "Status pipeline + kesegaran + disclaimer + atribusi", (2, 3, 4), "D-P6-001:H", obj="Fitur #9, disclaimer, atribusi FIRMS & BIG.",
   why="Kriteria keberhasilan #5, #7.", inputs="Mock API", outputs="web/src/features/status/", files="web/", steps=["Halaman status", "Indikator kesegaran global", "Footer disclaimer & atribusi"],
   spec="Charter §3", ac="Disclaimer & waktu pembaruan terlihat di semua halaman.", verify="npm test", approval="Teks disclaimer final: tim")
-t("D-P6-006", "State loading/empty/error + aksesibilitas dasar", (2, 3, 4), "D-P6-002:H, D-P6-003:H, D-P6-004:H", rev="C", obj="Perilaku konsisten untuk semua state.",
+t("D-P6-006", "State loading/empty/error + aksesibilitas dasar", (2, 3, 4), "D-P6-002:H, D-P6-003:H, D-P6-004:H", obj="Perilaku konsisten untuk semua state.",
   why="Kontrak E (frontend→pengguna).", inputs="UI spec", outputs="web/src/components/", files="web/", steps=["Komponen state", "Skenario error mock", "Cek kontras & keyboard"],
   spec="06 kontrak E", ac="Setiap halaman menangani 3 state.", verify="npm test dengan mock error", approval="Tidak")
-t("D-P6-007", "Ganti mock → API nyata (lokal)", (1, 2, 4), "D-P6-006:H, C-P6-007:H", rev="C", collab="C",
+t("D-P6-007", "Ganti mock → API nyata (lokal)", (1, 2, 4), "D-P6-006:H, C-P6-007:H", collab="C",
   obj="Menjalankan dashboard pada API nyata dan menyelesaikan checklist mock-to-real.", why="Milestone integrasi D13.", inputs="API nyata lokal",
   outputs="Checklist mock-to-real terisi", files="web/", steps=["Matikan flag mock", "Bandingkan tiap halaman", "Laporkan ketidakcocokan sebagai CR"],
   spec="06 §mock-to-real", ac="Semua halaman Must berjalan di data nyata tanpa error konsol.", verify="Smoke manual + E2E lokal", approval="Tidak")
-t("D-P6-008", "Histogram FRP + perbandingan periode (Should)", (3, 4, 6), "D-P6-007:H, C-P6-010:I", rev="C", prio="Should", obj="Fitur #5 & #7.",
+t("D-P6-008", "Histogram FRP + perbandingan periode (Should)", (3, 4, 6), "D-P6-007:H, C-P6-010:I", prio="Should", obj="Fitur #5 & #7.",
   why="Should; hanya setelah semua Must berjalan.", inputs="Endpoint FRP", outputs="web/src/features/frp/", files="web/", steps=["Komponen", "Catatan metodologi", "Test"],
   spec="C-05", ac="Perbandingan hanya untuk produk/satelit sama.", verify="npm test", approval="Tidak")
-t("D-P6-009", "Test frontend (unit/komponen)", (2, 3, 5), "D-P6-006:H", rev="C", obj="Test filter, format tanggal lokal, state.", why="Mutu.",
+t("D-P6-009", "Test frontend (unit/komponen)", (2, 3, 5), "D-P6-006:H", obj="Test filter, format tanggal lokal, state.", why="Mutu.",
   inputs="Komponen", outputs="web/src/**/*.test.*", files="web/", steps=["Test filter", "Test format waktu", "CI"], spec="—", ac="Coverage komponen inti tercatat.", verify="npm test di CI", approval="Tidak")
-t("X-P6-901", "Integrasi E2E lokal pertama (D13) + paket G6", (0.5, 1, 1.5), "D-P6-007:H, C-P6-008:H, X-P5-901:H", rev="D",
+t("X-P6-901", "Integrasi E2E lokal pertama (D13) + paket G6", (0.5, 1, 1.5), "D-P6-007:H, C-P6-008:H, X-P5-901:H",
   obj="Demo internal end-to-end lokal; putuskan kontingensi R-14 bila gagal.", why="Titik kritis charter §10.", inputs="Stack lokal",
   outputs="Keputusan G6", files="docs/STATUS.md", steps=["compose up", "ingest", "dashboard"], spec="Checklist G6", ac="Checklist G6 lengkap.",
   verify="Log demo", approval="Tim (G6)", agent="Manusia")
 gate("GATE-G6", "X-P6-901:H")
 
 # ---------------------------------------------------------------- PHASE 7
-t("C-P7-001", "Skrip smoke E2E stack penuh", (2, 3, 4), "GATE-G6:HA", rev="A", obj="Satu perintah: up → ingest fixture → cek API → cek UI.", why="Regresi integrasi.",
+t("C-P7-001", "Skrip smoke E2E stack penuh", (2, 3, 4), "GATE-G6:HA", obj="Satu perintah: up → ingest fixture → cek API → cek UI.", why="Regresi integrasi.",
   inputs="Stack", outputs="deploy/scripts/smoke_e2e.*", files="deploy/", steps=["Skrip", "Asersi jumlah", "Dokumentasi"], spec="—",
   ac="Skrip exit 0 di stack sehat dan ≠0 bila komponen mati.", verify="Jalankan dengan service dimatikan sengaja", approval="Tidak")
-t("A-P7-001", "Uji idempotensi pada data nyata", (2, 3, 5), "GATE-G5:HA, A-P5-008:H", rev="B", obj="Re-run backfill & poll tumpang tindih → jumlah & agregat identik.",
+t("A-P7-001", "Uji idempotensi pada data nyata", (2, 3, 5), "GATE-G5:HA, A-P5-008:H", obj="Re-run backfill & poll tumpang tindih → jumlah & agregat identik.",
   why="Kriteria keberhasilan #2.", inputs="Cassandra berisi data", outputs="Laporan idempotensi di pipeline/README.md", files="pipeline/",
   steps=["Snapshot jumlah", "Re-run", "Bandingkan"], spec="O-E1", ac="Selisih 0 baris & 0 agregat.", verify="Harness idempotensi", approval="Tidak")
-t("A-P7-002", "Laporan kualitas data per run", (1, 2, 3), "A-P7-001:H", rev="B", obj="Laporan DQ otomatis dari run log & rejected records.", why="Bukti engineering.",
+t("A-P7-002", "Laporan kualitas data per run", (1, 2, 3), "A-P7-001:H", obj="Laporan DQ otomatis dari run log & rejected records.", why="Bukti engineering.",
   inputs="Run log", outputs="pipeline/src/.../reports/", files="pipeline/", steps=["Ringkasan per reason code", "Ekspor markdown", "Test"], spec="—",
   ac="Laporan dihasilkan untuk run terakhir.", verify="pytest", approval="Tidak")
-t("A-P7-003", "Rekonsiliasi NRT→SP manual (Should)", (2, 3, 5), "A-P7-001:H", rev="B", prio="Should", obj="Perintah manual mengganti NRT dengan SP saat SP tersedia.",
+t("A-P7-003", "Rekonsiliasi NRT→SP manual (Should)", (2, 3, 5), "A-P7-001:H", prio="Should", obj="Perintah manual mengganti NRT dengan SP saat SP tersedia.",
   why="OQ-10 Should.", inputs="Aturan presedensi", outputs="pipeline/src/.../modes/reconcile.py", files="pipeline/", steps=["CLI", "Uji pada tanggal tumpang tindih", "Dokumentasi"],
   spec="A-P1-007", ac="Jumlah per tanggal setelah rekonsiliasi = jumlah SP.", verify="Test integrasi", approval="Operasi penghapusan NRT butuh persetujuan")
-t("B-P7-001", "Eksekusi eksperimen bucketing (Must)", (3, 4, 6), "GATE-G5:HA, B-P3-004:H", rev="A", obj="Menjalankan eksperimen sesuai rencana dan menyimpan data mentah hasil.",
+t("B-P7-001", "Eksekusi eksperimen bucketing (Must)", (3, 4, 6), "GATE-G5:HA, B-P3-004:H", obj="Menjalankan eksperimen sesuai rencana dan menyimpan data mentah hasil.",
   why="O-E3.", inputs="Rencana eksperimen", outputs="experiments/bucketing/", files="experiments/", steps=["Siapkan varian skema di keyspace eksperimen", "Jalankan dengan repetisi", "Simpan hasil mentah"],
   spec="05-experiment-plan.md", ac="Hasil mentah + konfigurasi tersimpan dan dapat dijalankan ulang.", verify="Skrip eksperimen exit 0; hasil ber-timestamp", approval="Tidak")
-t("B-P7-002", "Laporan eksperimen", (2, 3, 4), "B-P7-001:H", rev="A", obj="Hipotesis → hasil aktual → interpretasi → keterbatasan.", why="O-E3.",
+t("B-P7-002", "Laporan eksperimen", (2, 3, 4), "B-P7-001:H", obj="Hipotesis → hasil aktual → interpretasi → keterbatasan.", why="O-E3.",
   inputs="Hasil mentah", outputs="experiments/bucketing/REPORT.md", files="experiments/", steps=["Tabel/grafik dari hasil", "Interpretasi", "Keterbatasan"],
   spec="Tidak mengarang angka", ac="Setiap angka dapat ditelusuri ke file hasil.", verify="Review silang", approval="Kesimpulan analitis: tim")
-t("B-P7-003", "Eksperimen replikasi/konsistensi/failure 3 node (Should)", (3, 5, 6), "B-P4-002:H, B-P7-002:S", rev="C", prio="Should",
+t("B-P7-003", "Eksperimen replikasi/konsistensi/failure 3 node (Should)", (3, 5, 6), "B-P4-002:H, B-P7-002:S", prio="Should",
   obj="Mengamati perilaku RF/CL saat node mati.", why="OQ-14 Should.", inputs="Lingkungan 3 node", outputs="experiments/replication/", files="experiments/",
   steps=["Skenario", "Jalankan", "Laporan"], spec="Dokumen 07", ac="Laporan dengan hasil aktual atau alasan dibatalkan.", verify="Log eksperimen", approval="Tidak")
-t("C-P7-002", "Provisioning cloud + deploy pertama", (4, 5, 6), "GATE-G6:HA, C-P3-003:H", rev="B",
+t("C-P7-002", "Provisioning cloud + deploy pertama", (4, 5, 6), "GATE-G6:HA, C-P3-003:H",
   obj="VM tunggal, image yang sama dengan lokal, HTTPS, Cassandra di jaringan privat.", why="Fitur #11 Must.", inputs="Keputusan penyedia (HD-16)",
   outputs="deploy/cloud/", files="deploy/", steps=["Provision", "Deploy compose", "HTTPS + firewall"], spec="ADR-003/004",
   ac="Aplikasi dapat diakses via HTTPS; port Cassandra tertutup dari internet.", verify="Port scan dari luar + curl HTTPS", approval="Persetujuan keamanan & biaya (tim)")
-t("C-P7-003", "Poller di cloud + monitoring + restart", (2, 3, 5), "C-P7-002:H, A-P5-007:H", rev="A", obj="Poller berjalan terus, status terlihat, restart otomatis.",
+t("C-P7-003", "Poller di cloud + monitoring + restart", (2, 3, 5), "C-P7-002:H, A-P5-007:H", obj="Poller berjalan terus, status terlihat, restart otomatis.",
   why="Kriteria keberhasilan #7.", inputs="Mode incremental", outputs="deploy/cloud/ (service poller)", files="deploy/", steps=["Service poller", "Restart policy", "Alarm sederhana via halaman status"],
   spec="R-27", ac="Poll baru tercatat ≥3× berturut-turut di cloud.", verify="Endpoint status", approval="Tidak")
-t("C-P7-004", "Checklist keamanan + verifikasi", (2, 3, 4), "C-P7-002:H", rev="B", obj="Port, secret, CORS, rate limit, header.", why="R-25, OQ-26.",
+t("C-P7-004", "Checklist keamanan + verifikasi", (2, 3, 4), "C-P7-002:H", obj="Port, secret, CORS, rate limit, header.", why="R-25, OQ-26.",
   inputs="ADR-004", outputs="deploy/SECURITY-CHECKLIST.md", files="deploy/", steps=["Cek tiap kontrol", "Bukti", "Perbaikan"], spec="ADR-004",
   ac="Semua kontrol Must lulus dengan bukti.", verify="Port scan, cek header", approval="Tim (keamanan)")
-t("D-P7-001", "E2E smoke test UI", (2, 3, 5), "GATE-G6:HA", rev="C", obj="Test otomatis alur utama di browser.", why="Regresi UI.",
+t("D-P7-001", "E2E smoke test UI", (2, 3, 5), "GATE-G6:HA", obj="Test otomatis alur utama di browser.", why="Regresi UI.",
   inputs="Stack lokal", outputs="web/e2e/", files="web/e2e/", steps=["Alur ringkasan→ranking→peta", "Filter", "CI opsional"], spec="HD-14 (alat E2E)",
   ac="Alur utama lulus pada stack lokal.", verify="Runner E2E", approval="Tidak")
-t("D-P7-002", "Review terminologi ilmiah, disclaimer, aksesibilitas", (1, 2, 3), "GATE-G6:HA", rev="A", obj="Memastikan tidak ada kata 'kebakaran' untuk deteksi; atribusi lengkap.",
+t("D-P7-002", "Review terminologi ilmiah, disclaimer, aksesibilitas", (1, 2, 3), "GATE-G6:HA", obj="Memastikan tidak ada kata 'kebakaran' untuk deteksi; atribusi lengkap.",
   why="R-15.", inputs="UI", outputs="Daftar perbaikan + perbaikan", files="web/", steps=["Grep teks UI", "Cek atribusi", "Perbaiki"], spec="Charter §3",
   ac="0 temuan terminologi terbuka.", verify="Grep string UI", approval="Teks final: tim")
-t("A-P7-004", "Hardening & perbaikan bug data (time-box)", (2, 4, 6), "A-P7-001:S", rev="B", nb=17, obj="Perbaikan bug setelah feature freeze.", why="Buffer terencana.",
+t("A-P7-004", "Hardening & perbaikan bug data (time-box)", (2, 4, 6), "A-P7-001:S", nb=17, obj="Perbaikan bug setelah feature freeze.", why="Buffer terencana.",
   inputs="Daftar bug", outputs="PR perbaikan", files="pipeline/", steps=["Triage", "Perbaiki", "Test regresi"], spec="—", ac="0 bug kritis terbuka di area data.",
   verify="CI", approval="Tidak")
-t("B-P7-004", "Hardening & perbaikan bug DB (time-box)", (2, 4, 6), "B-P7-002:S", rev="A", nb=17, obj="Perbaikan bug setelah feature freeze.", why="Buffer terencana.",
+t("B-P7-004", "Hardening & perbaikan bug DB (time-box)", (2, 4, 6), "B-P7-002:S", nb=17, obj="Perbaikan bug setelah feature freeze.", why="Buffer terencana.",
   inputs="Daftar bug", outputs="PR perbaikan", files="db/", steps=["Triage", "Perbaiki", "Test regresi"], spec="—", ac="0 bug kritis terbuka di area DB.", verify="CI", approval="Tidak")
-t("C-P7-005", "Hardening & perbaikan bug API/deploy (time-box)", (2, 4, 6), "C-P7-004:S", rev="D", nb=17, obj="Perbaikan bug setelah feature freeze.", why="Buffer terencana.",
+t("C-P7-005", "Hardening & perbaikan bug API/deploy (time-box)", (2, 4, 6), "C-P7-004:S", nb=17, obj="Perbaikan bug setelah feature freeze.", why="Buffer terencana.",
   inputs="Daftar bug", outputs="PR perbaikan", files="api/, deploy/", steps=["Triage", "Perbaiki", "Test regresi"], spec="—", ac="0 bug kritis terbuka di API/deploy.", verify="CI", approval="Tidak")
-t("D-P7-003", "Hardening & perbaikan bug UI (time-box)", (2, 4, 6), "D-P7-001:S", rev="C", nb=17, obj="Perbaikan bug setelah feature freeze.", why="Buffer terencana.",
+t("D-P7-003", "Hardening & perbaikan bug UI (time-box)", (2, 4, 6), "D-P7-001:S", nb=17, obj="Perbaikan bug setelah feature freeze.", why="Buffer terencana.",
   inputs="Daftar bug", outputs="PR perbaikan", files="web/", steps=["Triage", "Perbaiki", "Test regresi"], spec="—", ac="0 bug kritis terbuka di UI.", verify="CI", approval="Tidak")
-t("X-P7-901", "Feature freeze D17", (0.5, 1, 1.5), "C-P7-002:H, C-P7-003:H, D-P7-001:H, A-P7-001:H, B-P7-002:H, C-P7-001:H", rev="C",
+t("X-P7-901", "Feature freeze D17", (0.5, 1, 1.5), "C-P7-002:H, C-P7-003:H, D-P7-001:H, A-P7-001:H, B-P7-002:H, C-P7-001:H",
   obj="Memastikan semua Must berjalan di cloud; setelah ini hanya perbaikan bug.", why="Charter §10; kontingensi R-23.", inputs="Status Fase 7",
   outputs="Keputusan freeze", files="docs/STATUS.md", steps=["Cek Must di cloud", "Putuskan kontingensi", "Umumkan freeze"], spec="—",
   ac="Daftar Must di cloud: semua berjalan atau keputusan kontingensi tercatat.", verify="Review manual", approval="Tim", agent="Manusia")
-t("X-P7-902", "Paket gerbang G7", (0.5, 1, 1.5), "X-P7-901:H, A-P7-004:H, B-P7-004:H, C-P7-005:H, D-P7-003:H, D-P7-002:H, A-P7-002:S", rev="D",
+t("X-P7-902", "Paket gerbang G7", (0.5, 1, 1.5), "X-P7-901:H, A-P7-004:H, B-P7-004:H, C-P7-005:H, D-P7-003:H, D-P7-002:H, A-P7-002:S",
   obj="Mengumpulkan bukti test, eksperimen, deploy.", why="Gerbang ke Fase 8.", inputs="Bukti Fase 7", outputs="Keputusan G7", files="docs/STATUS.md",
   steps=["Kumpulkan bukti", "Persetujuan"], spec="Checklist G7", ac="Checklist G7 lengkap.", verify="Review manual", approval="Tim (G7)", agent="Manusia + agen pencatat")
 gate("GATE-G7", "X-P7-902:H")
 
 # ---------------------------------------------------------------- PHASE 8
-t("C-P8-001", "Panduan instalasi & reproduksibilitas + uji fresh clone", (2, 3, 4), "GATE-G7:HA", rev="A", obj="README root lengkap; anggota lain menjalankan dari nol.",
+t("C-P8-001", "Panduan instalasi & reproduksibilitas + uji fresh clone", (2, 3, 4), "GATE-G7:HA", obj="README root lengkap; anggota lain menjalankan dari nol.",
   why="O-E4, kriteria #8.", inputs="Seluruh repo", outputs="README.md, docs/08-delivery/api-deploy.md", files="README.md",
-  steps=["Tulis panduan", "Reviewer A menjalankan dari clone bersih", "Perbaiki"], spec="—", ac="Fresh clone → dashboard berjalan tanpa bantuan.",
-  verify="Log fresh clone oleh reviewer", approval="G8")
-t("A-P8-001", "Dokumentasi teknis data (pipeline, DQ, keterbatasan)", (1, 2, 3), "GATE-G7:HA", rev="B", obj="Bab data untuk laporan tim.", why="Kriteria #8.",
+  steps=["Tulis panduan", "Anggota lain menjalankan dari clone bersih", "Perbaiki"], spec="—", ac="Fresh clone → dashboard berjalan tanpa bantuan.",
+  verify="Log fresh clone oleh anggota lain", approval="G8")
+t("A-P8-001", "Dokumentasi teknis data (pipeline, DQ, keterbatasan)", (1, 2, 3), "GATE-G7:HA", obj="Bab data untuk laporan tim.", why="Kriteria #8.",
   inputs="docs/01-dataset, 03-specs/data, pipeline/", outputs="docs/08-delivery/data.md", files="docs/08-delivery/data.md", steps=["Ringkas", "Diagram", "Keterbatasan"],
   spec="—", ac="Setiap klaim tertaut ke bukti.", verify="Cek tautan", approval="G8")
-t("B-P8-001", "Dokumentasi database + hasil eksperimen", (1, 2, 3), "GATE-G7:HA", rev="A", obj="Bab database & eksperimen.", why="Kriteria #8.",
+t("B-P8-001", "Dokumentasi database + hasil eksperimen", (1, 2, 3), "GATE-G7:HA", obj="Bab database & eksperimen.", why="Kriteria #8.",
   inputs="db/, experiments/", outputs="docs/08-delivery/database.md", files="docs/08-delivery/database.md", steps=["Model", "Eksperimen", "Keterbatasan"], spec="—",
   ac="Angka eksperimen = file hasil.", verify="Cek tautan", approval="G8")
-t("C-P8-002", "Dokumentasi API, deployment, ADR final", (1, 2, 3), "GATE-G7:HA", rev="D", obj="Bab API & deployment.", why="Kriteria #8.",
+t("C-P8-002", "Dokumentasi API, deployment, ADR final", (1, 2, 3), "GATE-G7:HA", obj="Bab API & deployment.", why="Kriteria #8.",
   inputs="api/, deploy/, ADR", outputs="docs/08-delivery/api-deploy.md", files="docs/08-delivery/api-deploy.md", steps=["API", "Deploy", "Keamanan"], spec="—",
   ac="Tidak ada secret di dokumen.", verify="Grep pola secret", approval="G8")
-t("D-P8-001", "Dokumentasi UI + skrip demo + screenshot", (2, 3, 4), "GATE-G7:HA", rev="C", obj="Bab UI dan skrip demo untuk video.", why="Bahan video & presentasi.",
+t("D-P8-001", "Dokumentasi UI + skrip demo + screenshot", (2, 3, 4), "GATE-G7:HA", obj="Bab UI dan skrip demo untuk video.", why="Bahan video & presentasi.",
   inputs="Aplikasi di cloud", outputs="docs/08-delivery/ui.md, docs/08-delivery/demo-script.md", files="docs/08-delivery/", steps=["Screenshot", "Skrip demo per fitur", "Catatan disclaimer"],
   spec="—", ac="Skrip demo ≤ durasi video yang disepakati.", verify="Uji baca skrip", approval="G8")
-t("D-P8-002", "Checklist penerimaan final + indeks dokumentasi", (1.5, 2, 3), "C-P8-001:H, A-P8-001:H, B-P8-001:H, C-P8-002:H, D-P8-001:H", rev="C",
+t("D-P8-002", "Checklist penerimaan final + indeks dokumentasi", (1.5, 2, 3), "C-P8-001:H, A-P8-001:H, B-P8-001:H, C-P8-002:H, D-P8-001:H",
   obj="Mencentang 8 kriteria keberhasilan dengan bukti dan menyusun indeks dokumentasi.", why="G8.", inputs="Semua dokumen Fase 8",
   outputs="docs/08-delivery/index.md, docs/08-delivery/acceptance-checklist.md", files="docs/08-delivery/", steps=["Checklist", "Indeks", "Daftar keterbatasan"], spec="Charter §7",
   ac="Setiap kriteria punya bukti tertaut.", verify="Cek tautan", approval="G8")
-t("X-P8-901", "Perakitan laporan proyek (manusia)", (2, 3, 5), "A-P8-001:S, B-P8-001:S, C-P8-002:S, D-P8-001:S", rev="D", obj="Merakit laporan dari bab tiap peran.",
+t("X-P8-901", "Perakitan laporan proyek (manusia)", (2, 3, 5), "A-P8-001:S, B-P8-001:S, C-P8-002:S, D-P8-001:S", obj="Merakit laporan dari bab tiap peran.",
   why="Deliverable 1; ditangani tim (OQ-01, A-23).", inputs="docs/08-delivery/", outputs="Laporan (di luar repo atau sesuai tim)", files="— (di luar ruang agen)",
   steps=["Kerangka laporan", "Tempel & sunting bab", "Proofread"], spec="Format dari dosen (UNKNOWN)", ac="Disetujui tim.", verify="Review tim", approval="Tim", agent="Manusia saja")
-t("A-P8-002", "Perakitan presentasi ≤20 menit (manusia)", (2, 3, 5), "D-P8-001:S", rev="B", obj="Slide; tiap peran menyumbang 1–2 slide.", why="Deliverable 2.",
+t("A-P8-002", "Perakitan presentasi ≤20 menit (manusia)", (2, 3, 5), "D-P8-001:S", obj="Slide; tiap peran menyumbang 1–2 slide.", why="Deliverable 2.",
   inputs="Bab teknis, skrip demo", outputs="Presentasi", files="— (di luar ruang agen)", steps=["Alur cerita", "Slide per peran", "Latihan berwaktu"], spec="≤20 menit",
   ac="Latihan berwaktu ≤20 menit.", verify="Latihan", approval="Tim", agent="Manusia saja")
-t("D-P8-003", "Rekam video demo (manusia)", (2, 3, 4), "D-P8-001:H", rev="A", obj="Merekam demo mengikuti skrip.", why="Deliverable 4.",
+t("D-P8-003", "Rekam video demo (manusia)", (2, 3, 4), "D-P8-001:H", obj="Merekam demo mengikuti skrip.", why="Deliverable 4.",
   inputs="Skrip demo, aplikasi cloud", outputs="Video demo", files="— (di luar ruang agen)", steps=["Rekam", "Sunting", "Cek disclaimer tampil"], spec="—",
   ac="Semua fitur Must terlihat; disclaimer terlihat.", verify="Tonton ulang tim", approval="Tim", agent="Manusia saja")
-t("X-P8-902", "Gerbang G8 — penerimaan akhir", (0.5, 1, 1.5), "D-P8-002:H, X-P8-901:S, A-P8-002:S, D-P8-003:S", rev="C", obj="Persetujuan akhir.",
+t("X-P8-902", "Gerbang G8 — penerimaan akhir", (0.5, 1, 1.5), "D-P8-002:H, X-P8-901:S, A-P8-002:S, D-P8-003:S", obj="Persetujuan akhir.",
   why="Penutupan proyek.", inputs="Checklist", outputs="Keputusan G8; STATUS final", files="docs/STATUS.md", steps=["Review checklist", "Persetujuan"], spec="Checklist G8",
   ac="Checklist G8 lengkap.", verify="Review manual", approval="Tim (G8)", agent="Manusia")
 gate("GATE-G8", "X-P8-902:H")
@@ -642,10 +643,6 @@ def role_of(tid):
 for T in TASKS:
     T["owner"] = role_of(T["id"])
     T["phase"] = T["id"].split("-")[1]
-    if T["rev"] is None:
-        T["rev"] = DEFAULT_REVIEWER[T["owner"]]
-    if T["rev"] == T["owner"]:  # coordinator collision → next role
-        T["rev"] = DEFAULT_REVIEWER[T["owner"]]
     o, m, p = T["est"]
     T["te"] = round((o + 4 * m + p) / 6, 2)
     T["var"] = ((p - o) / 6) ** 2
@@ -677,8 +674,6 @@ for T in TASKS:
     o, m, p = T["est"]
     if not (o <= m <= p):
         issues.append(f"{T['id']}: estimates not ordered")
-    if T["rev"] == T["owner"]:
-        issues.append(f"{T['id']}: reviewer == owner")
     for f in ("ac", "outputs", "obj"):
         if not T[f]:
             issues.append(f"{T['id']}: missing {f}")
@@ -834,7 +829,7 @@ for T in TASKS:
 # ================================================================ outputs
 FIELDS = ["task_id", "legacy_id", "phase_id", "phase_name", "title", "objective", "reason", "primary_owner", "owner_role_code",
           "accountable_owner", "responsible_executor", "required_approver",
-          "reviewer", "collaborating_roles", "priority", "status", "effort_optimistic_h", "effort_most_likely_h", "effort_pessimistic_h",
+          "collaborating_roles", "priority", "status", "effort_optimistic_h", "effort_most_likely_h", "effort_pessimistic_h",
           "effort_pert_h", "required_inputs", "dependencies", "expected_outputs", "files_owned", "files_allowed_to_modify",
           "files_must_not_modify", "execution_steps", "technical_specification", "acceptance_criteria", "automated_verification",
           "required_test_evidence", "human_approval", "handoff_requirements", "definition_of_done", "agent_mode",
@@ -849,7 +844,7 @@ def handoff_text(T):
         return "Tidak ada serah-terima lintas peran (konsumen internal peran sendiri)."
     who = sorted({ID[s]["owner"] for s in outs})
     return (f"Serahkan '{T['outputs']}' ke {', '.join(ROLE[w][0] for w in who)} untuk {', '.join(disp(s) for s in outs)}. "
-            "Diterima bila PR disetujui reviewer DAN konsumen mengonfirmasi artefak cukup (lihat 03-dependency-matrix.md).")
+            "Diterima saat seorang manusia mengisi `disetujui:` di 13-progress-tracker.md (review peran lain tidak wajib).")
 
 
 def allowed(T):
@@ -872,13 +867,13 @@ for T in TASKS:
         "task_id": T["xid"], "legacy_id": T["legacy"], "phase_id": T["phase"], "phase_name": PHASES[T["phase"]], "title": T["title"],
         "objective": T["obj"], "reason": T["why"], "primary_owner": f"Role {T['owner']}", "owner_role_code": ROLE[T["owner"]][0],
         "accountable_owner": f"Role {T['owner']} ({ROLE[T['owner']][0]})", "responsible_executor": f"Anggota pemegang {ROLE[T['owner']][0]} — {T['agent']}",
-        "required_approver": T["approval"] if T["approval"] not in ("Tidak", "Tidak (review PR cukup)") else f"Reviewer Role {T['rev']} (persetujuan PR)",
-        "reviewer": f"Role {T['rev']} ({ROLE[T['rev']][0]})", "collaborating_roles": T["collab"] or "—", "priority": T["prio"], "status": T["status"],
+        "required_approver": T["approval"] if T["approval"] not in ("Tidak", "Tidak (review PR cukup)") else "Seorang manusia (anggota tim mana pun)",
+        "collaborating_roles": T["collab"] or "—", "priority": T["prio"], "status": T["status"],
         "effort_optimistic_h": T["est"][0], "effort_most_likely_h": T["est"][1], "effort_pessimistic_h": T["est"][2], "effort_pert_h": T["te"],
         "required_inputs": T["inputs"], "dependencies": deps, "expected_outputs": T["outputs"], "files_owned": T["files"],
         "files_allowed_to_modify": allowed(T), "files_must_not_modify": prohibited(T), "execution_steps": " | ".join(f"{i+1}. {s}" for i, s in enumerate(T["steps"])),
         "technical_specification": T["spec"], "acceptance_criteria": T["ac"], "automated_verification": T["verify"] or "Review manual",
-        "required_test_evidence": T["evidence"] or "Output perintah verifikasi ditempel di deskripsi PR + tautan review",
+        "required_test_evidence": T["evidence"] or "Output perintah verifikasi ditempel di deskripsi PR",
         "human_approval": T["approval"], "handoff_requirements": handoff_text(T),
         "definition_of_done": "DoD umum (10-phase-gates.md §3) + kriteria penerimaan tugas ini terpenuhi dengan bukti",
         "agent_mode": T["agent"], "planned_start": f"D{T['s_day']} ({T['s_date']})", "planned_finish": f"D{T['f_day']} ({T['f_date']})",
@@ -901,25 +896,25 @@ L = ["# 02 — Work Breakdown Structure", "", HDR,
      "*Definition of Done* = DoD umum (10-phase-gates.md §3). Versi lengkap per tugas ada di CSV.", ""]
 for ph, name in PHASES.items():
     ts = [T for T in TASKS if T["phase"] == ph]
-    L += [f"## {ph} — {name}", "", "| ID | Judul | Pemilik | Reviewer | Prio | O/M/P → PERT (j) | Dependensi | Rencana | Status |", "|---|---|---|---|---|---|---|---|---|"]
+    L += [f"## {ph} — {name}", "", "| ID | Judul | Pemilik | Prio | O/M/P → PERT (j) | Dependensi | Rencana | Status |", "|---|---|---|---|---|---|---|---|"]
     for T in ts:
         deps = ", ".join(f"{disp(d)}·{ty}" for d, ty in T["dep_list"]) or "—"
         cc = " ⚑" if T["id"] in crit else ""
-        L.append(f"| **{T['xid']}**{cc} | {T['title']} | {T['owner']} ({ROLE[T['owner']][0]}) | {T['rev']} | {T['prio']} | "
+        L.append(f"| **{T['xid']}**{cc} | {T['title']} | {T['owner']} ({ROLE[T['owner']][0]}) | {T['prio']} | "
                  f"{T['est'][0]}/{T['est'][1]}/{T['est'][2]} → {T['te']} | {deps} | D{T['s_day']}–D{T['f_day']} | {T['status']} |")
     L += ["", "⚑ = berada di rantai kritis.", ""]
     for T in ts:
         L += [f"### {T['xid']} — {T['title']}", "",
               f"- **Fase / prioritas / status:** {ph} · {T['prio']} · {T['status']}" + (f" · ID lama {T['legacy']}" if T["legacy"] else ""),
               f"- **Tujuan:** {T['obj']}", f"- **Alasan:** {T['why']}",
-              f"- **Pemilik (A) & pelaksana (R):** Role {T['owner']} ({ROLE[T['owner']][0]}) · **Reviewer:** Role {T['rev']} · **Kolaborator (C):** {T['collab'] or '—'}",
+              f"- **Pemilik (A) & pelaksana (R):** Role {T['owner']} ({ROLE[T['owner']][0]}) · **Kolaborator (C):** {T['collab'] or '—'}",
               f"- **Estimasi:** O {T['est'][0]} / M {T['est'][1]} / P {T['est'][2]} → PERT {T['te']} jam · **Rencana:** D{T['s_day']} ({T['s_date']}) – D{T['f_day']} ({T['f_date']})",
               f"- **Input:** {T['inputs'] or '—'}",
               f"- **Dependensi:** " + ("; ".join(f"{disp(d)} ({DEP_TYPES[ty]})" for d, ty in T['dep_list']) or "—"),
               f"- **Output:** {T['outputs']}", f"- **File dimiliki:** `{T['files']}`",
               "- **Langkah:** " + " → ".join(T["steps"]),
               f"- **Spesifikasi teknis:** {T['spec'] or '—'}", f"- **Kriteria penerimaan:** {T['ac']}",
-              f"- **Verifikasi otomatis:** {T['verify'] or 'Review manual'}", f"- **Bukti test:** {T['evidence'] or 'Output verifikasi di PR + tautan review'}",
+              f"- **Verifikasi otomatis:** {T['verify'] or 'Review manual'}", f"- **Bukti test:** {T['evidence'] or 'Output verifikasi di PR'}",
               f"- **Persetujuan manusia:** {T['approval']}", f"- **Serah-terima:** {handoff_text(T)}", f"- **Mode agen:** {T['agent']}", ""]
 wr(OUT / "02-work-breakdown-structure.md", "\n".join(L))
 
@@ -928,24 +923,25 @@ FALLBACK = {
     "H": "Pemilik prasyarat memberi tahu koordinator di standup; koordinator memutuskan realokasi atau pemotongan Should. Tugas dependen TIDAK dimulai.",
     "S": "Lanjut dengan asumsi/mock terdokumentasi; catat asumsi di PR; validasi ulang saat prasyarat selesai.",
     "I": "Lanjut memakai versi kontrak terakhir yang disetujui + mock; perubahan kontrak hanya lewat change request.",
-    "R": "Pekerjaan boleh lanjut, tetapi tidak boleh di-merge/diterima sebelum review.",
+    "R": "Tidak memblokir (review peran lain tidak wajib; jenis ini tidak dipakai lagi).",
     "HA": "STOP. Tunggu keputusan tim; koordinator menagih keputusan paling lambat akhir hari.",
 }
 L = ["# 03 — Dependency Matrix", "", HDR,
      "Jenis: **Hard** (tidak bisa jalan), **Soft** (boleh jalan dengan asumsi/mock), **Interface** (boleh jalan setelah kontrak disetujui), "
-     "**Review** (boleh jalan, tidak boleh diterima sebelum review), **Human approval** (berhenti sampai tim memutuskan).", "",
-     "Aturan umum *dependency satisfied*: tugas prasyarat memenuhi DoD (PR di-merge setelah review) — untuk Interface: kontrak versi tersebut disetujui di gerbang; "
-     "untuk gerbang: keputusan tim tercatat di STATUS.md.", "",
+     "**Human approval** (berhenti sampai tim memutuskan).", "",
+     "Aturan umum *dependency satisfied*: tugas prasyarat **disetujui seorang manusia** (`disetujui:` terisi di 13-progress-tracker.md; "
+     "review atau persetujuan dari peran lain tidak wajib). Untuk gerbang: keputusan tim tercatat (HD-05). "
+     "Cek otomatis: `tools/task.py check <ID>`.", "",
      "## 1. Gerbang fase", "", "| Gerbang | Deskripsi | Prasyarat |", "|---|---|---|"]
 for g, (ph, desc) in GATES.items():
     L.append(f"| {g} | {desc} | {', '.join(disp(d) for d, _ in GDEPS[g])} |")
 L += ["", "## 2. Dependensi lintas peran (handoff)", "",
-      "| Dari (prasyarat) | Pemilik | Ke (dependen) | Pemilik | Jenis | Artefak yang diserahkan | Validator | Jika terlambat |", "|---|---|---|---|---|---|---|---|"]
+      "| Dari (prasyarat) | Pemilik | Ke (dependen) | Pemilik | Jenis | Artefak yang diserahkan | Jika terlambat |", "|---|---|---|---|---|---|---|"]
 for T in TASKS:
     for d, ty in T["dep_list"]:
         if d in ID and ID[d]["owner"] != T["owner"]:
             P = ID[d]
-            L.append(f"| {P['xid']} | {P['owner']} | {T['xid']} | {T['owner']} | {DEP_TYPES[ty]} | {P['outputs']} | Role {T['owner']} (konsumen) + reviewer {P['rev']} | {FALLBACK[ty]} |")
+            L.append(f"| {P['xid']} | {P['owner']} | {T['xid']} | {T['owner']} | {DEP_TYPES[ty]} | {P['outputs']} | {FALLBACK[ty]} |")
 L += ["", "## 3. Dependensi dalam peran yang sama", "", "| Dari | Ke | Peran | Jenis |", "|---|---|---|---|"]
 for T in TASKS:
     for d, ty in T["dep_list"]:
@@ -959,19 +955,25 @@ L += ["", "## 5. Perlakuan bila dependensi terlambat (default per jenis)", "", "
 L += [f"| {DEP_TYPES[k]} | {v} |" for k, v in FALLBACK.items()]
 wr(OUT / "03-dependency-matrix.md", "\n".join(L) + "\n")
 
-# ---- 04 mermaid
+# ---- 04 mermaid (with live status from 13-progress-tracker.md; same rules as tools/task.py via plan_status.py)
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))  # `python -I` does not add the script dir
+import plan_status as PS
+_trk = OUT / "13-progress-tracker.md"
+STATUS = PS.classify(NODES, deps_of, PS.parse_tracker(_trk.read_text(encoding="utf-8")) if _trk.exists() else {})
 M = ["%% NusaFire dependency graph — generated by tools/build_plan.py (do not edit)",
      "%% Edges: --> hard, -.-> soft/review, ==> interface, --o human approval (gate). Red nodes = critical chain.",
+     "%% Status (from 13-progress-tracker.md, refreshed on every build_plan.py run): "
+     + ", ".join(f"{PS.ICON[k]} {PS.LABEL[k].lower()}" for k in PS.ICON) + ". Check one task: tools/task.py check <ID>",
      "flowchart LR"]
 for ph, name in PHASES.items():
     M.append(f'  subgraph {ph}["{ph} {name}"]')
     M.append("    direction TB")
     for T in TASKS:
         if T["phase"] == ph:
-            M.append(f'    {T["id"].replace("-", "_")}["{T["xid"]}<br/>{T["title"][:38]}"]:::r{T["owner"]}')
+            M.append(f'    {T["id"].replace("-", "_")}["{T["xid"]} {PS.ICON[STATUS[T["id"]][0]]}<br/>{T["title"][:38]}"]:::r{T["owner"]}')
     for g, (gph, _) in GATES.items():
         if gph == ph:
-            M.append(f'    {g.replace("-", "_")}{{{{"{g}"}}}}:::gate')
+            M.append(f'    {g.replace("-", "_")}{{{{"{g} {PS.ICON[STATUS[g][0]]}"}}}}:::gate')
     M.append("  end")
 arrow = {"H": "-->", "S": "-.->", "R": "-.->", "I": "==>", "HA": "--o"}
 for n in NODES:
@@ -1048,7 +1050,7 @@ L += ["", "Tugas *Should* yang tidak muat sebelum batasnya (lintasan kedua, hany
       "| D10 | Belum ada data nyata di Cassandra (R-14) | Aktifkan kontingensi R-14: pairing A+B pada loader; C/D tetap di mock; potong semua Should Fase 6. |",
       "| D13 | Integrasi lokal gagal | Freeze fitur Should; C membantu integrasi; deploy cloud mundur maksimal ke D15. |",
       "| D17 | Deploy cloud belum berhasil (R-23) | Kontingensi R-23: demo lokal + rekaman; cloud jadi upaya terbaik sampai D19. |",
-      "| Kapan saja | Anggota tidak tersedia >1 hari (R-18) | Reviewer peran tersebut mengambil alih tugas di jalur kritis; urutan pemotongan sesuai D-P2-003. |", ""]
+      "| Kapan saja | Anggota tidak tersedia >1 hari (R-18) | Koordinator menunjuk anggota pengganti untuk tugas di jalur kritis; urutan pemotongan sesuai D-P2-003. |", ""]
 wr(OUT / "05-project-schedule.md", "\n".join(L) + "\n")
 
 # ---- prompt consistency: every task ID of a role appears in that role's prompt (ranges "X-P5-001…X-P5-010" expand)
@@ -1076,8 +1078,7 @@ for r, fn in PROMPTS.items():
 # by people and agents and are never overwritten. Each run only rewrites the summary between the markers and checks it.
 TRACKER = OUT / "13-progress-tracker.md"
 S_START, S_END = "<!-- progress:summary:start -->", "<!-- progress:summary:end -->"
-LINE_RE = re.compile(r"^- \[( |x|X)\] \*\*([ABCDX]-P\d-\d{3}|GATE-[A-Z0-9]+)\*\*(.*)$")
-EMPTY = {"", "—", "-"}
+LINE_RE, EMPTY = PS.LINE_RE, PS.EMPTY  # one definition, shared with tools/task.py
 
 
 def owner_label(T):
@@ -1089,7 +1090,7 @@ def tracker_line(n):
         return f"- [ ] **{n}** {GATES[n][1]} · bukti: — · disetujui: —"
     T = ID[n]
     extra = (" (Should)" if T["prio"] == "Should" else "") + (" · *manusia saja*" if T["agent"] == "Manusia saja" else "")
-    return f"- [ ] **{n}** {T['title']}{extra} · {owner_label(T)} → review {ROLE[T['rev']][0]} · bukti: — · disetujui: —"
+    return f"- [ ] **{n}** {T['title']}{extra} · {owner_label(T)} · bukti: — · disetujui: —"
 
 
 SECTIONS = [(f"Role {r} ({ROLE[r][0]})", [T for T in TASKS if T["id"].startswith(r + "-")]) for r in "ABCD"]
@@ -1105,7 +1106,7 @@ if not TRACKER.exists():
          "| Tanda | Arti | Siapa yang mengisi |", "|---|---|---|",
          "| `- [x]` | Pekerjaan implementer selesai: kriteria penerimaan terpenuhi, bukti ada, PR dibuka (DoD 1–4) | Implementer (agen atau manusia), **di PR tugas itu sendiri** |",
          "| `bukti: …` | Link PR / hash commit / path artefak + tanggal, mis. `PR #12, 2026-11-21` | Implementer |",
-         "| `disetujui: …` | Reviewer manusia menyetujui → tugas **Done** (DoD lengkap), mis. `Member 2, 2026-11-22` | **Hanya manusia** (reviewer/tim) |",
+         "| `disetujui: …` | Seorang manusia menyetujui → tugas **Done** (DoD lengkap), mis. `Lanang, 2026-11-22`. Review/persetujuan peran lain tidak wajib. | **Hanya manusia** (anggota tim mana pun) |",
          "",
          "Aturan:",
          "1. Ubah **hanya baris tugasmu sendiri**. Jangan mengubah teks judul, ID, urutan, atau baris peran lain.",
@@ -1173,7 +1174,7 @@ if TRACKER.exists():
              + f" | **{cnt(ID)}** |")
     S += ["", "Gerbang disetujui: " + (", ".join(g for g in GATES if state.get(g, {}).get("ok") and state.get(g, {}).get("done")) or "belum ada") + "."]
     wait = [n for n in ID if state.get(n, {}).get("done") and not state.get(n, {}).get("ok")]
-    S.append("Menunggu review manusia: " + (", ".join(wait) if wait else "tidak ada") + ".")
+    S.append("Menunggu persetujuan manusia: " + (", ".join(wait) if wait else "tidak ada") + ".")
     if S_START in text and S_END in text:
         i, j = text.index(S_START) + len(S_START), text.index(S_END)
         wr(TRACKER, text[:i] + "\n" + "\n".join(S) + "\n" + text[j:])

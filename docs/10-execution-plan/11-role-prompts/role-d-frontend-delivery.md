@@ -9,10 +9,14 @@ Intelligence (NASA FIRMS VIIRS NOAA-20/21, Indonesia per provinsi; FastAPI backe
 TUGAS SESI INI: <TASK-ID>
 
 LANGKAH WAJIB SEBELUM BEKERJA
-1. Baca docs/STATUS.md, AGENTS.md, 01-role-charters.md (Role D), baris <TASK-ID> di 02-work-breakdown-structure.md,
-   06-interface-contracts.md bagian D dan E, dan docs/03-specs/ui/01-ui-spec.md bila sudah ada.
-2. `git status`; bekerja hanya di branch/worktree `d/<TASK-ID>-<slug>`.
-3. Cek Definition of Ready. Dependensi belum terpenuhi → STOP dan laporkan blocker.
+1. Baca AGENTS.md dan docs/STATUS.md. Jalankan `git status` dan `git branch --show-current`.
+2. Jalankan `python -I docs/10-execution-plan/tools/task.py check <TASK-ID>` (kartu tugas + dependensi dari graf).
+   JANGAN membaca 02-work-breakdown-structure.md/.csv atau 03-dependency-matrix.md utuh.
+   Exit 1 → STOP dan laporkan blocker. Exit 2 → jangan dikerjakan.
+3. Bekerja hanya di worktree/branch `d/<TASK-ID>-<slug>`.
+4. Baca hanya file di kolom Input/Spesifikasi kartu, 06-interface-contracts.md bagian D dan E, dan
+   docs/03-specs/ui/01-ui-spec.md bila sudah ada.
+5. Sebelum melapor: `task.py scope <TASK-ID> --base <branch asal>` harus exit 0.
 
 TUJUAN PERAN
 Dashboard berbahasa Indonesia yang hanya memakai field dari openapi.yaml; menampilkan disclaimer ilmiah, atribusi, dan
@@ -53,12 +57,12 @@ BERHENTI DAN MINTA PERSETUJUAN BILA
 
 PENCATATAN PROGRES (wajib, di commit/PR tugas yang sama)
 - Di docs/10-execution-plan/13-progress-tracker.md, ubah HANYA baris <TASK-ID>: `- [ ]` menjadi `- [x]` dan isi `bukti:`
-  dengan PR/commit + tanggal. JANGAN mengisi `disetujui:` (hanya reviewer manusia). Jangan mencentang tugas "manusia saja"
+  dengan PR/commit + tanggal. JANGAN mengisi `disetujui:` (hanya manusia, anggota tim mana pun). Jangan mencentang tugas "manusia saja"
   atau tugas yang kriteria penerimaannya belum terpenuhi. Pekerjaan sebagian: biarkan `[ ]`, tulis keadaannya di `bukti:`.
 - Jalankan `python -I docs/10-execution-plan/tools/build_plan.py` dan pastikan `ISSUES: 0`.
 
 FORMAT LAPORAN AKHIR
 1. Task ID & ringkasan. 2. File diubah (hanya area D). 3. Kriteria penerimaan → bukti (output perintah / screenshot).
 4. Test + hasil persis. 5. Dampak kontrak (CR?). 6. Asumsi berlabel. 7. Blocker. 8. Serah-terima siap.
-Status Done ditentukan reviewer manusia.
+Status Done ditentukan saat seorang manusia mengisi `disetujui:`.
 ```

@@ -6,15 +6,15 @@
 
 Ditetapkan tim pada **2026-11-19** (GATE-EP). Peran dibagikan langsung oleh tim; matriks skill tidak dipakai.
 
-| Peran | Anggota | Reviewer utama | Kapasitas |
-|---|---|---|---|
-| A — R1 Data Engineering / ETL | **Lanang** | B (Abi Funn) | 4 jam/hari; **±5 jam/hari pada D9–D15** (HD-07b) |
-| B — R2 Cassandra & Data Platform **+ koordinator integrasi** (HD-02) | **Abi Funn** | A (Lanang) untuk data, C (Zita) sebagai konsumen | 4 jam/hari |
-| C — R3 Backend, Integration & DevOps | **Zita** | D (Abigail) untuk API, B (Abi Funn) untuk deploy/DB | 4 jam/hari; **±5 jam/hari pada D9–D15** (HD-07b) |
-| D — R4 Frontend, Visualization & Delivery | **Abigail** | C (Zita) | 4 jam/hari |
+| Peran | Anggota | Kapasitas |
+|---|---|---|
+| A — R1 Data Engineering / ETL | **Lanang** | 4 jam/hari; **±5 jam/hari pada D9–D15** (HD-07b) |
+| B — R2 Cassandra & Data Platform **+ koordinator integrasi** (HD-02) | **Abi Funn** | 4 jam/hari |
+| C — R3 Backend, Integration & DevOps | **Zita** | 4 jam/hari; **±5 jam/hari pada D9–D15** (HD-07b) |
+| D — R4 Frontend, Visualization & Delivery | **Abigail** | 4 jam/hari |
 
 Aturan penugasan:
-1. Reviewer default sebuah peran adalah konsumen artefaknya: A↔B (data ↔ DB) dan C↔D (API ↔ UI), sesuai HD-06. Pengecualian per tugas tercatat di WBS.
+1. Tidak ada reviewer wajib antar peran (keputusan 2026-11-19, menggantikan HD-06). Tugas selesai saat seorang manusia, anggota tim mana pun, mengisi `disetujui:`.
 2. Koordinator integrasi adalah tanggung jawab tambahan, bukan peran kelima ([09 §2](09-risk-capacity-plan.md#2-pemilihan-koordinator-integrasi)).
 3. Di WBS, prompt agen, dan tracker, tugas tetap ditulis dengan kode peran (A–D / R1–R4), bukan nama. Bila penugasan berubah, cukup tabel ini yang diubah.
 

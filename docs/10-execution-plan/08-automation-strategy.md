@@ -57,7 +57,7 @@
 | Format, lint, type check | pre-commit, CI | ESLint + Prettier + `tsc` | blok merge |
 | Unit/komponen test | CI | Vitest + Testing Library | blok merge |
 | Cek kontrak mock | CI | test: setiap respons mock lolos skema `openapi.yaml` | blok merge |
-| Grep terminologi | CI | grep kata "kebakaran" di string UI | peringatan → review R1 |
+| Grep terminologi | CI | grep kata "kebakaran" di string UI | peringatan → diperiksa manusia |
 | E2E smoke | sebelum G6/G7 | Playwright (atau setara) | blok rilis |
 | Build produksi | CI | `npm run build` | blok merge |
 
@@ -67,7 +67,7 @@
 |---|---|---|---|
 | Pre-commit hooks | setiap commit | pre-commit (A): lint, end-of-file, deteksi secret, larangan file besar dan `.env` | Hook tidak boleh dilewati (`--no-verify`) tanpa izin |
 | CI | setiap PR | GitHub Actions dengan path filter per komponen | Tanpa secret di CI; FIRMS **tidak** dipanggil di CI |
-| CODEOWNERS | setiap PR | GitHub | Reviewer otomatis sesuai 07 |
+| CODEOWNERS | setiap PR | GitHub | Pemberitahuan pemilik sesuai 07 (tanpa *require review from Code Owners*) |
 | Regenerasi rencana | perubahan WBS | `tools/build_plan.py` (koordinator) | `ISSUES: 0` wajib |
 | Cek tautan dokumen | PR yang mengubah `docs/` | skrip cek tautan relatif | peringatan |
 | Checklist rilis | sebelum G7/G8 | `docs/08-delivery/acceptance-checklist.md` | manual dengan bukti |

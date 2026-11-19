@@ -38,7 +38,7 @@ Detail lengkap: [01-role-charters.md](01-role-charters.md).
 2. **Fase 2 dan 3 tumpang tindih per artefak**, sesuai charter §10 ("D3–D5: 2 + 3"). Spesifikasi Fase 3 mulai dari draf Fase 2. G3 tetap mensyaratkan G2.
 3. **Fase 4 (harness) paralel dengan Fase 2–3**, segera setelah GATE-EP.
 4. **Mock-to-real terjadwal.** Backend memakai fake repository, frontend memakai mock API dari contoh OpenAPI. Penggantian ke integrasi nyata punya tugas sendiri (C-P6-007, D-P6-007) dan checklist di [06 §7](06-interface-contracts.md#7-checklist-mock-to-real).
-5. **Satu implementer per tugas.** Claude Code mengimplementasi, Codex me-review, dan manusia menyetujui merge ([11](11-role-prompts/)).
+5. **Satu implementer per tugas.** Claude Code mengimplementasi, Codex boleh me-review sebagai masukan, dan seorang manusia (anggota tim mana pun) menyetujui ([11](11-role-prompts/)). Review peran lain tidak wajib.
 6. **Must dulu.** Tugas *Should* dijadwalkan terakhir dan hanya mengisi celah. Jika tidak muat, tugas itu dipotong lebih dulu.
 
 ## 4. Urutan fase & milestone (hasil penjadwalan dengan kapasitas yang disetujui)
@@ -86,8 +86,10 @@ Review Fase 1 (R1) → G1 → semantik data (R1) → canonical event (R1) → mo
 | [10-phase-gates.md](10-phase-gates.md) | Entry/exit per gerbang, DoR, DoD, change management | manual |
 | [11-role-prompts/](11-role-prompts/) | Prompt siap pakai per peran + reviewer Codex | manual |
 | [12-human-decision-register.md](12-human-decision-register.md) | Keputusan yang harus diambil tim | manual |
-| [13-progress-tracker.md](13-progress-tracker.md) | **Checklist progres hidup** per task ID dan gerbang (centang implementer, persetujuan reviewer) | struktur oleh **generator** sekali; isi oleh tim/agen; ringkasan diperbarui otomatis |
-| [tools/build_plan.py](tools/build_plan.py) | **Sumber kebenaran WBS**, penjadwal, pemeriksaan konsistensi | manual |
+| [13-progress-tracker.md](13-progress-tracker.md) | **Checklist progres hidup** per task ID dan gerbang (centang implementer, persetujuan manusia mana pun) | struktur oleh **generator** sekali; isi oleh tim/agen; ringkasan diperbarui otomatis |
+| [tools/build_plan.py](tools/build_plan.py) | **Sumber kebenaran WBS**, penjadwal, pemeriksaan konsistensi; ikon status di graf 04 | manual |
+| [tools/task.py](tools/task.py) | CLI read-only untuk agen & tim: `brief` (siap/terblokir per peran), `check <ID>` (kartu tugas + DoR dari graf 04 + tracker), `scope <ID>` (file yang diubah vs area peran) | manual |
+| [tools/plan_status.py](tools/plan_status.py) | Aturan status bersama (✅ ⏳ 🔧 ▶ ⛔), dipakai `build_plan.py` dan `task.py` | manual |
 
 **Cara mengubah WBS:** edit `TASKS` di `tools/build_plan.py`, lalu jalankan `python -I docs/10-execution-plan/tools/build_plan.py`. Pastikan output `ISSUES: 0`. File hasil generator jangan diedit manual. Pengecualiannya baris tugas di `13-progress-tracker.md`, yang memang diisi manual dan tidak pernah ditimpa generator. Run skenario (`--hours`, `--coord`) hanya mencetak ke konsol.
 
