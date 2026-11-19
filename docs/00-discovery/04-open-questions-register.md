@@ -1,63 +1,80 @@
 # 04 — Register Pertanyaan Terbuka & Keputusan Tertunda
 
-Status: **DRAFT**. Semua rekomendasi berstatus `RECOMMENDATION` dan **bukan keputusan** sampai tim mengisi kolom *Keputusan*.
+Status: **DIPERBARUI 2026-11-19** setelah jawaban tim. Tim menyatakan: *pertanyaan yang tidak dijawab secara eksplisit memakai jawaban default/rekomendasi.*
 
 Prioritas: **P0** = memblokir Fase 1 · **P1** = dibutuhkan sebelum Fase 2/3 · **P2** = dapat diputuskan kemudian.
 
-## Ringkasan pemblokir Fase 1
+Status keputusan:
+- `DECIDED (USER)`: dijawab eksplisit oleh tim.
+- `DECIDED (DEFAULT)`: tim menerima rekomendasi AI.
+- `PROVISIONAL`: jawaban sementara, final di gerbang fase yang disebut.
+- `OPEN`: belum diputuskan.
 
-OQ-01, OQ-02, OQ-03, OQ-04, OQ-05, OQ-06. Untuk OQ-04–OQ-06 cukup jawaban **sementara** (kandidat yang akan diprofil). Keputusan final diambil di gerbang Fase 1 setelah data nyata diperiksa.
+## Ringkasan
+
+- **Semua pemblokir Fase 1 (OQ-01–OQ-06) sudah terjawab.** OQ-04 dan OQ-05 bersifat `PROVISIONAL`; keputusan finalnya diambil di gerbang Fase 1 setelah data nyata diprofil.
+- **Pertanyaan baru OQ-23–OQ-27** muncul dari jawaban OQ-15/OQ-21 (deployment cloud). Kelimanya **tidak memblokir Fase 1**.
 
 ## Register
 
 ### Administratif
 
-| ID | Pertanyaan | Mengapa penting | Opsi | Rekomendasi | Prioritas | Diputuskan oleh | Keputusan |
-|---|---|---|---|---|---|---|---|
-| OQ-01 | Apa rubrik penilaian dan komponen wajib mata kuliah? (Cassandra wajib? Eksperimen replikasi wajib? Format laporan? Durasi presentasi tepat 20 menit?) | Menentukan apa yang harus diprioritaskan; tanpa ini MoSCoW hanya tebakan. | — | Minta rubrik tertulis dari dosen/asisten hari ini. | **P0** | Tim (sumber: dosen) | |
-| OQ-02 | Tanggal mulai (D1), tanggal presentasi, dan tanggal pengumpulan? Adakah ujian/libur di tengahnya? | Jadwal relatif D1–D21 harus dipetakan ke kalender nyata. | — | Isi tanggal nyata di charter §10. | **P0** | Tim | |
-| OQ-03 | Siapa memegang peran R1–R4, dan berapa jam/hari ketersediaan masing-masing? | Setiap fitur wajib memiliki pemilik. | Usulan peran di charter §9. | Tetapkan berdasarkan minat & kemampuan; tiap area punya reviewer kedua. | **P0** | Tim | |
+| ID | Pertanyaan | Keputusan | Status | Implikasi |
+|---|---|---|---|---|
+| OQ-01 | Rubrik dan komponen wajib mata kuliah? | Tidak ada rubrik. **Cassandra wajib.** Fokus saat ini: produk jadi dan implementasi teknis di belakangnya. Laporan dan presentasi ditangani tim. | DECIDED (USER) | Agen tidak menyusun laporan akhir/presentasi/video. Agen tetap menyediakan dokumentasi teknis (instalasi, reproduksibilitas, database, hasil eksperimen) sebagai bahan bagi tim. |
+| OQ-02 | Tanggal mulai, presentasi, dan pengumpulan? | Waktu tersisa 21 hari. Tanggal pasti tidak diberikan. | DECIDED (USER) | Dokumen memakai **D1 = 2026-11-19, D21 = 2026-12-09** sebagai asumsi kerja (A-22). Tim mohon mengoreksi bila hitungannya berbeda. |
+| OQ-03 | Siapa memegang peran R1–R4 dan berapa ketersediaannya? | Penetapan nama dilakukan nanti; dokumen memakai **R1–R4**. Ketersediaan **4 jam/hari/orang**. | DECIDED (USER) | Kapasitas maksimum ≈ 4 orang × 4 jam × 21 hari = **336 jam-orang** (batas atas, bukan target). |
 
 ### Data
 
-| ID | Pertanyaan | Mengapa penting | Opsi | Rekomendasi | Prioritas | Diputuskan oleh | Keputusan |
-|---|---|---|---|---|---|---|---|
-| OQ-04 | Produk satelit mana yang dipakai? | Menentukan semantik confidence, volume, perbandingan, dan filter satelit (C-03, C-04). | (A) VIIRS S-NPP saja · (B) VIIRS S-NPP + NOAA-20 · (C) MODIS + VIIRS · (D) MODIS saja | **Kandidat profiling: A dan B.** Final setelah Fase 1. Hindari C untuk MVP karena jumlah deteksi antar sensor tidak dapat dibandingkan langsung. Ketersediaan & celah data tiap satelit harus diverifikasi (`AI-PRIOR`: VIIRS S-NPP sejak 2012, NOAA-20 sejak 2018). | **P0** (sementara) | Tim | |
-| OQ-05 | Periode historis yang dicakup? | Menentukan volume, ukuran partisi, dan makna perbandingan historis. | (A) 1 tahun · (B) 2–3 tahun · (C) ≥5 tahun | **Sementara:** profil satu tahun penuh terlebih dahulu untuk mengukur volume; target ≥2 tahun penuh yang mencakup setidaknya satu musim kemarau dengan aktivitas deteksi tinggi. Final setelah profiling volume. | **P0** (sementara) | Tim | |
-| OQ-06 | Cakupan geografis dan granularitas wilayah? | Menentukan metode ekstraksi (per negara vs bounding box) dan pengayaan. | (A) Seluruh Indonesia, tingkat provinsi · (B) Seluruh Indonesia, kabupaten · (C) Pulau/provinsi tertentu | **A.** Kabupaten = *Could*. | **P0** | Tim | |
-| OQ-07 | Sumber batas administrasi provinsi yang mana? | Akurasi pengayaan, jumlah provinsi (34 vs 38), lisensi (C-12). | Kandidat: data BIG/Ina-Geoportal, GADM, geoBoundaries, sumber lain | Evaluasi di Fase 1: pilih yang memuat 38 provinsi, berlisensi jelas untuk penggunaan akademik, dan ukurannya wajar. Catat versi & tanggal unduh. | P1 | Tim (R1 mengusulkan) | |
+| ID | Pertanyaan | Keputusan | Status | Implikasi |
+|---|---|---|---|---|
+| OQ-04 | Produk satelit? | Kandidat profiling: **(A) VIIRS S-NPP saja** dan **(B) VIIRS S-NPP + NOAA-20**. MODIS tidak dipakai di MVP. | PROVISIONAL (final di gerbang Fase 1) | Fase 1 memprofil kedua opsi dan merekomendasikan salah satu. |
+| OQ-05 | Periode historis? | Profil **1 tahun penuh** terlebih dahulu untuk mengukur volume; target **≥2 tahun penuh** yang mencakup setidaknya satu musim kemarau dengan aktivitas deteksi tinggi. | PROVISIONAL (final di gerbang Fase 1) | Tahun pasti dipilih berdasarkan hasil profiling. |
+| OQ-06 | Cakupan geografis dan granularitas? | **Seluruh Indonesia, tingkat provinsi.** Kabupaten = *Could*. | DECIDED (DEFAULT) | — |
+| OQ-07 | Sumber batas administrasi provinsi? | Dievaluasi di Fase 1. Kriteria: memuat 38 provinsi, lisensi jelas untuk penggunaan akademik, ukuran wajar. Versi dan tanggal unduh dicatat. | DECIDED (DEFAULT) — kriteria; sumber dipilih di Fase 1 | — |
 
 ### Kebijakan data
 
-| ID | Pertanyaan | Mengapa penting | Opsi | Rekomendasi | Prioritas | Diputuskan oleh | Keputusan |
-|---|---|---|---|---|---|---|---|
-| OQ-08 | Zona waktu apa yang dipakai untuk "tanggal" agregasi harian dan tampilan? | Deteksi malam dapat bergeser ke hari sebelumnya bila memakai UTC (C-07). | (A) UTC · (B) WIB untuk seluruh Indonesia · (C) Zona waktu lokal per provinsi (WIB/WITA/WIT) | **C**, dengan timestamp UTC tetap disimpan sebagai nilai kanonis. | P1 | Tim | |
-| OQ-09 | Bagaimana kebijakan confidence? Apakah deteksi confidence rendah disimpan dan ditampilkan secara default? | Memengaruhi jumlah deteksi yang dilaporkan. | (A) Simpan semua, tampilkan semua · (B) Simpan semua, default sembunyikan "low" · (C) Buang "low" saat ingest | **Simpan semua** (tidak ada kehilangan data diam-diam). Default tampilan diputuskan di Fase 2. Tolak C. | P1 | Tim | |
-| OQ-10 | Mode ingestion untuk MVP dan kebijakan NRT vs arsip? | Kompleksitas, risiko duplikasi (C-15). | (A) Arsip historis saja · (B) Arsip + NRT manual · (C) Arsip + NRT terjadwal | **A untuk MVP, B sebagai *Should*.** Jika B: arsip menggantikan NRT untuk periode tumpang tindih. | P1 | Tim | |
-| OQ-11 | Bagaimana memperlakukan deteksi di luar poligon provinsi (laut, negara tetangga)? | Aturan "no silent data loss" vs ranking yang benar (C-13). | (A) Tolak sebagai rejected · (B) Simpan dengan status wilayah khusus · (C) Buang | **B**; laporkan jumlahnya di monitoring; keluarkan dari ranking provinsi. Deteksi di wilayah negara lain dapat dicatat sebagai *out-of-scope* di log (bukan dibuang tanpa jejak). | P1 | Tim | |
-| OQ-12 | Apakah sumber panas statis (gunung api, industri) dipisahkan? | Bias jumlah deteksi (C-14). | (A) Pakai field `type` bila tersedia · (B) Abaikan, nyatakan keterbatasan · (C) Masker statis buatan sendiri | **A jika field tersedia (cek Fase 1), selain itu B.** C di luar ruang lingkup. | P1 | Tim | |
+| ID | Pertanyaan | Keputusan | Status |
+|---|---|---|---|
+| OQ-08 | Zona waktu untuk tanggal agregasi harian dan tampilan? | Timestamp kanonis disimpan dalam **UTC**; tanggal agregasi dan tampilan memakai **zona waktu lokal provinsi (WIB/WITA/WIT)**. | DECIDED (DEFAULT) |
+| OQ-09 | Kebijakan confidence? | **Simpan semua** deteksi, tidak ada penghapusan saat ingest. Default tampilan diputuskan di Fase 2. | DECIDED (DEFAULT) |
+| OQ-10 | Mode ingestion dan kebijakan NRT vs arsip? | MVP: **arsip historis saja**. NRT manual = *Should*; NRT terjadwal = *Could*. Jika NRT dipakai, arsip menggantikan NRT untuk periode yang tumpang tindih. | DECIDED (DEFAULT) — perlu ditinjau ulang terkait OQ-25 |
+| OQ-11 | Deteksi di luar poligon provinsi? | **Disimpan dengan status wilayah khusus**, dikeluarkan dari ranking provinsi, dan jumlahnya dilaporkan di monitoring. | DECIDED (DEFAULT) |
+| OQ-12 | Sumber panas statis? | Memakai field `type` bila tersedia (dicek di Fase 1); jika tidak, dinyatakan sebagai keterbatasan. | DECIDED (DEFAULT) |
 
 ### Cassandra
 
-| ID | Pertanyaan | Mengapa penting | Opsi | Rekomendasi | Prioritas | Diputuskan oleh | Keputusan |
-|---|---|---|---|---|---|---|---|
-| OQ-13 | Apa definisi "sharding experiment" dalam proyek ini? | Cassandra sudah mendistribusikan partisi secara otomatis (C-06). | (A) Eksperimen bucketing partition key · (B) Observasi distribusi token pada multi-node · (C) Keduanya | **A wajib, B jika cluster multi-node tersedia.** | P1 | Tim (R2 mengusulkan) | |
-| OQ-14 | Apakah eksperimen replikasi & failure wajib? | Butuh multi-node dan hardware (C-01). | (A) Wajib · (B) Opsional | Bergantung OQ-01 & OQ-15. Default: *Should*. | P1 | Tim | |
-| OQ-17 | Versi Cassandra yang dipakai (mis. 4.1 vs 5.0)? Apakah fitur seperti Storage-Attached Index boleh dipakai? | Fitur indeks dapat menggoda pola query non-Cassandra; kompatibilitas driver. | — | Putuskan di Fase 3/4 lewat ADR. Fitur indeks sekunder hanya dengan justifikasi access pattern tertulis. | P2 | Tim (R2) | |
+| ID | Pertanyaan | Keputusan | Status |
+|---|---|---|---|
+| OQ-13 | Definisi "sharding experiment"? | **Eksperimen bucketing partition key = wajib.** Observasi distribusi token multi-node = jika lingkungan multi-node tersedia (lihat OQ-24). | DECIDED (DEFAULT) |
+| OQ-14 | Eksperimen replikasi dan failure wajib? | **Should.** Eksperimen 3 node **boleh dijalankan di laptop** (keputusan tim, 2026-11-19) asalkan memenuhi spesifikasi minimum dan lulus smoke test di [07-three-node-laptop-spec.md](07-three-node-laptop-spec.md). Cloud adalah alternatif (OQ-23). | DECIDED (USER + DEFAULT) |
+| OQ-17 | Versi Cassandra dan penggunaan fitur indeks? | Diputuskan lewat ADR di Fase 3/4. Indeks sekunder hanya dipakai dengan justifikasi access pattern tertulis. | DECIDED (DEFAULT) — keputusan teknis ditunda ke Fase 3/4 |
 
 ### Infrastruktur & proses
 
-| ID | Pertanyaan | Mengapa penting | Opsi | Rekomendasi | Prioritas | Diputuskan oleh | Keputusan |
-|---|---|---|---|---|---|---|---|
-| OQ-15 | Spesifikasi laptop tiap anggota (OS, RAM, CPU, Docker terpasang)? | Kelayakan Docker Compose & cluster multi-node. | — | Survei singkat hari ini. | P1 | Tiap anggota | |
-| OQ-16 | Repo GitHub publik atau privat? | Risiko kebocoran MAP_KEY & data; kebijakan pengumpulan. | Publik · Privat | Privat selama pengembangan kecuali rubrik meminta publik. `.env` tidak pernah di-commit apa pun pilihannya. | P1 | Tim | |
-| OQ-18 | Bagaimana pembagian kerja Claude Code vs Codex? | Mencegah konflik file & spesifikasi ganda. | (A) Per anggota (tiap orang memilih agen) · (B) Per area · (C) Satu implementer + agen lain reviewer per tugas | **C**, dengan branch per tugas; dirinci di AGENTS.md (Fase 4). | P2 | Tim | |
+| ID | Pertanyaan | Keputusan | Status | Implikasi |
+|---|---|---|---|---|
+| OQ-15 | Spesifikasi laptop anggota? | **Tidak relevan.** Tidak semua anggota wajib menjalankan Docker Compose. Aplikasi akan dideploy ke cloud. | DECIDED (USER) | Alur pengembangan harus mendukung anggota yang hanya menjalankan sebagian stack (OQ-27). |
+| OQ-16 | Repo publik atau privat? | **Privat selama pengembangan.** `.env` tidak pernah di-commit. | DECIDED (DEFAULT) | Tim perlu mengatur visibilitas repo di GitHub (NA-05). |
+| OQ-18 | Pembagian kerja Claude Code vs Codex? | **Satu implementer per tugas + agen lain sebagai reviewer**, branch per tugas, dirinci di AGENTS.md (Fase 4). | DECIDED (DEFAULT) | — |
 
 ### Produk
 
-| ID | Pertanyaan | Mengapa penting | Opsi | Rekomendasi | Prioritas | Diputuskan oleh | Keputusan |
-|---|---|---|---|---|---|---|---|
-| OQ-19 | Siapa persona primer MVP? | Fokus desain (C-18). | — | Primer: analis lingkungan & peneliti. Sekunder: pemerintah daerah. | P1 | Tim | |
-| OQ-20 | Bahasa UI dashboard? | Label, disclaimer, format tanggal. | Indonesia · Inggris · Dwibahasa | Indonesia. | P2 | Tim | |
-| OQ-21 | Apakah aplikasi harus dapat diakses online saat penilaian? | Kebutuhan deployment & keamanan. | Lokal + video · Hosting | Lokal + video demo, kecuali rubrik meminta hosting. | P1 | Tim (sumber: rubrik) | |
-| OQ-22 | Seberapa jauh fitur "monitoring pipeline"? | Hindari membangun sistem observability penuh. | (A) Log file saja · (B) Tabel run + endpoint + halaman sederhana · (C) Dashboard metrik lengkap | **B.** | P2 | Tim | |
+| ID | Pertanyaan | Keputusan | Status |
+|---|---|---|---|
+| OQ-19 | Persona primer MVP? | Primer: **analis lingkungan dan peneliti**. Sekunder: pemerintah daerah. | DECIDED (DEFAULT) |
+| OQ-20 | Bahasa UI dashboard? | **Indonesia.** | DECIDED (DEFAULT) |
+| OQ-21 | Apakah aplikasi harus dapat diakses online? | **Ya, akan di-hosting**, tetapi prioritas saat ini **lokal**. Video demo ditangani tim. | DECIDED (USER) |
+| OQ-22 | Cakupan fitur monitoring pipeline? | **Tabel run + endpoint + halaman sederhana.** | DECIDED (DEFAULT) |
+
+## Pertanyaan baru dari jawaban OQ-15/OQ-21 (tidak memblokir Fase 1)
+
+| ID | Pertanyaan | Mengapa penting | Opsi | Rekomendasi (`RECOMMENDATION`) | Prioritas / dibutuhkan sebelum | Status |
+|---|---|---|---|---|---|---|
+| OQ-23 | Penyedia cloud dan anggaran apa yang tersedia (termasuk kredit mahasiswa)? | Menentukan ukuran server, kelayakan Cassandra (butuh memori cukup besar), dan kelayakan eksperimen multi-node. | Bergantung pada akses tim | Desain tetap **netral terhadap penyedia** (container + konfigurasi lewat environment variable). Penyedia dipilih paling lambat **D12**. | P2 / D12 | OPEN |
+| OQ-24 | Bagaimana Cassandra dijalankan di cloud? | Layanan terkelola yang "kompatibel Cassandra" dapat membatasi kontrol atas replikasi, konfigurasi node, dan observasi token, sehingga eksperimen tidak setara dengan lingkungan lokal (`AI-PRIOR`, perlu dicek). | (A) Self-managed: container Cassandra di VM, sama dengan lokal · (B) Layanan terkelola kompatibel Cassandra | **A**, karena konsisten dengan lingkungan lokal dan eksperimen. | P2 / Fase 3 (ADR) | OPEN |
+| OQ-25 | Di mana ingestion berjalan setelah deploy? | Data di server cloud harus dimuat oleh pipeline yang sama dan tetap idempoten. | (A) Dijalankan dari laptop ke DB cloud · (B) Container pipeline dijalankan manual di server cloud · (C) Job terjadwal di cloud | **B.** Port Cassandra tidak perlu dibuka ke internet. Penjadwalan (C) tetap *Could*. | P2 / Fase 3 | OPEN |
+| OQ-26 | Kebutuhan keamanan minimum untuk aplikasi publik? *(sensitif keamanan, wajib disetujui manusia)* | API publik tanpa autentikasi rentan disalahgunakan. Port Cassandra yang terekspos adalah risiko serius. | — | Minimum: HTTPS; Cassandra hanya di jaringan privat; API read-only; CORS terbatas ke domain frontend; secret lewat environment/secret store; rate limit sederhana = *Should*. | P2 / Fase 3 | OPEN |
+| OQ-27 | Bagaimana alur kerja anggota yang tidak menjalankan Docker Compose? | Frontend/backend tidak boleh terblokir oleh ketiadaan database lokal. | (A) Frontend memakai mock API sesuai kontrak · (B) Backend dev bersama di cloud · (C) A lalu B | **C**: mock berbasis kontrak API sejak awal, lalu backend dev bersama setelah deployment awal tersedia. | P2 / Fase 4 | OPEN |

@@ -1,6 +1,6 @@
 # 02 — Analisis Konteks, Kontradiksi, dan Kelayakan
 
-Status: **DRAFT**. Label informasi: lihat [README](README.md#label-status-informasi).
+Status: **DIPERBARUI 2026-11-19** setelah jawaban tim. Label informasi: lihat [README](README.md#label-status-informasi).
 
 Seluruh pernyataan tentang NASA FIRMS dan perilaku Cassandra di dokumen ini berlabel `AI-PRIOR` kecuali dinyatakan lain, dan harus diverifikasi (FIRMS di Fase 1; Cassandra di Fase 3/7).
 
@@ -8,7 +8,7 @@ Seluruh pernyataan tentang NASA FIRMS dan perilaku Cassandra di dokumen ini berl
 
 | ID | Temuan | Mengapa penting | Usulan penyelesaian (`RECOMMENDATION`) | Terkait |
 |---|---|---|---|---|
-| **C-01** | "Distributed event analytics" vs infrastruktur kemungkinan laptop dengan Cassandra single-node. | Satu node tidak dapat mendemonstrasikan distribusi, replikasi, atau toleransi kegagalan. | Single-node untuk pengembangan; profil Docker Compose 3 node hanya untuk eksperimen replikasi, dijalankan di laptop dengan RAM terbesar. Jika tidak memungkinkan, nyatakan sebagai keterbatasan, jangan klaim. | OQ-14, OQ-15, R-11 |
+| **C-01** | "Distributed event analytics" vs Cassandra single-node untuk pengembangan. | Satu node tidak dapat mendemonstrasikan distribusi, replikasi, atau toleransi kegagalan. | Single-node untuk pengembangan dan hosting. Cluster 3 node hanya untuk eksperimen replikasi, **boleh di laptop** yang memenuhi spesifikasi minimum ([07](07-three-node-laptop-spec.md)) atau di cloud berumur pendek. Jika tidak tersedia, nyatakan sebagai keterbatasan, jangan klaim. | OQ-14, OQ-23, OQ-24, R-11 |
 | **C-02** | "Observasi satelit baru terus tersedia" / Near Real-Time vs tidak ada orkestrator (Airflow dilarang tanpa justifikasi). | Ingestion berkelanjutan butuh penjadwal, penanganan kuota API, dan logika NRT→arsip. | MVP: batch historis + perintah incremental manual dengan checkpoint. NRT otomatis = *Could*. Hindari istilah "real-time". | OQ-10 |
 | **C-03** | Filter confidence tunggal vs semantik confidence yang berbeda antar produk. `AI-PRIOR`: MODIS memakai angka 0–100, VIIRS memakai kategori (low/nominal/high). | Filter "confidence ≥ 80" tidak bermakna untuk VIIRS; menggabungkan keduanya menghasilkan filter yang menyesatkan. | Pilih satu keluarga sensor untuk MVP sehingga semantik confidence seragam. | OQ-04, OQ-09 |
 | **C-04** | "Filter satelit" vs kemungkinan hanya satu satelit dipakai. | Jika hanya satu satelit, filter tersebut kosong makna. | Filter satelit hanya relevan jika ≥2 satelit sekeluarga (mis. VIIRS S-NPP + NOAA-20). Keputusan setelah Fase 1 menilai volume. | OQ-04 |
@@ -20,12 +20,13 @@ Seluruh pernyataan tentang NASA FIRMS dan perilaku Cassandra di dokumen ini berl
 | **C-10** | Peta interaktif dengan "semua titik" vs volume data `UNKNOWN`. | Ribuan titik per tampilan dapat membuat Leaflet lambat; query tanpa batas berisiko membaca partisi besar. | Batasi jumlah titik per respons; peta wajib difilter tanggal + provinsi; clustering/heatmap = *Could*. | R-05 |
 | **C-11** | Query peta berdasarkan viewport (bounding box) vs Cassandra tanpa indeks spasial bawaan. | Query "titik di dalam kotak peta" bukan pola alami Cassandra. | MVP: peta berbasis provinsi + rentang tanggal. Partisi berbasis grid/geohash = kandidat eksperimen, bukan MVP. Storage-Attached Index (Cassandra 5.x, `AI-PRIOR`) hanya dievaluasi dengan justifikasi di Fase 3. | OQ-17 |
 | **C-12** | "Spatial enrichment" vs sumber batas administrasi belum dipilih. `AI-PRIOR`: Indonesia memiliki 38 provinsi sejak pemekaran 2022; banyak dataset batas publik masih 34 provinsi. | Data historis sebelum 2022 akan dipetakan ke provinsi yang belum ada saat itu; dataset lama salah memetakan Papua. Lisensi berbeda antar sumber. | Gunakan satu versi batas wilayah yang tetap untuk seluruh periode (dicatat versinya); evaluasi sumber di Fase 1. | OQ-07, R-08 |
-| **C-13** | Titik di luar poligon provinsi (laut, anjungan lepas pantai, negara tetangga di dalam bounding box). | Membuang diam-diam melanggar aturan "no silent data loss"; memasukkan ke ranking menyesatkan. | Simpan dengan status wilayah `UNASSIGNED`/`OUTSIDE_INDONESIA`, keluarkan dari ranking, laporkan jumlahnya di monitoring. | OQ-11 |
+| **C-13** | Titik di luar poligon provinsi (laut, anjungan lepas pantai, negara tetangga di dalam bounding box). `VERIFIED` (2026-11-19): Country API FIRMS berstatus "currently not available", sehingga ekstraksi lewat API **pasti** memakai bounding box. Titik negara tetangga pasti ikut terunduh. | Membuang diam-diam melanggar aturan "no silent data loss"; memasukkan ke ranking menyesatkan. | Simpan dengan status wilayah `UNASSIGNED`/`OUTSIDE_INDONESIA`, keluarkan dari ranking, laporkan jumlahnya di monitoring. | OQ-11 |
 | **C-14** | Sumber panas statis (gunung api, industri, gas flare). `AI-PRIOR`: arsip VIIRS/MODIS standar mungkin memiliki field `type`, NRT tidak. | Jumlah deteksi di beberapa lokasi bisa didominasi sumber non-vegetasi. | Verifikasi keberadaan field `type` di Fase 1; jika ada, simpan dan sediakan filter; jika tidak, nyatakan sebagai keterbatasan. | OQ-12 |
 | **C-15** | NRT vs arsip standar. `AI-PRIOR`: data NRT kemudian digantikan versi *standard/science processing*; nilai field `version` berbeda (mis. akhiran `NRT`). FIRMS tidak menyediakan ID unik per deteksi. | Jika keduanya dimuat, deteksi yang sama bisa tercatat dua kali. Koordinat/waktu bisa sedikit berbeda setelah pemrosesan ulang (`UNKNOWN`). | Tentukan natural key deterministik dan kebijakan "arsip menggantikan NRT untuk periode yang tumpang tindih". Uji di Fase 1 dengan data nyata. | OQ-10, R-06 |
 | **C-16** | 8 fase dengan gerbang persetujuan vs 21 hari. | Jika Fase 0–4 masing-masing memakan 2–3 hari, implementasi baru dimulai sekitar D12. | Batasi waktu Fase 0–3 (±4 hari total), jalankan Fase 4 paralel, dokumen ringkas dan berbasis template. | R-02 |
 | **C-17** | 10 fitur vs 4 orang × 21 hari. | Fitur yang selesai setengah jalan tidak bernilai di demo. | MVP 6 kapabilitas (charter §6.2). | R-01 |
 | **C-18** | Lima kelompok pengguna dengan kebutuhan berbeda (relawan butuh data terkini; peneliti butuh provenance). | Desain yang mencoba melayani semua akan kabur. | Pengguna primer: analis lingkungan & peneliti. | OQ-19 |
+| **C-19** | *(baru, dari OQ-15/OQ-21)* Aplikasi harus di-hosting di cloud, tetapi prioritas saat ini lokal, dan tidak semua anggota menjalankan Docker Compose. | Deployment menambah workstream baru (provisioning, HTTPS, secret, keamanan). Anggota tanpa stack lokal berisiko terblokir. Aplikasi publik juga memperbesar dampak salah tafsir ilmiah. | Satu set image container untuk lokal dan cloud; konfigurasi lewat environment variable; deployment dimulai setelah integrasi lokal (≥D13); mock API berbasis kontrak untuk anggota tanpa Docker. | OQ-23–OQ-27, R-23–R-26 |
 
 ## B. Keputusan yang belum dibuat
 
@@ -37,7 +38,8 @@ Ringkasan; detail opsi dan rekomendasi ada di [04-open-questions-register.md](04
 | Data | Produk satelit, periode historis, cakupan geografis, sumber batas wilayah | OQ-04–OQ-07 |
 | Kebijakan data | Zona waktu, confidence, NRT vs arsip, titik di luar wilayah, sumber statis | OQ-08–OQ-12 |
 | Cassandra | Definisi eksperimen sharding, eksperimen replikasi wajib/tidak, versi Cassandra | OQ-13, OQ-14, OQ-17 |
-| Infrastruktur & proses | Hardware, visibilitas repo, pembagian kerja agen AI | OQ-15, OQ-16, OQ-18 |
+| Infrastruktur & proses | Hardware (dinyatakan tidak relevan), visibilitas repo, pembagian kerja agen AI | OQ-15, OQ-16, OQ-18 |
+| Deployment cloud *(baru)* | Penyedia & anggaran, model Cassandra di cloud, lokasi ingestion, keamanan minimum, alur kerja tanpa Docker | OQ-23–OQ-27 |
 | Produk | Persona primer, bahasa UI, hosting, tingkat monitoring | OQ-19–OQ-22 |
 
 ## C. Penilaian kelayakan per area
@@ -47,14 +49,15 @@ Skala: **Layak** · **Layak bersyarat** · **Berisiko**.
 | Area | Penilaian | Alasan | Syarat |
 |---|---|---|---|
 | Akses data FIRMS | Layak bersyarat | `AI-PRIOR`: data publik gratis, butuh MAP_KEY untuk API; unduhan arsip besar mungkin melalui permintaan yang tidak instan. | MAP_KEY diminta D1; siapkan jalur cadangan (unduhan CSV per negara/arsip) di Fase 1. |
-| ETL (Pandas + GeoPandas) | Layak | Volume Indonesia per tahun kemungkinan muat di memori laptop (`ASSUMPTION`, verifikasi Fase 1). Spatial join titik-ke-poligon adalah operasi standar GeoPandas. | Satu versi batas wilayah; natural key dedup disepakati. |
+| ETL (Pandas + GeoPandas) | Layak | Volume Indonesia per tahun kemungkinan muat di memori satu mesin (`ASSUMPTION`, verifikasi Fase 1). Spatial join titik-ke-poligon adalah operasi standar GeoPandas. | Satu versi batas wilayah; natural key dedup disepakati. |
 | Model data Cassandra | Layak bersyarat | Pola query MVP sederhana (wilayah × waktu). Risiko utama: pola pikir relasional. | Access patterns disetujui sebelum skema (Fase 3). |
 | Eksperimen partisi | Layak | Dapat dijalankan pada single-node dengan dataset nyata. | Prosedur benchmark terkendali (warm-up, repetisi, variabel tetap). |
-| Eksperimen replikasi/failure | Berisiko | Butuh ≥3 node; tiap node Cassandra membutuhkan memori signifikan (`AI-PRIOR`). Hardware `UNKNOWN`. | Konfirmasi hardware (OQ-15); jika tidak memadai, turunkan ke *Could* dan nyatakan keterbatasan. |
+| Eksperimen replikasi/failure | Berisiko | Butuh ≥3 node; tiap node Cassandra membutuhkan memori signifikan (`AI-PRIOR`). Lingkungan dan anggaran cloud `UNKNOWN`. | Cluster cloud berumur pendek (OQ-23, OQ-24); jika tidak tersedia, turunkan ke *Could* dan nyatakan keterbatasan. |
+| Deployment cloud | Layak bersyarat | Satu server dengan container yang sama seperti lokal cukup untuk demo. Penyedia dan anggaran `UNKNOWN`. | Integrasi lokal berjalan dulu (≥D13); penyedia dipilih ≤D12; keamanan minimum OQ-26 disetujui. |
 | FastAPI | Layak | Endpoint read-only, jumlah kecil. | Kontrak API disepakati D5 agar frontend dapat memakai mock. |
 | React + Leaflet + grafik | Layak bersyarat | Volume titik peta `UNKNOWN`. | Batas titik per respons; filter wajib. |
 | Ingestion NRT | Berisiko (untuk MVP) | Kuota API, logika penggantian NRT→arsip, penjadwalan. | Jadikan *Should* (manual) / *Could* (otomatis). |
-| Tim & waktu | Layak bersyarat | Ketersediaan anggota `UNKNOWN`; overhead proses tinggi. | MVP dipatuhi; feature freeze D17; integrasi pertama D13. |
+| Tim & waktu | Layak bersyarat | Kapasitas ±4 jam/hari/orang (≈336 jam-orang, batas atas); overhead proses tinggi; ada tambahan workstream deployment. | MVP dipatuhi; feature freeze D17; integrasi lokal pertama D13. |
 | Koordinasi dua agen AI | Layak bersyarat | Risiko konflik file & kode yang tidak dipahami tim. | Satu implementer per tugas, branch per tugas, review lintas agen + manusia. |
 
 ## D. Estimasi upaya relatif (T-shirt sizing)
@@ -74,9 +77,11 @@ Estimasi kasar, bukan komitmen. Kapasitas tim `UNKNOWN` (lihat A-03).
 | Monitoring pipeline minimal | S | R1 + R3 |
 | Eksperimen partisi | M | R2 |
 | Eksperimen replikasi/failure | M–L | R2 + R3 |
-| Laporan, presentasi, video | M | Semua (koordinasi R4) |
+| Deployment cloud (server, HTTPS, secret, keamanan dasar) | M | R3 |
+| Dokumentasi teknis (instalasi, reproduksibilitas, database, eksperimen) | S–M | Semua (koordinasi R4) |
+| Laporan, presentasi, video | — | Tim, di luar ruang lingkup agen (OQ-01) |
 
-Dua workstream berukuran L (ETL dan dashboard) adalah jalur kritis. Keduanya harus dimulai paling lambat D6.
+Dua workstream berukuran L (ETL dan dashboard) adalah jalur kritis. Keduanya harus dimulai paling lambat D6. Deployment cloud bergantung pada keduanya dan berada di ujung jalur kritis.
 
 ## E. Kesimpulan kelayakan
 
@@ -86,6 +91,7 @@ Dua workstream berukuran L (ETL dan dashboard) adalah jalur kritis. Keduanya har
 3. Ingestion historis batch menjadi prioritas; NRT ditunda.
 4. Pengayaan spasial hanya sampai provinsi.
 5. Fase 0–3 dibatasi waktu dan Fase 4 berjalan paralel.
-6. Pertanyaan pemblokir dijawab dalam 1–2 hari.
+6. Pertanyaan pemblokir dijawab dalam 1–2 hari. *(Terpenuhi 2026-11-19.)*
+7. Deployment cloud dilakukan **setelah** integrasi lokal, memakai image container yang sama, dan dibatasi waktu.
 
 Tanpa syarat-syarat tersebut, risiko tertinggi adalah demo akhir yang tidak berjalan end-to-end.
