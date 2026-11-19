@@ -1,6 +1,6 @@
 # NusaFire — Status & Konteks Proyek
 
-> **Titik masuk** untuk anggota tim dan agen AI (Claude Code, Codex). Baca file ini lebih dulu di setiap sesi baru.
+> **Titik masuk** untuk anggota tim dan agen AI (Claude Code, Codex). Baca file ini lebih dulu di setiap sesi baru. Kewajiban ini juga tertulis di [`AGENTS.md`](../AGENTS.md) dan [`CLAUDE.md`](../CLAUDE.md).
 > File ini adalah **ringkasan dan penunjuk**. Sumber kebenaran tetap dokumen yang dirujuk. Jika ada konflik, dokumen yang dirujuk yang berlaku, dan file ini wajib diperbaiki.
 > Diperbarui setiap kali melewati gerbang fase atau ada keputusan baru.
 
