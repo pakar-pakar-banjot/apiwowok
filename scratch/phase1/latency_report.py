@@ -38,5 +38,24 @@ out = {
     "latency_minutes_new_after_baseline": {s: q(v) for s, v in lat.items()},
     "arrival_batches": {s: [f"{k[0]}Z {k[1]}: {n}" for k, n in sorted(c.items())] for s, c in batches.items()},
 }
+# Per arrival batch: the batch appeared between the previous poll and first_seen, so latency is a range.
+ptimes = collections.defaultdict(list)
+for p in polls:
+    if p["http"] == "200": ptimes[p["source"]].append(p["poll_utc"])
+grp = collections.defaultdict(list)
+for o in obs:
+    if o["event"] == "new" and o["first_seen_utc"] > base[o["source"]]:
+        grp[(o["source"], o["first_seen_utc"], o["daynight"])].append(acq(o))
+T = dt.datetime.fromisoformat; mins = lambda d: round(d.total_seconds() / 60)
+detail = []
+for (src, fs, dn), acqs in sorted(grp.items(), key=lambda kv: kv[0][1]):
+    prev = max(t for t in ptimes[src] if t < fs)
+    lo, hi = min(acqs), max(acqs)
+    detail.append({"source": src, "daynight": dn, "n": len(acqs), "acq_first": lo.isoformat()[:16], "acq_last": hi.isoformat()[:16],
+                   "prev_poll": prev[:16], "first_seen": fs[:16], "poll_gap_min": mins(T(fs) - T(prev)),
+                   "latency_last_acq_min": [mins(T(prev) - hi), mins(T(fs) - hi)],
+                   "latency_first_acq_max_min": mins(T(fs) - lo)})
+out["batches_detail"] = detail
+out["changed_events"] = sum(1 for o in obs if o["event"] == "changed")
 (PROF / "latency.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
 print(json.dumps(out, indent=1))

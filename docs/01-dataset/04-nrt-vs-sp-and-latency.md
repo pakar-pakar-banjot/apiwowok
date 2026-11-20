@@ -49,24 +49,34 @@ Opsi lain yang ditolak:
 
 ## 3. Latensi NRT (A-P1-008)
 
-> **Status: SEMENTARA.** Poller berjalan sejak 2026-11-19 09:09 UTC, dengan interval 15 menit (2 request per poll: NOAA-20 dan NOAA-21 NRT, `DAY_RANGE` 2), dan berhenti sendiri ±2026-11-20 09:09 UTC. Bagian ini difinalkan setelah itu dengan `python -I scratch/phase1/latency_report.py`.
+> **Status: FINAL** (pengamatan selesai). Poller berjalan 2026-11-19 09:09 UTC … 2026-11-20 08:42 UTC: 106 request, semuanya HTTP 200, 2 request per poll (NOAA-20 dan NOAA-21 NRT, `DAY_RANGE` 2), interval 15 menit. Rencananya diperpanjang sampai 14:30 UTC (HD-22), tetapi proses dihentikan otomatis oleh Claude Code pukul 08:42 UTC karena memori laptop hampir habis. Laptop juga sempat sleep 2026-11-19 14:41–23:18 UTC dan 2026-11-20 00:40–02:16 UTC. Angka di bawah berasal dari `data/firms/profile/latency.json` (`python -I scratch/phase1/latency_report.py`). WIB = UTC+7.
 
-Metode: latensi = waktu poll pertama yang memuat deteksi − `acq_date`+`acq_time` (UTC). Resolusinya 15 menit. Yang dihitung hanya deteksi yang muncul **setelah** poll pertama, karena poll pertama memuat semua data yang sudah terbit.
+**Metode:** sebuah batch muncul di antara poll sebelumnya dan poll pertama yang memuatnya. Karena itu latensi ditulis sebagai rentang `(poll sebelumnya − akuisisi, poll pertama − akuisisi]`, dan resolusinya sama dengan jarak antar-poll. Deteksi yang sudah ada di poll pertama (baseline) hanya memberi batas atas.
 
-Pengamatan sampai 2026-11-19 11:19 UTC (18 poll, semuanya HTTP 200):
+| Batch (UTC) | Deteksi | Akuisisi | Muncul di antara poll | Latensi akuisisi terakhir | Latensi akuisisi pertama (maks) | Presisi |
+|---|---|---|---|---|---|---|
+| NOAA-21 siang 19 Nov | (di baseline) | ≤ 05:50 | sebelum 09:09 | ≤ 3,3 jam | — | Batas atas |
+| NOAA-20 siang 19 Nov | 240 | 03:19 … 06:46 | 11:49 … 12:26 | **5,1–5,7 jam** | ≤ 9,1 jam | 37 menit |
+| NOAA-21 malam 19 Nov | 104 | 15:07 … 18:30 | 14:41 … 23:18 (laptop sleep) | ≤ 4,8 jam | ≤ 8,2 jam | Batas atas |
+| NOAA-20 malam 19 Nov | 171 | 16:05 … 17:47 | 14:41 … 23:18 (laptop sleep) | ≤ 5,5 jam | ≤ 7,2 jam | Batas atas |
+| NOAA-21 siang 20 Nov (lintasan 1) | 73 | 03:44 | 06:03 … 06:18 | **2,3–2,6 jam** | 2,6 jam | 15 menit |
+| NOAA-20 siang 20 Nov | 220 | 04:42 … 04:46 | 07:18 … 07:33 | **2,5–2,8 jam** | 2,9 jam | 15 menit |
+| NOAA-21 siang 20 Nov (lintasan 2) | 284 | 05:27 … 05:29 | 07:18 … 07:33 | **1,8–2,1 jam** | 2,1 jam | 15 menit |
 
-| Pengamatan | NOAA-20 NRT | NOAA-21 NRT |
-|---|---|---|
-| Baris di poll pertama (09:09 UTC) | 474 | 584 |
-| Akuisisi terbaru yang sudah ada di poll pertama | 2026-11-18 18xx UTC (lintasan malam lokal 19 Nov) | **2026-11-19 05xx UTC** (lintasan siang 19 Nov), artinya terbit ≤ ±4 jam setelah akuisisi |
-| Deteksi baru setelah poll pertama | 0 | 0 |
-| Data 2026-11-19 sampai 11:19 UTC | **Belum ada** (> 6 jam setelah lintasan siang NOAA-20 yang biasa terjadi 03–07 UTC) | Ada |
-| Rekaman yang berubah nilai antar poll | 0 | 0 |
+Temuan (`VERIFIED` untuk periode pengamatan ini saja; sampel hanya 2 hari):
 
-Yang sudah bisa disimpulkan: data NRT datang **per lintasan** (sekitar 2× sehari per satelit untuk Indonesia, siang 03–07 UTC dan malam 15–18 UTC), bukan mengalir terus. Polling 15–30 menit (OQ-10) lebih dari cukup untuk menangkap setiap batch. Angka latensi dan apakah rekaman NRT berubah setelah terbit masih menunggu akhir pengamatan.
+1. **Data terbit per lintasan, dan setiap lintasan terbit utuh.** Tidak ada menit akuisisi yang deteksinya tersebar di lebih dari satu batch (0 dari 58). Untuk Indonesia, setiap satelit punya ±1–2 batch siang (03–07 UTC) dan 1 batch malam (15–19 UTC) per hari.
+2. **Latensi bervariasi: 1,8 sampai ±9 jam.** Klaim resmi "<3 hours (Global)" (S1) terpenuhi oleh ketiga batch siang 20 Nov (≤ 2,9 jam). NOAA-21 siang 19 Nov hanya diketahui ≤ 3,3 jam. NOAA-20 siang 19 Nov jauh melebihinya (≥ 5,1 jam, dan akuisisi pertamanya hingga ±9 jam). Dua hari belum cukup untuk menyimpulkan distribusi atau perbedaan antar satelit.
+3. **Tidak ada rekaman yang berubah setelah terbit.** Dari 106 poll, `changed` = 0: nilai deteksi NRT tetap sama selama ±2 hari di jendela `DAY_RANGE`. Berarti upsert idempoten berdasarkan kunci aman untuk NRT. Perilaku setelah 2 hari tidak diamati (`UNKNOWN`).
+4. Latensi lintasan malam hanya diketahui batas atasnya (≤ 4,8–8,2 jam) karena laptop sleep.
+
+Implikasi (`RECOMMENDATION`, diputuskan di C-P2-001 / OQ-10):
+- **Interval polling 30 menit** sudah cukup. Batch datang hanya ±2–3 kali sehari per satelit, dengan latensi sumber 2–9 jam, sehingga tambahan tunda polling ≤ 30 menit. Interval 15 menit tetap aman dari sisi kuota (±8 transaksi per poll).
+- **"Data terlambat" ditentukan per satelit dari `acq_datetime` terbaru yang sudah dimuat**, bukan dari ada atau tidaknya deteksi baru. Di musim hujan, sebuah lintasan bisa saja punya 0 deteksi. Usulan ambang: peringatan bila akuisisi terbaru > 18 jam lalu, dan basi bila > 30 jam. Angka ini berasal dari jeda ±12 jam antar-lintasan ditambah latensi maks ±9 jam yang teramati. Sebaiknya diverifikasi lagi saat pipeline incremental berjalan (A-P5).
+- Teks UI dan laporan sebaiknya menyebut **"biasanya 2–3 jam, kadang hingga ±9 jam"**, bukan "real-time".
 
 ## 4. Masukan untuk fase berikutnya
 
 - **A-P3-001 (canonical event):** `processing_level` wajib masuk identitas. Tambahkan `source_acq_date_utc` untuk rekonsiliasi per tanggal.
 - **B-P3-001 (access patterns):** operasi "hapus/ganti semua deteksi `(satellite, acq_date UTC)`" harus bisa dilayani tanpa scan. Rekonsiliasi butuh query per tanggal UTC, padahal partisi tampilan memakai tanggal lokal.
-- **C-P2-001 (NFR):** ambang "data basi" sebaiknya dikaitkan dengan jadwal lintasan (> ±8 jam tanpa batch baru), bukan dengan interval polling.
+- **C-P2-001 (NFR):** ambang kesegaran per satelit dari `acq_datetime` terbaru (usulan: peringatan > 18 jam, basi > 30 jam) dan interval polling 30 menit ([§3](#3-latensi-nrt-a-p1-008)).

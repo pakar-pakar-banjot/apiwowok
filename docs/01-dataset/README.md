@@ -7,7 +7,7 @@
 | 01 | [Source inventory](01-source-inventory.md) | A-P1-001 | Draf, menunggu review R1 |
 | 02 | [Data dictionary + verifikasi asumsi](02-data-dictionary.md) | A-P1-003, A-P1-005 | Draf |
 | 03 | [Laporan profiling](03-profiling-report.md) | A-P1-004 | Draf |
-| 04 | [NRT vs SP & latensi](04-nrt-vs-sp-and-latency.md) | A-P1-007, A-P1-008 | Perbandingan: draf. Latensi: **sementara** |
+| 04 | [NRT vs SP & latensi](04-nrt-vs-sp-and-latency.md) | A-P1-007, A-P1-008 | Draf (latensi final 2026-11-20) |
 | 05 | [Sumber batas provinsi](05-boundary-sources.md) | A-P1-006 | Draf, menunggu review R1 |
 | 06 | [Aturan kualitas data](06-data-quality-rules.md) | A-P1-009 | Draf |
 | 07 | [Rekomendasi dataset](07-dataset-recommendation.md) | A-P1-010 | Draf |
@@ -23,7 +23,7 @@ Memastikan, dengan data nyata, bahwa sumber yang dipilih di Fase 0 (NASA FIRMS V
 - G0 dan GATE-EP disetujui 2026-11-19. Rencana eksekusi ada di PR #1.
 - Raw zone lokal: 629 file FIRMS (2.705.905 baris, 222 MB), semuanya cocok dengan checksum manifest. Ditambah snapshot batas BIG (22 bagian GeoJSON, ±10 MB). Semuanya di `data/`, tidak di-commit.
 - Skrip sekali pakai ada di `scratch/phase1/`. Semua angka di folder ini dapat dihasilkan ulang tanpa memanggil API, kecuali poller latensi.
-- Poller latensi NRT masih berjalan sampai ±2026-11-20 09:09 UTC (HD-22).
+- Poller latensi NRT selesai: 2026-11-19 09:09 … 2026-11-20 08:42 UTC, 106 request HTTP 200 (HD-22). Proses dihentikan otomatis karena memori laptop hampir habis, sebelum batas perpanjangan 14:30 UTC.
 
 ## 3. Tugas yang memerlukan keputusan manusia (G1)
 
@@ -80,7 +80,7 @@ Sesuai [rencana eksekusi](../10-execution-plan/05-project-schedule.md): G1 pada 
 | Setiap angka dapat ditelusuri ke file profil | Terpenuhi: setiap dokumen menyebut file sumber angkanya |
 | Tidak ada klaim `AI-PRIOR` tanpa label | Terpenuhi: batas ukuran partisi dan byte per baris diberi label |
 | Keputusan G1 punya opsi + rekomendasi + bukti | Terpenuhi ([07](07-dataset-recommendation.md)) |
-| Latensi NRT dilaporkan | **Sebagian:** hasil final setelah poller selesai |
+| Latensi NRT dilaporkan | Terpenuhi ([04 §3](04-nrt-vs-sp-and-latency.md#3-latensi-nrt-a-p1-008)); malam hanya batas atas |
 | Review R1 atas A-P1-001 dan A-P1-006 | **Belum** |
 
 ## 10. Risiko tersisa
@@ -89,7 +89,7 @@ Sesuai [rencana eksekusi](../10-execution-plan/05-project-schedule.md): G1 pada 
 |---|---|
 | Lisensi BIG tidak memperbolehkan hosting publik (RC-06) | Snapshot lokal + cadangan HDX (34 provinsi), dengan keterbatasan Papua dinyatakan |
 | Lonjakan volume 2026 adalah artefak sumber, bukan kejadian nyata | Cek ulang saat SP untuk 2026-08 terbit (±5 bulan). Untuk desain, volume 2026 tetap dipakai sebagai kasus terburuk |
-| NOAA-20 NRT terlambat > 6 jam (diamati 19 Nov) | Tunggu data poller. Indikator kesegaran di UI per satelit |
+| Latensi NRT kadang ±9 jam (NOAA-20, 19 Nov); sampel hanya 2 hari | Indikator kesegaran per satelit dari akuisisi terbaru; ambang diverifikasi ulang saat pipeline incremental berjalan (A-P5) |
 | Endpoint `missing_data` tidak terdokumentasi dan bisa berubah | DQ-12 juga mendeteksi hari 0 baris tanpa bergantung pada endpoint itu |
 
 ## 11. Gerbang persetujuan G1
@@ -102,4 +102,4 @@ Disetujui bila mayoritas 3 dari 4 setuju, dan pemilik area data (R1, Lanang) ter
 2. **Abi Funn:** review [00-volume-estimates](../03-specs/database/00-volume-estimates.md), lalu siapkan paket G1.
 3. **Abigail:** review draf user stories (masukan D-P2-001).
 4. **Zita:** C-P1-001 (inventaris toolchain & opsi cloud) belum dikerjakan.
-5. **Agen**, setelah poller selesai: jalankan `latency_report.py` dan finalkan [04 §3](04-nrt-vs-sp-and-latency.md#3-latensi-nrt-a-p1-008).
+5. Latensi sudah final ([04 §3](04-nrt-vs-sp-and-latency.md#3-latensi-nrt-a-p1-008)); tidak ada pekerjaan agen yang tersisa untuk G1.

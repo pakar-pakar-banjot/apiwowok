@@ -12,7 +12,7 @@
 | 4 | **Sumber batas provinsi** (OQ-07) | BIG `BATAS_KABKOTA_AR` edisi Juni 2026 (38 provinsi), snapshot tergeneralisasi 0,001° + checksum | [05](05-boundary-sources.md) |
 | 5 | **Lisensi batas** (HD-08) | Konfirmasi ke BIG sebelum hosting publik. Cadangan: HDX COD-AB (34 provinsi, CC BY-IGO) | [05 §5](05-boundary-sources.md#5-rekomendasi-recommendation-perlu-persetujuan-di-g1) |
 | 6 | **Aturan kualitas data** (HD-11) | DQ-01 … DQ-15. Tipe non-vegetasi dihitung semua dengan filter opsional; tanpa snapping tepi | [06](06-data-quality-rules.md) |
-| 7 | **Pembaruan register asumsi** | A-05, A-06, A-07, A-08, A-10 → VALIDATED; A-09 → sebagian; A-11, A-26 tetap OPEN | [CR-03](../change-requests/CR-03.md), [02 §5](02-data-dictionary.md#5-verifikasi-asumsi-fase-0-a-p1-005) |
+| 7 | **Pembaruan register asumsi** | A-05, A-06, A-07, A-08, A-10, A-26 → VALIDATED; A-09 → sebagian; A-11 tetap OPEN | [CR-03](../change-requests/CR-03.md), [02 §5](02-data-dictionary.md#5-verifikasi-asumsi-fase-0-a-p1-005) |
 
 ## 1. Periode (HD-09)
 
@@ -43,6 +43,6 @@ Opsi D ditolak untuk MVP: menambah volume yang belum terukur dan menghasilkan pe
 
 | Item | Status | Dampak ke G1 |
 |---|---|---|
-| Latensi NRT final (A-P1-008) | Poller selesai ±2026-11-20 09:09 UTC | Tidak memblokir keputusan di atas; angka dipakai untuk NFR (C-P2-001) |
+| Latensi NRT (A-P1-008) | **Selesai** 2026-11-20: 1,8 sampai ±9 jam, per lintasan ([04 §3](04-nrt-vs-sp-and-latency.md#3-latensi-nrt-a-p1-008)) | Tidak memblokir keputusan di atas; angka dipakai untuk NFR (C-P2-001) |
 | Lisensi BIG (HD-08) | Menunggu jawaban BIG | Tidak memblokir pengembangan lokal; memblokir hosting publik dengan BIG |
 | Review manusia atas draf A-P1-001, A-P1-006 | Menunggu R1 (Lanang) | Prasyarat G1 |
