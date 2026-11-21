@@ -6,12 +6,19 @@ from firms_common import BASE, BBOX, DATA, map_key, redact
 SOURCES = ["VIIRS_NOAA20_NRT", "VIIRS_NOAA21_NRT"]
 INTERVAL_MIN = float(sys.argv[1]) if len(sys.argv) > 1 else 15
 HOURS = float(sys.argv[2]) if len(sys.argv) > 2 else 24
+RESUME = len(sys.argv) > 3 and sys.argv[3] == "resume"  # continue an earlier run: keys already logged are not "new"
 k = map_key(); out = DATA / "latency"; out.mkdir(parents=True, exist_ok=True)
 obs = out / "observations.csv"; polls = out / "polls.csv"
 seen = {}  # key -> row signature
 for p, hdr in ((obs, ["first_seen_utc","event","source","latitude","longitude","acq_date","acq_time","confidence","frp","version","daynight","prev_signature"]),
                (polls, ["poll_utc","source","http","rows","new","changed","disappeared"])):
     if not p.exists(): p.write_text(",".join(hdr) + "\n", encoding="utf-8")
+if RESUME:  # signature of earlier rows is unknown -> None; the first poll re-learns it silently (no "changed" event)
+    for o in csv.DictReader(open(obs, encoding="utf-8")):
+        seen.setdefault((o["source"], o["latitude"], o["longitude"], o["acq_date"], o["acq_time"]), None)
+    print("resumed with", len(seen), "known detections", flush=True)
+if sys.platform == "win32":  # keep Windows from idle-sleeping while this process runs (auto-reverts on exit)
+    import ctypes; ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)
 end = time.time() + HOURS * 3600
 while time.time() < end:
     for src in SOURCES:
@@ -33,7 +40,7 @@ while time.time() < end:
                 sig = "|".join(x.get(c, "") for c in ("bright_ti4","bright_ti5","frp","confidence","scan","track","version","daynight"))
                 if key not in seen:
                     new += 1; w.writerow([now, "new", src, *key[1:], x["confidence"], x["frp"], x["version"], x["daynight"], ""])
-                elif seen[key] != sig:
+                elif seen[key] is not None and seen[key] != sig:
                     chg += 1; w.writerow([now, "changed", src, *key[1:], x["confidence"], x["frp"], x["version"], x["daynight"], seen[key]])
                 seen[key] = sig
         gone = sum(1 for kk in seen if kk[0] == src and kk not in cur)
