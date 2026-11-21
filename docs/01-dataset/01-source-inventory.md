@@ -42,7 +42,7 @@ Diringkas dari [05-boundary-sources.md](05-boundary-sources.md):
 | Sumber | Provinsi | Lisensi | Rekomendasi |
 |---|---|---|---|
 | BIG `BATAS_KABKOTA_AR`, edisi Juni 2026 | 38 | `UNKNOWN` (perlu konfirmasi) | **Utama** |
-| HDX COD-AB (BPS/OCHA) | 34 | CC BY-IGO | Cadangan |
+| HDX COD-AB (BPS/OCHA) | 34 | CC BY-IGO | Tidak dipakai (cadangan diganti B5 oleh R1, 2026-11-21; [05 §5](05-boundary-sources.md#5-rekomendasi-recommendation-perlu-persetujuan-di-g1)) |
 | geoBoundaries gbOpen | 34 | ODbL 1.0 | Tidak dipakai |
 | GADM | `UNKNOWN` | Non-komersial, tanpa redistribusi | Tidak dipakai |
 

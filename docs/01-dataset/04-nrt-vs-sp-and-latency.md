@@ -71,7 +71,7 @@ Temuan (`VERIFIED` untuk periode pengamatan ini saja; sampel hanya 2 hari):
 4. Latensi lintasan malam hanya diketahui batas atasnya (≤ 4,8–8,2 jam) karena laptop sleep.
 
 Implikasi (`RECOMMENDATION`, diputuskan di C-P2-001 / OQ-10):
-- **Interval polling 30 menit** sudah cukup. Batch datang hanya ±2–3 kali sehari per satelit, dengan latensi sumber 2–9 jam, sehingga tambahan tunda polling ≤ 30 menit. Interval 15 menit tetap aman dari sisi kuota (±8 transaksi per poll).
+- **Interval polling 15 menit (keputusan Lanang (R1), 2026-11-21),** supaya data diambil secepat mungkin setelah terbit. Rekomendasi agen semula 30 menit, karena batch datang hanya ±2–3 kali sehari per satelit, dengan latensi sumber 2–9 jam, sehingga tambahan tunda polling ≤ 30 menit. Interval 15 menit tetap aman dari sisi kuota (±8 transaksi per poll).
 - **"Data terlambat" ditentukan per satelit dari `acq_datetime` terbaru yang sudah dimuat**, bukan dari ada atau tidaknya deteksi baru. Di musim hujan, sebuah lintasan bisa saja punya 0 deteksi. Usulan ambang: peringatan bila akuisisi terbaru > 18 jam lalu, dan basi bila > 30 jam. Angka ini berasal dari jeda ±12 jam antar-lintasan ditambah latensi maks ±9 jam yang teramati. Sebaiknya diverifikasi lagi saat pipeline incremental berjalan (A-P5).
 - Teks UI dan laporan sebaiknya menyebut **"biasanya 2–3 jam, kadang hingga ±9 jam"**, bukan "real-time".
 
@@ -79,4 +79,4 @@ Implikasi (`RECOMMENDATION`, diputuskan di C-P2-001 / OQ-10):
 
 - **A-P3-001 (canonical event):** `processing_level` wajib masuk identitas. Tambahkan `source_acq_date_utc` untuk rekonsiliasi per tanggal.
 - **B-P3-001 (access patterns):** operasi "hapus/ganti semua deteksi `(satellite, acq_date UTC)`" harus bisa dilayani tanpa scan. Rekonsiliasi butuh query per tanggal UTC, padahal partisi tampilan memakai tanggal lokal.
-- **C-P2-001 (NFR):** ambang kesegaran per satelit dari `acq_datetime` terbaru (usulan: peringatan > 18 jam, basi > 30 jam) dan interval polling 30 menit ([§3](#3-latensi-nrt-a-p1-008)).
+- **C-P2-001 (NFR):** ambang kesegaran per satelit dari `acq_datetime` terbaru (usulan: peringatan > 18 jam, basi > 30 jam) dan interval polling 15 menit (keputusan R1) ([§3](#3-latensi-nrt-a-p1-008)).

@@ -81,13 +81,13 @@ Sesuai [rencana eksekusi](../10-execution-plan/05-project-schedule.md): G1 pada 
 | Tidak ada klaim `AI-PRIOR` tanpa label | Terpenuhi: batas ukuran partisi dan byte per baris diberi label |
 | Keputusan G1 punya opsi + rekomendasi + bukti | Terpenuhi ([07](07-dataset-recommendation.md)) |
 | Latensi NRT dilaporkan | Terpenuhi ([04 §3](04-nrt-vs-sp-and-latency.md#3-latensi-nrt-a-p1-008)); malam hanya batas atas |
-| Review R1 atas A-P1-001 dan A-P1-006 | **Belum** |
+| Review R1 atas A-P1-001 … A-P1-010 | Terpenuhi: Lanang, 2026-11-21 (cadangan batas → B5; polling 15 menit) |
 
 ## 10. Risiko tersisa
 
 | Risiko | Mitigasi |
 |---|---|
-| Lisensi BIG tidak memperbolehkan hosting publik (RC-06) | Snapshot lokal + cadangan HDX (34 provinsi), dengan keterbatasan Papua dinyatakan |
+| Lisensi BIG tidak memperbolehkan hosting publik (RC-06) | Snapshot lokal + cadangan B5 (38 provinsi, keputusan R1). Asal-usul dan lisensi B5 harus dievaluasi dulu |
 | Lonjakan volume 2026 adalah artefak sumber, bukan kejadian nyata | Cek ulang saat SP untuk 2026-08 terbit (±5 bulan). Untuk desain, volume 2026 tetap dipakai sebagai kasus terburuk |
 | Latensi NRT kadang ±9 jam (NOAA-20, 19 Nov); sampel hanya 2 hari | Indikator kesegaran per satelit dari akuisisi terbaru; ambang diverifikasi ulang saat pipeline incremental berjalan (A-P5) |
 | Endpoint `missing_data` tidak terdokumentasi dan bisa berubah | DQ-12 juga mendeteksi hari 0 baris tanpa bergantung pada endpoint itu |
@@ -98,7 +98,7 @@ Disetujui bila mayoritas 3 dari 4 setuju, dan pemilik area data (R1, Lanang) ter
 
 ## 12. Tindakan berikutnya
 
-1. **Lanang:** review draf 01 … 07 dan putuskan rekomendasi untuk dibawa ke tim.
+1. **Lanang:** selesai 2026-11-21 (A-P1-001 … A-P1-010 disetujui; posisi R1 di [07](07-dataset-recommendation.md#posisi-pemilik-area-data-r1)).
 2. **Abi Funn:** review [00-volume-estimates](../03-specs/database/00-volume-estimates.md), lalu siapkan paket G1.
 3. **Abigail:** review draf user stories (masukan D-P2-001).
 4. **Zita:** C-P1-001 (inventaris toolchain & opsi cloud) belum dikerjakan.
