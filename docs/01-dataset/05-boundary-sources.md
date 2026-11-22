@@ -20,7 +20,7 @@ Dari keputusan Fase 0 (OQ-06, OQ-07, A-11, A-20):
 | B2 | **geoBoundaries** gbOpen IDN ADM1 | **34** (`admUnitCount`) | `boundaryYearRepresented` 2017; sumber OpenStreetMap/Wambacher | ODbL 1.0 | GeoJSON/TopoJSON + versi simplified | EPSG:4326 | `VERIFIED` (API geoBoundaries) |
 | B3 | **HDX COD-AB Indonesia** (`cod-ab-idn`, OCHA/BPS) | **34** ("Admin 1: 34 province") | Batas dibuat 2020-04-08; ditinjau 2025-10-30 | CC BY-IGO | SHP 498 MB, GeoJSON 456 MB, GDB 219 MB (zip) | — | `VERIFIED` (API HDX) |
 | B4 | **GADM** | `UNKNOWN` (sumber sekunder menyebut GADM 4.1 masih 34) | 4.1 | Hanya untuk akademik/non-komersial; **redistribusi tidak diizinkan** tanpa izin (gadm.org/license) | — | — | Lisensi `VERIFIED` lewat ringkasan pencarian; jumlah provinsi tidak diverifikasi |
-| B5 | Repo GitHub komunitas berisi "38 provinsi" (GeoJSON/TopoJSON) | Diklaim 38 | Bervariasi | Asal-usul data dan lisensinya tidak jelas (sebagian turunan GADM) | — | — | Tidak dievaluasi lebih lanjut |
+| B5 | Repo GitHub komunitas berisi "38 provinsi" (GeoJSON/TopoJSON) | Diklaim 38 | Bervariasi | Asal-usul data dan lisensinya tidak jelas (sebagian turunan GADM) | — | — | Belum dievaluasi; dipilih R1 sebagai cadangan (§5) |
 
 Fakta tambahan B1, diukur dari data yang diunduh:
 
@@ -34,10 +34,10 @@ Fakta tambahan B1, diukur dari data yang diunduh:
 
 Penetapan provinsi diuji dengan point-in-polygon (numpy, ray casting) terhadap B1 tergeneralisasi:
 
-- Seluruh koordinat unik hasil unduhan Fase 1 diproses dalam hitungan detik. Angka akhirnya ada di [03-profiling-report.md](03-profiling-report.md).
+- Seluruh **2.555.369 koordinat unik** hasil unduhan Fase 1 diproses dalam 48 detik di satu laptop; 2.234.753 di antaranya masuk poligon kab/kota. Rincian per sumber ada di [03 §7](03-profiling-report.md#7-penetapan-wilayah-big-kabkota-edisi-juni-2026-generalisasi-0001).
 - Uji acak: titik di Kupang/Belu → NTT, Indramayu → Jawa Barat, Tanjung Jabung Barat → Jambi. Titik di Timor-Leste, Australia utara, dan Malaysia → di luar.
-- Hanya 15 dari ±300 ribu koordinat (uji awal) yang jatuh di dua poligon sekaligus, akibat generalisasi tepi. Aturannya: ambil poligon pertama, lalu laporkan jumlahnya.
-- Titik yang tidak masuk poligon mana pun dihitung jaraknya ke tepi poligon terdekat. Distribusinya dipakai untuk aturan kualitas DQ-07 (lihat [06-data-quality-rules.md](06-data-quality-rules.md)).
+- Hanya **101 dari 2.555.369** koordinat yang jatuh di dua poligon sekaligus, akibat generalisasi tepi. Aturannya: ambil poligon pertama, lalu laporkan jumlahnya (DQ-07b).
+- Titik yang tidak masuk poligon mana pun dihitung jaraknya ke tepi poligon terdekat. Distribusinya dipakai untuk aturan kualitas DQ-07 ([06-data-quality-rules.md](06-data-quality-rules.md)). Semua 38 kode provinsi muncul di data deteksi.
 
 ## 4. Analisis
 
@@ -51,7 +51,9 @@ Penetapan provinsi diuji dengan point-in-polygon (numpy, ray casting) terhadap B
 1. **Pakai B1 (BIG, edisi Juni 2026)** sebagai satu-satunya versi batas provinsi untuk seluruh periode (sesuai A-20). Simpan snapshot GeoJSON tergeneralisasi beserta checksum-nya (SHA-256 gabungan 22 bagian: `0382eeee…f3e478`) agar hasil bisa direproduksi. Snapshot ini tidak bergantung pada ketersediaan server BIG saat aplikasi berjalan.
 2. **Atribusi wajib di aplikasi dan README:** "Batas wilayah: Badan Informasi Geospasial (BIG), Batas Wilayah Administrasi edisi Juni 2026".
 3. **Tindakan tim sebelum hosting publik (NA baru):** konfirmasi syarat penggunaan ke BIG atau lewat halaman kebijakan tanahair.indonesia.go.id. Sampai ada konfirmasi, statusnya `ASSUMPTION`: penggunaan akademik non-komersial dengan atribusi diperbolehkan.
-4. **Cadangan bila lisensi B1 ternyata tidak memadai:** B3 (HDX, CC BY-IGO, 34 provinsi), dengan keterbatasan Papua dinyatakan eksplisit di UI dan dokumentasi.
+4. **Cadangan bila lisensi B1 ternyata tidak memadai: B5** (repo komunitas berisi 38 provinsi). **Keputusan Lanang (R1), 2026-11-21:** yang utama adalah cakupan 38 provinsi lengkap, sehingga B3 (HDX, 34 provinsi) tidak dipakai.
+   - **Risiko yang tercatat:** B5 belum dievaluasi. Asal-usul dan lisensinya tidak jelas, dan sebagian merupakan turunan GADM, sehingga masalah lisensinya bisa sama atau lebih buruk daripada B1.
+   - **Syarat sebelum B5 dipakai:** pilih satu repo spesifik, lalu catat URL, commit, lisensi tertulis, dan sumber asal datanya. Simpan snapshot + SHA-256, dan verifikasi 38 kode provinsi seperti uji B1 di §4.
 
 ## 6. Sumber
 

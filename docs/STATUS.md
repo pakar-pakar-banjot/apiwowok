@@ -4,18 +4,25 @@
 > File ini adalah **ringkasan dan penunjuk**. Sumber kebenaran tetap dokumen yang dirujuk. Jika ada konflik, dokumen yang dirujuk yang berlaku, dan file ini wajib diperbaiki.
 > Diperbarui setiap kali melewati gerbang fase atau ada keputusan baru.
 
-Terakhir diperbarui: **2026-11-19** (setelah G0).
+Terakhir diperbarui: **2026-11-22** (setelah G1).
 
 ## 1. Posisi saat ini
 
 | Item | Nilai |
 |---|---|
-| Fase aktif | **Fase 1 — Dataset Feasibility** (siap dimulai; belum ada pekerjaan Fase 1) |
-| Gerbang terakhir | **G0 disetujui 2026-11-19** |
-| Kalender kerja | D1 = 2026-11-19 … D21 = 2026-12-09 (asumsi A-22; jadwal di [charter §10](00-discovery/01-project-charter.md#10-jadwal-tingkat-tinggi-usulan)) |
-| Tim | 4 orang, peran R1–R4 (nama belum ditetapkan), ±4 jam/hari/orang |
-| Repo | `github.com/pakar-pakar-banjot/apiwowok`; dokumen Fase 0 di branch `docs/phase-0-discovery` |
+| Fase aktif | **Fase 2 — Requirements & semantik data** (mulai 2026-11-22, setelah G1). Syarat masuk G2: D-P2-001…003, C-P2-001, A-P2-001, B-P2-001. Fase 1 ditutup: [laporan Fase 1](01-dataset/README.md). C-P1-001 (toolchain & cloud) belum dikerjakan; bukan syarat G1. |
+| Gerbang terakhir | **G1 (dataset feasibility) disetujui 2026-11-22** (4/4); sebelumnya GATE-EP dan G0 disetujui 2026-11-19 |
+| Kalender kerja | D1 = 2026-11-19 … D21 = 2026-12-09 (asumsi A-22; presentasi diasumsikan 2026-12-10, HD-23). Jadwal yang berlaku: [05-project-schedule](10-execution-plan/05-project-schedule.md) (CR-04): G1 D3 · G2 D7 · G3/G4 D8 · G5/G6 D14 · freeze D17 · G7 D18 · G8 D20 |
+| Tim | R1/A **Lanang** (Data/ETL) · R2/B **Abi Funn** (Cassandra + **koordinator**) · R3/C **Zita** (Backend & DevOps) · R4/D **Abigail** (Frontend & Delivery). 4 jam/hari; R1 & R3 ±5 jam/hari pada D9–D15 ([01-role-charters](10-execution-plan/01-role-charters.md)) |
+| Repo | `github.com/pakar-pakar-banjot/apiwowok`; Fase 0 dan awal Fase 1 di `main`; rencana eksekusi + hasil Fase 1 + G1 di PR #1 (`docs/execution-plan`, belum di-merge) |
 | Kode aplikasi | Belum ada |
+
+## 1a. Rencana eksekusi & progres
+
+- **Rencana kerja tim:** [docs/10-execution-plan/](10-execution-plan/00-execution-plan-overview.md). Berisi 110 tugas dengan pemilik, dependensi, jadwal, kontrak antarmuka, kepemilikan file, dan prompt agen per peran ([11-role-prompts/](10-execution-plan/11-role-prompts/)).
+- **Progres:** [13-progress-tracker.md](10-execution-plan/13-progress-tracker.md). Implementer mencentang task ID-nya dan mengisi `bukti:`; seorang manusia (anggota tim mana pun) mengisi `disetujui:`. Review peran lain tidak wajib.
+- **Cek tugas (manusia & agen):** `python -I docs/10-execution-plan/tools/task.py brief --role <A|B|C|D>` (apa yang siap/terblokir), `check <ID>` (kartu tugas + dependensi dari graf), `scope <ID>` (file yang diubah). Status juga tampil sebagai ikon di [graf dependensi](10-execution-plan/04-dependency-graph.mmd). Protokol agen: [AGENTS.md](../AGENTS.md).
+- **Keputusan tim:** [12-human-decision-register.md](10-execution-plan/12-human-decision-register.md) · **Change request:** [docs/change-requests/](change-requests/).
 
 ## 2. Aturan kerja (wajib)
 
@@ -41,10 +48,12 @@ Sumber kebenaran: [04-open-questions-register.md](00-discovery/04-open-questions
 | Rubrik | Tidak ada rubrik; Cassandra wajib; fokus produk jadi + implementasi teknis | OQ-01 |
 | Sumber data | **NASA FIRMS** (pull). NOAA NODD + SNS (push) = *Could* setelah D13. Pipeline memakai antarmuka *source adapter*. | OQ-28, [08](00-discovery/08-data-source-alternatives.md) |
 | Produk satelit | **VIIRS 375 m NOAA-20 (utama) + NOAA-21 (kedua)**. S-NPP sudah berhenti; MODIS tidak dipakai. | OQ-04 |
-| Mode ingestion | **Satu pipeline, dua mode, keduanya Must:** backfill (arsip SP) + incremental (polling NRT micro-batch, ±15–30 menit). Tanpa Kafka/Airflow. Penggantian NRT oleh SP = *Should*. | OQ-10 |
-| Periode | Profil 1 tahun dulu; target ≥2 tahun penuh termasuk musim kemarau. Final di gerbang Fase 1. | OQ-05 (PROVISIONAL) |
+| Mode ingestion | **Satu pipeline, dua mode, keduanya Must:** backfill (arsip SP) + incremental (polling NRT micro-batch). **Interval polling 15 menit** (Lanang/R1, 2026-11-21; angka NFR final di C-P2-001). Tanpa Kafka/Airflow. Penggantian NRT oleh SP = *Should*. | OQ-10 |
+| Periode | **2023-01-01 sampai sekarang**, NOAA-20 + NOAA-21 (NOAA-21 mulai 2023-03-01). SP sampai akhir ketersediaan SP, NRT sesudahnya. | OQ-05, HD-09 (G1) |
 | Cakupan | Seluruh Indonesia, tingkat provinsi (kabupaten = *Could*) | OQ-06 |
-| Batas wilayah | Satu versi tetap (38 provinsi, lisensi jelas); sumber dipilih di Fase 1 | OQ-07, A-20 |
+| Batas wilayah | **BIG `BATAS_KABKOTA_AR` edisi Juni 2026** (38 provinsi), snapshot tergeneralisasi 0,001° + checksum. Lisensi `UNKNOWN`: konfirmasi ke BIG sebelum hosting publik; cadangan **B5** (38 provinsi, dievaluasi dulu) | OQ-07, A-20, HD-08 (G1) |
+| Tumpang tindih NRT/SP | Satu produk per (satelit, tanggal UTC): SP bila tersedia, NRT sesudahnya; penggantian NRT→SP per tanggal, bukan per deteksi | HD-10 (G1) |
+| Kualitas data | DQ-01 … DQ-15: tolak hanya yang rusak, sisanya diberi flag. Tipe non-vegetasi dihitung semua + filter opsional (periode SP); tanpa snapping titik tepi | HD-11 (G1), [06](01-dataset/06-data-quality-rules.md) |
 | Zona waktu | Simpan UTC; tanggal agregasi/tampilan per zona waktu provinsi (WIB/WITA/WIT) | OQ-08 |
 | Confidence | Simpan semua; default tampilan diputuskan di Fase 2 | OQ-09 |
 | Titik di luar provinsi | Simpan dengan status wilayah khusus; keluarkan dari ranking; laporkan jumlahnya | OQ-11 |
@@ -63,7 +72,7 @@ Sumber kebenaran: [04-open-questions-register.md](00-discovery/04-open-questions
 | Area API: `/api/area/csv/{KEY}/{SOURCE}/{W,S,E,N}/{DAY_RANGE 1-5}[/{YYYY-MM-DD}]` | FIRMS API |
 | Kuota 5000 transaksi / 10 menit; Country API "currently not available" | FIRMS API |
 | WFS FIRMS: region `SouthEast_Asia`, jendela 24 jam/7 hari, output CSV, diperbarui tiap 15 menit | FIRMS WFS info |
-| Latensi NRT VIIRS < 3 jam (global) | FIRMS FAQ |
+| Latensi NRT VIIRS < 3 jam (global); terukur untuk Indonesia: 1,8 sampai ±9 jam (2 hari, Fase 1) | FIRMS FAQ; [04 §3](01-dataset/04-nrt-vs-sp-and-latency.md#3-latensi-nrt-a-p1-008) |
 
 Detail lengkap dan tautan sumber: [08 §7](00-discovery/08-data-source-alternatives.md#7-sumber-yang-dibaca), [03-assumptions-register.md](00-discovery/03-assumptions-register.md).
 
@@ -77,12 +86,14 @@ Detail lengkap dan tautan sumber: [08 §7](00-discovery/08-data-source-alternati
 
 | Item | Kapan |
 |---|---|
-| OQ-05 periode final; OQ-07 sumber batas provinsi | Gerbang Fase 1 |
-| Aturan backfill untuk periode tumpang tindih NRT/SP NOAA-21 | Fase 1 (P1-09) |
+| Tindak lanjut HD-08: konfirmasi lisensi BIG (siapa yang menghubungi BIG belum ditetapkan); evaluasi B5 bila BIG tidak memadai | Sebelum hosting publik (OQ-21) |
 | OQ-23–OQ-27 (cloud: penyedia, Cassandra di cloud, lokasi poller, keamanan, alur kerja tanpa Docker) | Fase 3–4 / ≤ D12 |
 | NA-05 repo privat; NA-06 ritme komunikasi; NA-07 opsi cloud | Tim |
+| Keputusan G2–G4: HD-12–HD-21 | [12](10-execution-plan/12-human-decision-register.md) |
 
 ## 7. Rencana Fase 1 (Dataset Feasibility)
+
+**Status: selesai, G1 disetujui 2026-11-22.**
 
 Rincian tugas: [06-next-actions.md §2](00-discovery/06-next-actions.md#2-persiapan-fase-1-dapat-dimulai-setelah-gerbang-g0) (P1-01…P1-11).
 
@@ -106,3 +117,6 @@ Batasan Fase 1:
 | Tanggal | Peristiwa |
 |---|---|
 | 2026-11-19 | Fase 0 disusun; jawaban open questions diterima; NRT dinaikkan ke Must (dua mode); kajian sumber data selesai; S-NPP diganti NOAA-20/21; MAP_KEY teruji; **G0 disetujui**. |
+| 2026-11-19 | Fase 1 dimulai (inventaris sumber, evaluasi batas, unduhan sampel; di `main` `9214337`). Rencana eksekusi disusun; **GATE-EP disetujui**: semua rekomendasi HD-01–07 dan HD-22–24 diterima, termasuk anggota↔peran, koordinator R2, mekanisme gerbang 3/4 + pemilik area, dan HD-07(b). CR-01, CR-02, CR-04 disetujui. |
+| 2026-11-19 | **HD-06 diganti:** tidak ada review wajib antar peran; tugas selesai saat seorang manusia mengisi `disetujui:`, dan dependensi Hard hanya butuh persetujuan itu. Protokol agen wajib di [AGENTS.md](../AGENTS.md) + `tools/task.py` (cek tugas dari graf dependensi). |
+| 2026-11-22 | **G1 disetujui** (4/4: Lanang, Abi Funn, Zita, Abigail; suara Zita & Abigail disampaikan Lanang). Keputusan: periode 2023-01-01 sampai sekarang (HD-09); NOAA-20 + NOAA-21, SP lalu NRT; tumpang tindih per (satelit, tanggal UTC) (HD-10); batas BIG Juni 2026, cadangan B5, lisensi masih dikonfirmasi (HD-08); DQ-01 … DQ-15 (HD-11); polling 15 menit (R1); [CR-03](change-requests/CR-03.md) diterapkan ke register asumsi. X-P1-902 didelegasikan Abi Funn ke Lanang. |
