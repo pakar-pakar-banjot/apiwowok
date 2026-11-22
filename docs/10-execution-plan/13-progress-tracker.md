@@ -68,7 +68,7 @@ Menunggu persetujuan manusia: D-P1-001.
 
 ### P2 — Requirements Engineering
 
-- [ ] **A-P2-001** Semantik data & aturan perhitungan · R1 · bukti: — · disetujui: —
+- [ ] **A-P2-001** Semantik data & aturan perhitungan · R1 · bukti: draf agen, PR #3 (2026-11-22): docs/03-specs/data/01-data-semantics.md (SEM-00…SEM-13, KEP-01…05 berisi rekomendasi); menunggu review Lanang dan persetujuan G2 · disetujui: —
 
 ### P3 — Architecture & Technical Specs
 
