@@ -1,18 +1,18 @@
 # Fase 1 — Dataset Feasibility: Laporan (A-P1-010)
 
-> Draf agen 2026-11-19 (D1) · Pemilik: R1 (Lanang) · Gerbang: **G1** (target D3, 2026-11-21) · Label: [legenda](../00-discovery/README.md#label-status-informasi)
+> Draf agen 2026-11-19 (D1) · Pemilik: R1 (Lanang) · Gerbang: **G1 disetujui 2026-11-22** (D4; target D3) · Label: [legenda](../00-discovery/README.md#label-status-informasi)
 
 | # | Dokumen | Tugas | Status |
 |---|---|---|---|
-| 01 | [Source inventory](01-source-inventory.md) | A-P1-001 | Draf, menunggu review R1 |
-| 02 | [Data dictionary + verifikasi asumsi](02-data-dictionary.md) | A-P1-003, A-P1-005 | Draf |
-| 03 | [Laporan profiling](03-profiling-report.md) | A-P1-004 | Draf |
-| 04 | [NRT vs SP & latensi](04-nrt-vs-sp-and-latency.md) | A-P1-007, A-P1-008 | Draf (latensi final 2026-11-20) |
-| 05 | [Sumber batas provinsi](05-boundary-sources.md) | A-P1-006 | Draf, menunggu review R1 |
-| 06 | [Aturan kualitas data](06-data-quality-rules.md) | A-P1-009 | Draf |
-| 07 | [Rekomendasi dataset](07-dataset-recommendation.md) | A-P1-010 | Draf |
-| — | [Estimasi volume](../03-specs/database/00-volume-estimates.md) | B-P1-001 | Draf (R2) |
-| — | [Draf user stories](../02-requirements/00-draft-user-stories.md) | D-P1-001 | Draf (R4) |
+| 01 | [Source inventory](01-source-inventory.md) | A-P1-001 | ✅ Disetujui |
+| 02 | [Data dictionary + verifikasi asumsi](02-data-dictionary.md) | A-P1-003, A-P1-005 | ✅ Disetujui |
+| 03 | [Laporan profiling](03-profiling-report.md) | A-P1-004 | ✅ Disetujui |
+| 04 | [NRT vs SP & latensi](04-nrt-vs-sp-and-latency.md) | A-P1-007, A-P1-008 | ✅ Disetujui (polling 15 menit) |
+| 05 | [Sumber batas provinsi](05-boundary-sources.md) | A-P1-006 | ✅ Disetujui (cadangan B5) |
+| 06 | [Aturan kualitas data](06-data-quality-rules.md) | A-P1-009 | ✅ Disetujui |
+| 07 | [Rekomendasi dataset](07-dataset-recommendation.md) | A-P1-010 | ✅ Disetujui |
+| — | [Estimasi volume](../03-specs/database/00-volume-estimates.md) | B-P1-001 | ✅ Disetujui (R2) |
+| — | [Draf user stories](../02-requirements/00-draft-user-stories.md) | D-P1-001 | Draf (R4), belum disetujui; bukan syarat G1 |
 
 ## 1. Tujuan fase
 
@@ -69,8 +69,8 @@ Sesuai [rencana eksekusi](../10-execution-plan/05-project-schedule.md): G1 pada 
 - [ ] Jalankan ulang `pip_assign.py` → `profile_firms.py` → `extra_checks.py` → `compare_nrt_sp.py`; angka sama dengan dokumen.
 - [ ] Cocokkan 3 baris acak dari raw zone dengan data dictionary (header, format `acq_time`, `version`).
 - [ ] Periksa penetapan provinsi untuk 5 titik acak di peta.
-- [ ] Pastikan tidak ada MAP_KEY di dokumen, skrip, dan log (`grep`).
-- [ ] Setujui atau tolak masing-masing dari 7 keputusan G1.
+- [x] Pastikan tidak ada MAP_KEY di dokumen, skrip, dan log (`grep`). *(2026-11-22: 0 kecocokan pola 32-hex di docs/, scratch/, dan log)*
+- [x] Setujui atau tolak masing-masing dari 7 keputusan G1. *(2026-11-22: diterima 4/4; keputusan 5 dengan cadangan B5)*
 
 ## 9. Kriteria penerimaan Fase 1
 
@@ -95,6 +95,8 @@ Sesuai [rencana eksekusi](../10-execution-plan/05-project-schedule.md): G1 pada 
 ## 11. Gerbang persetujuan G1
 
 Disetujui bila mayoritas 3 dari 4 setuju, dan pemilik area data (R1, Lanang) termasuk yang setuju. Hasilnya dicatat oleh koordinator (Abi Funn, X-P1-902) di STATUS.md dan register keputusan.
+
+**Hasil (2026-11-22):** disetujui 4/4 (Lanang, Abi Funn, Zita, Abigail), termasuk pemilik area data. Suara Zita dan Abigail disampaikan Lanang. Pencatatan X-P1-902 didelegasikan Abi Funn ke Lanang.
 
 ## 12. Tindakan berikutnya
 

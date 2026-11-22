@@ -1,6 +1,6 @@
 # 00 — Estimasi Volume per Kandidat Partisi (B-P1-001)
 
-> Fase 1 · Draf agen 2026-11-19 · Pemilik: R2 (Abi Funn) · Reviewer: R1 (Lanang) · Masukan untuk B-P3-001/002 (G3)
+> Fase 1 · Draf agen 2026-11-19 · **Disetujui Lanang (R1) 2026-11-22** · Pemilik: R2 (Abi Funn) · Reviewer: R1 (Lanang) · Masukan untuk B-P3-001/002 (G3)
 > Jumlah baris = **diukur** dari raw zone Fase 1 (`data/firms/profile/prov_day.csv`, `extra_checks.json`). Byte per baris di Cassandra = `ASSUMPTION` sampai diukur di B-P5-007. Batas ukuran partisi = `AI-PRIOR`, diverifikasi di B-P3-001.
 
 ## 1. Dasar perhitungan

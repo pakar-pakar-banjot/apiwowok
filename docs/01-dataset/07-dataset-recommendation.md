@@ -1,6 +1,6 @@
 # 07 — Rekomendasi Dataset (A-P1-010)
 
-> Fase 1 · Draf agen 2026-11-19 · Pemilik: R1 (Lanang) · Status: `RECOMMENDATION`. Semua butir di bawah adalah **keputusan G1** yang menunggu persetujuan tim (HD-05: 3 dari 4 + pemilik area).
+> Fase 1 · Draf agen 2026-11-19 · Pemilik: R1 (Lanang) · Status: **Disetujui G1 2026-11-22** (tim 4/4: Lanang, Abi Funn, Zita, Abigail). Ketujuh keputusan di bawah diterima, dengan keputusan 5 memakai cadangan **B5**. Pencatatan: [STATUS §8](../STATUS.md#8-riwayat-gerbang--keputusan-besar), [register keputusan](../10-execution-plan/12-human-decision-register.md).
 
 ## Ringkasan keputusan G1
 

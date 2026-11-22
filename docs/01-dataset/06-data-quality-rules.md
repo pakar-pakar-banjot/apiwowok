@@ -1,6 +1,6 @@
 # 06 — Aturan Kualitas Data Awal (A-P1-009)
 
-> Fase 1 · Draf agen 2026-11-19 · Pemilik: R1 (Lanang) · Reviewer: R2 (Abi Funn) · Status: `RECOMMENDATION`. Kebijakan DQ butuh persetujuan di **G1** (HD-11).
+> Fase 1 · Draf agen 2026-11-19 · Pemilik: R1 (Lanang) · Reviewer: R2 (Abi Funn) · Status: **Disetujui G1 2026-11-22** (HD-11): DQ-01 … DQ-15 dan rekomendasi (a) pada kedua sub-keputusan di bawah.
 > Dampak = jumlah baris di raw zone Fase 1 ([03](03-profiling-report.md)). Urutan sumber di kolom dampak: N20 SP · N21 SP · N20 NRT · N21 NRT.
 
 ## Prinsip

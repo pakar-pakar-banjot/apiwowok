@@ -24,10 +24,10 @@ Tim menyetujui semua rekomendasi di bawah pada 2026-11-19 (D1). Keputusan disamp
 
 | ID | Keputusan | Rekomendasi (dari Fase 1, menyusul) | Diputuskan |
 |---|---|---|---|
-| HD-09 | Periode historis final (OQ-05) | Di laporan Fase 1 | |
-| HD-10 | Aturan tumpang tindih NRT/SP NOAA-21 (P1-09) | Di 04-nrt-vs-sp | |
-| HD-11 | Aturan kualitas data awal | Di 06-data-quality-rules | |
-| HD-08 | Lisensi BIG: boleh dipakai di aplikasi publik dan di-commit? (A-11, OQ-07) | Konfirmasi ke BIG/tanahair.indonesia.go.id; sampai ada jawaban: snapshot lokal, cadangan HDX | |
+| HD-09 | Periode historis final (OQ-05) | 2023-01-01 sampai sekarang ([07 §1](../01-dataset/07-dataset-recommendation.md#1-periode-hd-09)) | **tim 4/4 (Lanang, Abi Funn, Zita, Abigail), 2026-11-22; suara Zita & Abigail disampaikan Lanang di sesi Claude Code:** 2023-01-01 sampai sekarang, NOAA-20 + NOAA-21 |
+| HD-10 | Aturan tumpang tindih NRT/SP NOAA-21 (P1-09) | Satu produk per (satelit, tanggal UTC) ([04 §2](../01-dataset/04-nrt-vs-sp-and-latency.md#2-aturan-tumpang-tindih-nrtsp-yang-diusulkan-keputusan-hd-10)) | **tim 4/4 (Lanang, Abi Funn, Zita, Abigail), 2026-11-22; suara Zita & Abigail disampaikan Lanang di sesi Claude Code:** SP bila tersedia, NRT sesudahnya; penggantian NRT→SP per tanggal |
+| HD-11 | Aturan kualitas data awal | DQ-01 … DQ-15 ([06](../01-dataset/06-data-quality-rules.md)) | **tim 4/4 (Lanang, Abi Funn, Zita, Abigail), 2026-11-22; suara Zita & Abigail disampaikan Lanang di sesi Claude Code:** DQ-01 … DQ-15; tipe non-vegetasi dihitung semua + filter opsional; tanpa snapping tepi |
+| HD-08 | Lisensi BIG: boleh dipakai di aplikasi publik dan di-commit? (A-11, OQ-07) | Konfirmasi ke BIG/tanahair.indonesia.go.id; sampai ada jawaban: snapshot lokal, cadangan HDX | **tim 4/4 (Lanang, Abi Funn, Zita, Abigail), 2026-11-22; suara Zita & Abigail disampaikan Lanang di sesi Claude Code:** konfirmasi ke BIG sebelum hosting publik; snapshot lokal; cadangan **B5** (38 provinsi, bukan HDX; usulan Lanang 2026-11-21), dievaluasi dulu sebelum dipakai. Jawaban BIG masih ditunggu; siapa yang menghubungi belum ditetapkan. |
 
 ## Dibutuhkan di G2–G4 (D5–D8)
 

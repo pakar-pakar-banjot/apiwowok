@@ -1,6 +1,6 @@
 # 04 — NRT vs SP & Latensi NRT (A-P1-007, A-P1-008)
 
-> Fase 1 · Draf agen 2026-11-19 · Pemilik: R1 (Lanang) · Reviewer: R2 (Abi Funn)
+> Fase 1 · Draf agen 2026-11-19 · **Disetujui G1 2026-11-22** (A-P1 disetujui Lanang 2026-11-21) · Pemilik: R1 (Lanang) · Reviewer: R2 (Abi Funn)
 > Sumber angka: `data/firms/profile/nrt_vs_sp.json` (skrip `scratch/phase1/compare_nrt_sp.py`) dan `latency.json` (`latency_report.py`). Data lokal, tidak di-commit.
 
 ## 1. Perbandingan NOAA-21 NRT vs SP (tumpang tindih 12 bulan)

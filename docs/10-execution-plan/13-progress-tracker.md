@@ -29,20 +29,20 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 | Bagian | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | Semua |
 |---|---|---|---|---|---|---|---|---|---|
 | Role A (R1) | 10 / 10 / 10 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **10 / 10 / 31** |
-| Role B (R2) | 0 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **0 / 1 / 20** |
+| Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
 | Role C (R3) | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 0 / 25** |
 | Role D (R4) | 0 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **0 / 1 / 23** |
-| Koordinator integrasi (tugas X-) | 1 / 1 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **1 / 1 / 11** |
-| **Tim** | 11 / 13 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **11 / 13 / 110** |
+| Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
+| **Tim** | 13 / 14 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **13 / 14 / 110** |
 
-Gerbang disetujui: GATE-EP.
-Menunggu persetujuan manusia: B-P1-001, D-P1-001.
+Gerbang disetujui: GATE-EP, GATE-G1.
+Menunggu persetujuan manusia: D-P1-001.
 <!-- progress:summary:end -->
 
 ## Gerbang
 
 - [x] **GATE-EP** Persetujuan rencana eksekusi (dokumen ini) + penetapan anggota/peran · bukti: rencana `docs/10-execution-plan/` + keputusan [12](12-human-decision-register.md), 2026-11-19 · disetujui: tim (semua rekomendasi HD-01–07, HD-22–24), 2026-11-19, disampaikan di sesi Claude Code; dicatat di STATUS.md §8
-- [ ] **GATE-G1** G1 — dataset, periode (OQ-05), batas provinsi (OQ-07), aturan NRT/SP, aturan DQ · bukti: — · disetujui: —
+- [x] **GATE-G1** G1 — dataset, periode (OQ-05), batas provinsi (OQ-07), aturan NRT/SP, aturan DQ · bukti: paket G1 docs/01-dataset/07-dataset-recommendation.md; keputusan di 12 (HD-08…HD-11) + STATUS §3/§8; CR-03 diterapkan · disetujui: tim 4/4 (Lanang, Abi Funn, Zita, Abigail), 2026-11-22; suara Zita & Abigail disampaikan Lanang di sesi Claude Code
 - [ ] **GATE-G2** G2 — requirements, NFR, semantik data, MVP terkunci · bukti: — · disetujui: —
 - [ ] **GATE-G3** G3 — kontrak canonical event, access patterns, model data, OpenAPI, UI spec, ADR · bukti: — · disetujui: —
 - [ ] **GATE-G4** G4 — harness: repo, AGENTS.md, Compose, CI hijau · bukti: — · disetujui: —
@@ -109,7 +109,7 @@ Menunggu persetujuan manusia: B-P1-001, D-P1-001.
 
 ### P1 — Dataset Feasibility
 
-- [x] **B-P1-001** Estimasi volume per provinsi per hari/bulan · R2 · bukti: draf agen, PR #1 (2026-11-19): docs/03-specs/database/00-volume-estimates.md; menunggu review · disetujui: —
+- [x] **B-P1-001** Estimasi volume per provinsi per hari/bulan · R2 · bukti: draf agen, PR #1 (2026-11-19): docs/03-specs/database/00-volume-estimates.md; menunggu review · disetujui: Lanang (R1), 2026-11-22, sesi Claude Code (persetujuan saat mencatat G1)
 
 ### P2 — Requirements Engineering
 
@@ -247,7 +247,7 @@ Menunggu persetujuan manusia: B-P1-001, D-P1-001.
 ### P1 — Dataset Feasibility
 
 - [x] **X-P1-901** Tetapkan anggota↔peran, koordinator, ketersediaan; setujui rencana eksekusi · Koordinator (R2) · bukti: anggota↔peran, koordinator R2, ketersediaan dicatat di [12](12-human-decision-register.md) + [01 §0](01-role-charters.md#0-penugasan-anggota-hd-01), 2026-11-19 · disetujui: tim, 2026-11-19 (GATE-EP)
-- [ ] **X-P1-902** Paket gerbang G1 + catat keputusan + perbarui STATUS · Koordinator (R2) · bukti: — · disetujui: —
+- [x] **X-P1-902** Paket gerbang G1 + catat keputusan + perbarui STATUS · Koordinator (R2) · bukti: G1 dicatat 2026-11-22: docs/STATUS.md §1/§3/§6/§8, 12 (HD-08…HD-11), CR-03 diterapkan ke 00-discovery/03-assumptions-register.md; didelegasikan Abi Funn ke Lanang (disampaikan Lanang 2026-11-22) · disetujui: tim, 2026-11-22 (G1)
 
 ### P2 — Requirements Engineering
 

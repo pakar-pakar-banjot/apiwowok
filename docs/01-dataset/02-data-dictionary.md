@@ -1,6 +1,6 @@
 # 02 — Data Dictionary (A-P1-003, A-P1-005)
 
-> Fase 1 · Draf agen 2026-11-19 · Pemilik: R1 (Lanang) · Reviewer: R2 (Abi Funn) · Label: [legenda](../00-discovery/README.md#label-status-informasi)
+> Fase 1 · Draf agen 2026-11-19 · **Disetujui G1 2026-11-22** (A-P1 disetujui Lanang 2026-11-21) · Pemilik: R1 (Lanang) · Reviewer: R2 (Abi Funn) · Label: [legenda](../00-discovery/README.md#label-status-informasi)
 > Data: 629 respons Area API (bbox `94,-11.5,141.5,6.5`) yang diunduh 2026-11-19, berisi **2.705.905 baris**. Checksum SHA-256 semua file cocok dengan `data/firms/manifest.csv`. Angka di dokumen ini berasal dari `data/firms/profile/profile.json` dan `extra_checks.json` (skrip `scratch/phase1/profile_firms.py`, `extra_checks.py`).
 
 ## 1. Sumber resmi yang dibaca (2026-11-19)

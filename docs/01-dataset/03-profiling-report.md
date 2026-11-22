@@ -1,6 +1,6 @@
 # 03 — Laporan Profiling Dataset (A-P1-004)
 
-> Fase 1 · Draf agen 2026-11-19 · Pemilik: R1 (Lanang) · Reviewer: R2 (Abi Funn)
+> Fase 1 · Draf agen 2026-11-19 · **Disetujui G1 2026-11-22** (A-P1 disetujui Lanang 2026-11-21) · Pemilik: R1 (Lanang) · Reviewer: R2 (Abi Funn)
 > Semua angka **diukur** dari raw zone Fase 1. Sumber angka (lokal, tidak di-commit): `data/firms/profile/profile.json`, `extra_checks.json`, `daily_counts.csv`, `prov_day.csv`, `prov_month.csv`, `coord_assign.csv`.
 > Reproduksi: `python -I scratch/phase1/pip_assign.py`, lalu `profile_firms.py`, lalu `extra_checks.py` (tanpa panggilan API).
 
