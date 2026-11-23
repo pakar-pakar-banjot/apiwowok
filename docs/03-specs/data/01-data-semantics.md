@@ -1,6 +1,6 @@
 # 01 — Semantik Data & Aturan Perhitungan (A-P2-001)
 
-> Fase 2 · **DRAF agen 2026-11-22** · Pemilik: R1 (Lanang) · Status: `RECOMMENDATION`, menunggu review Lanang dan persetujuan G2 (kebijakan data).
+> Fase 2 · **DRAF agen 2026-11-22, diperbarui 2026-11-23** sesuai putusan review Lanang (R1) · Pemilik: R1 (Lanang) · Status: `RECOMMENDATION`; putusan review Lanang tercatat di [§3](#3-keputusan-yang-butuh-persetujuan-g2), menunggu persetujuan formal G2 (kebijakan data) dan pencatatan di register oleh X-P2-901.
 > Sumber: keputusan G1 (HD-09, HD-10, HD-11), OQ-08…OQ-12, [04](../../01-dataset/04-nrt-vs-sp-and-latency.md), [06](../../01-dataset/06-data-quality-rules.md), [07](../../01-dataset/07-dataset-recommendation.md), [draf story](../../02-requirements/00-draft-user-stories.md).
 > Label: [legenda](../../00-discovery/README.md#label-status-informasi). Semua pilihan di bawah adalah **rekomendasi agen** (`RECOMMENDATION`), diisi penuh supaya tim tinggal menyetujui atau mengubah. Tidak ada yang sah sebelum G2.
 
@@ -10,6 +10,24 @@
 - **KEP-xx** = keputusan yang butuh persetujuan manusia (rangkuman di [§3](#3-keputusan-yang-butuh-persetujuan-g2)). Setiap SEM yang bergantung pada keputusan baru diberi penanda **⚑ KEP-xx**.
 - Hotspot ≠ kebakaran terkonfirmasi. Semua label UI memakai "deteksi hotspot".
 - Angka hanya dari Fase 1 (bersumber ke dokumen 03/04/06) atau dari perintah yang dijalankan sesi ini (bukti di deskripsi PR). Contoh yang dibuat sendiri diberi label **ILUSTRASI**.
+
+### Glosarium singkat
+
+| Istilah | Arti |
+|---|---|
+| Deteksi / hotspot | Satu piksel VIIRS (±375 m) yang dinilai algoritma sebagai anomali panas pada satu lintasan satelit. Bukan kebakaran terkonfirmasi. |
+| Brightness temperature (`bright_ti4`, `bright_ti5`) | Suhu kecerahan (Kelvin) yang diukur band inframerah I4 (±3,7 µm) dan I5 (±11 µm). Dasar utama deteksi: piksel ditandai bila I4-nya jauh lebih panas daripada piksel sekitarnya (tes kontekstual). |
+| FRP (Fire Radiative Power) | Perkiraan daya radiasi panas piksel (MW) pada saat satelit lewat. Dihitung **setelah** piksel dinyatakan api; ukuran besarnya, bukan kriteria deteksi. Nilai sesaat per deteksi. |
+| `confidence` (`l`/`n`/`h`) | Label kepercayaan dari algoritma NASA: low, nominal, high. Bukan peluang kebenaran. |
+| Poligon | Garis tertutup yang menggambarkan batas sebuah wilayah. Satu provinsi bisa punya lebih dari satu poligon (mis. provinsi kepulauan). Titik deteksi diuji berada di dalam poligon mana. |
+| INSIDE / OUTSIDE | Titik jatuh di dalam salah satu poligon provinsi (INSIDE) atau di luar semuanya (OUTSIDE). |
+| `local_date` | Tanggal kejadian menurut zona waktu provinsi (WIB/WITA/WIT). |
+| `detection_id` | Hash unik satu kejadian deteksi (SEM-00). |
+| Deterministik | Kueri yang sama selalu menghasilkan hasil yang sama, tanpa unsur acak. |
+| Raw zone | Tempat penyimpanan data mentah apa adanya (`data/`), tidak dibaca langsung oleh dashboard. |
+| SEM-xx / KEP-xx | Aturan semantik / keputusan yang butuh persetujuan manusia (lihat atas). |
+
+Sumber istilah deteksi: [VIIRS I-Band 375 m Active Fire Data](https://www.earthdata.nasa.gov/data/instruments/viirs/near-real-time-data/viirs-i-band-375-m-active-fire-data) dan [User Guide v1.2](https://www.earthdata.nasa.gov/s3fs-public/2025-06/VIIRS_C2_AF-375m_User_Guide_1.2.pdf) (`VERIFIED` lewat pencarian 2026-11-23; belum dibaca penuh).
 
 ## 1. Definisi inti
 
@@ -47,8 +65,8 @@ count(P, [d1..d2], S, C, F) =
 Dasar: OQ-11, DQ-07, DQ-07b.
 
 1. Setiap kejadian punya `region_status` ∈ {`INSIDE`, `OUTSIDE`} dan, bila `INSIDE`, tepat satu `province` (kode BIG, 38 provinsi).
-2. Titik yang masuk >1 poligon (DQ-07b) dihitung **sekali**, di poligon pertama menurut urutan fitur BIG. Jumlah per provinsi tidak pernah menghitung satu kejadian dua kali.
-3. **OUTSIDE tidak masuk agregat apa pun**: tidak di ranking, tidak di total per provinsi, **dan tidak di total nasional**. Jumlahnya dilaporkan terpisah sebagai angka "deteksi di luar provinsi (tidak dihitung)" pada monitoring dan di catatan metodologi.
+2. Titik yang masuk >1 poligon (DQ-07b; batas dua poligon sedikit tumpang tindih) dihitung **sekali**, di poligon pertama menurut urutan fitur BIG. Jumlah per provinsi tidak pernah menghitung satu kejadian dua kali. **Diputuskan Lanang 2026-11-23: poligon pertama.** Dampaknya kecil: 30 · 16 · 34 · 26 baris pada empat produk Fase 1.
+3. **OUTSIDE tidak masuk agregat apa pun**: tidak di ranking, tidak di total per provinsi, **dan tidak di total nasional**. Jumlahnya dilaporkan terpisah sebagai angka "deteksi di luar provinsi (tidak dihitung)" pada monitoring dan di catatan metodologi. **Penyimpanan (diputuskan Lanang 2026-11-23): baris OUTSIDE hanya disimpan di raw zone, tidak masuk tabel layanan dashboard.** Alasan menyimpannya di raw zone: rekonsiliasi jumlah baris dengan file sumber, kemungkinan pindah menjadi INSIDE bila batas wilayah diganti (termasuk titik ≤ 2 km dari tepi), dan monitoring kualitas bbox/batas.
 4. Akibatnya **total nasional = jumlah 38 provinsi** (identik dengan jumlah ranking penuh).
 5. Tidak ada snapping titik tepi (HD-11). Titik ≤ 2 km dari tepi poligon tetap OUTSIDE.
 
@@ -67,7 +85,7 @@ Dasar: OQ-08.
 
 1. Timestamp kanonis `acq_datetime_utc` = `acq_date` + `acq_time` (di-pad 4 digit, HHMM UTC).
 2. **Tanggal lokal** `local_date(e)` = tanggal dari `acq_datetime_utc + offset(zona provinsi e)`. Offset: WIB +7, WITA +8, WIT +9. Zona ditentukan oleh **provinsi** kejadian, bukan koordinat.
-3. Kejadian OUTSIDE tidak punya provinsi, sehingga tidak punya tanggal lokal dan tidak dihitung (SEM-02). Tanggal UTC-nya tetap disimpan untuk monitoring.
+3. Kejadian OUTSIDE tidak punya provinsi, sehingga tidak punya tanggal lokal dan tidak dihitung (SEM-02). Mereka hanya ada di raw zone (tanggal UTC aslinya tetap di sana untuk rekonsiliasi dan monitoring) dan tidak masuk tabel layanan dashboard.
 4. Agregasi harian = per `local_date`. Agregasi bulanan = bulan kalender dari `local_date` (bukan bulan UTC). Tidak ada agregasi mingguan di MVP.
 5. **Total nasional untuk satu tanggal** = jumlah dari tanggal lokal masing-masing provinsi. Karena itu tanggal nasional mencampur tiga zona. Selisih antar zona maksimal 2 jam, sehingga hanya deteksi dalam 2 jam menjelang tengah malam yang terpengaruh. Hal ini wajib disebut di catatan metodologi. `RECOMMENDATION`
 6. Satu tanggal UTC `D` dapat berkontribusi ke dua tanggal lokal (`D` dan `D+1`). Konsekuensi untuk rekonsiliasi: ganti satu tanggal UTC = hitung ulang dua tanggal lokal ([04 §2](../../01-dataset/04-nrt-vs-sp-and-latency.md#2-aturan-tumpang-tindih-nrtsp-yang-diusulkan-keputusan-hd-10)).
@@ -108,7 +126,18 @@ Dasar: OQ-09, DQ-13.
 | B. `n` + `h` | Jumlah lebih "bersih" | Menyembunyikan data secara default; pembagian `l` vs `n` berbeda antara NRT dan SP pada sebagian kecil deteksi (`n→l` 76, `l→n` 24, `h→l` 1 pasang), sehingga tanggal NRT dan SP sedikit tidak sebanding |
 | C. `h` saja | Paling konservatif | Membuang sebagian besar deteksi tanpa dasar terukur; mudah dibaca sebagai "ini kebakaran terkonfirmasi" (salah) |
 
-`PENDING`: distribusi `l`/`n`/`h` pada data tim **belum dikutip di dokumen ini**. Sebelum G2, jalankan agregasi confidence dari raw zone (dengan izin) supaya KEP-01 diputuskan dengan angka. Tanpa angka itu, rekomendasi A tetap berdiri karena alasannya adalah konsistensi dan transparansi, bukan jumlah.
+**Distribusi `l`/`n`/`h` pada data tim** (`VERIFIED`, dihitung 2026-11-23 dengan skrip yang hanya mencetak jumlah per nilai dari `data/firms/raw/`; **baris mentah**, belum melewati DQ: masih termasuk OUTSIDE, duplikat, dan tumpang tindih NRT/SP):
+
+| Produk | Total baris | `l` | `n` | `h` |
+|---|---|---|---|---|
+| NOAA-20 SP | 626.944 | 39.951 (6,37%) | 570.558 (91,01%) | 16.435 (2,62%) |
+| NOAA-21 SP | 617.599 | 40.219 (6,51%) | 557.863 (90,33%) | 19.517 (3,16%) |
+| NOAA-20 NRT | 664.101 | 38.940 (5,86%) | 589.258 (88,73%) | 35.903 (5,41%) |
+| NOAA-21 NRT | 797.261 | 48.367 (6,07%) | 715.424 (89,74%) | 33.470 (4,20%) |
+
+Dampak opsi: B (`n`+`h`) membuang ±6% deteksi; C (`h` saja) membuang ±95–97% (SP) dan ±95% (NRT), sehingga tidak layak sebagai default. Angka mendukung rekomendasi A. Menurut dokumentasi NASA, deteksi low-confidence malam hari di wilayah ±11°E–110°W, 7°N–55°S dihapus dari data NRT FIRMS; porsi `l` NRT memang sedikit lebih kecil daripada SP, tetapi pengaruhnya pada data tim belum diukur (`UNKNOWN`; perlu pemisahan siang/malam).
+
+**Putusan review (Lanang, 2026-11-23):** default semua (A); KEP-01 menunggu persetujuan bersama Abigail (R4).
 
 ### SEM-05 — Sumber statis & tipe non-vegetasi  ⚑ KEP-03
 
@@ -125,6 +154,8 @@ Dasar: OQ-12, DQ-11, HD-11 (opsi (a)).
 | B. Terapkan ke SP saja, NRT ikut tanpa disaring | Angka mencampur dua definisi tanpa terlihat |
 | C. Terapkan ke SP, buang NRT | Hasil terlihat "kurang" untuk hari terbaru tanpa alasan jelas |
 | D. Bangun masker lokasi statis dari SP dan terapkan ke NRT | Konsisten, tetapi menambah logika dan `ASSUMPTION` (lokasi statis tetap); dinilai *Could* oleh [06](../../01-dataset/06-data-quality-rules.md) |
+
+**Putusan review (Lanang, 2026-11-23): opsi A, filter disertakan** (tersedia untuk rentang seluruhnya SP, nonaktif bila ada hari NRT).
 
 Kerugian opsi A: karena NRT mencakup bulan-bulan terakhir (NOAA-20 sejak 2026-08-01), rentang "30 hari terakhir" biasanya tidak bisa memakai filter ini. Ini keterbatasan yang diterima, dan dicatat di UI serta laporan. Angka Fase 1 (`VERIFIED`): tipe 1–3 = 54.067 (10,4%) pada N20 SP dan 56.788 (11,0%) pada N21 SP di dalam Indonesia, sehingga filter mengubah jumlah sekitar 10–11% untuk periode SP.
 
@@ -153,6 +184,19 @@ Dasar: OQ-04, charter §3, [07 §2](../../01-dataset/07-dataset-recommendation.m
 | **A. NOAA-20 saja (rekomendasi)** | Seri konsisten sepanjang 2023-01-01…sekarang (satu sensor); tidak ada lonjakan buatan pada 2023-03-01; sejalan dengan OQ-04 ("utama"); aman dari salah baca "dua kali lebih banyak kebakaran" |
 | B. Gabungan | Menampilkan semua data; tetapi seri tidak seragam sebelum/sesudah 2023-03-01 dan jumlahnya bergantung jumlah lintasan dua satelit |
 | C. NOAA-21 saja | Seri hanya mulai 2023-03-01; bukan satelit utama |
+
+**Pertimbangan bias jumlah satelit antar tahun** (`VERIFIED`, jumlah baris mentah SP per tahun, dihitung 2026-11-23):
+
+| Tahun | NOAA-20 SP | NOAA-21 SP |
+|---|---|---|
+| 2023 | 286.998 (mulai 2023-01-01) | 282.629 (mulai 2023-03-01) |
+| 2024 | 142.468 | 140.179 |
+| 2025 | 113.035 | 111.244 |
+| 2026 (s.d. 31 Juli) | 84.443 | 83.547 |
+
+NOAA-21 ada sejak 2023-03-01, sehingga 2023-03 hingga sekarang sama-sama dua satelit. Bias "satu vs dua satelit" hanya melanda **Januari-Februari 2023**, dan sudah ditangani oleh default NOAA-20 saja serta butir 4 di atas.
+
+**Putusan review (Lanang, 2026-11-23): tidak ada union/dedup lintas satelit di MVP.** Alasan: dedup hanya menghilangkan hitungan ganda untuk kebakaran yang sama dan **tidak** menghilangkan bias cakupan (dua satelit melihat lebih banyak kebakaran unik daripada satu). Gabungan tetap penjumlahan dengan peringatan. Opsi union dicatat di [§7](#7-pengembangan-lanjut-di-luar-mvp).
 
 Cakupan jam lintasan juga berbeda antar satelit (NOAA-21 dan NOAA-20 mengorbit berselang ±50 menit; `AI-PRIOR`, belum diukur). Karena itu **jumlah deteksi antar satelit tidak boleh dibaca sebagai selisih aktivitas kebakaran**.
 
@@ -192,7 +236,7 @@ Dasar: FR-04, OQ-11.
 
 1. Ranking = Top-N provinsi menurut `count` (SEM-00) untuk filter aktif, **jumlah absolut**. Urutan imbang diputus berdasar kode provinsi (deterministik).
 2. OUTSIDE tidak ikut ranking (SEM-02).
-3. Per-luas (deteksi per km²) **tidak termasuk MVP**. Ranking absolut cenderung menaikkan provinsi besar; hal ini dicatat sebagai keterbatasan di UI. Ranking per luas hanya dapat dibuat dengan luas dari atribut BIG (`LUASWH`, [05](../../01-dataset/05-boundary-sources.md)) dan dinilai *Could*. `RECOMMENDATION` ⚑ KEP-05.
+3. **Tidak ada ranking per luas** (deteksi per km²). **Diputuskan Lanang 2026-11-23.** Ranking absolut cenderung menaikkan provinsi besar; hal ini dicatat sebagai keterbatasan di UI. ⚑ KEP-05.
 
 ### SEM-12 — Peta: pemotongan titik dan histogram FRP
 
@@ -201,6 +245,8 @@ Dasar: FR-02, FR-07.
 1. Titik di peta berasal dari himpunan SEM-00 yang sama dengan angka di panel lain. Jumlah titik tampil dibatasi (batas angka: NFR milik C-P2-001).
 2. Bila hasil dipotong, **jumlah total (SEM-00) dan jumlah yang tampil sama-sama dilaporkan**. Pemilihan titik bersifat deterministik: urutkan menurut `frp` menurun, lalu `acq_datetime_utc` menurun, lalu `detection_id` menaik. (Opsi lain: sampel acak, ditolak karena tidak dapat direproduksi.) `RECOMMENDATION` ⚑ KEP-05.
 3. Histogram FRP memakai himpunan SEM-00 dan satuan MW. Deteksi `FRP_ZERO` ikut dihitung (SEM-09). FRP adalah ukuran per deteksi; **jumlah atau rata-rata FRP tidak disajikan sebagai "intensitas kebakaran" atau "energi kebakaran"** tanpa persetujuan baru. Batas bin: keputusan desain di D-P3.
+
+Pemotongan keras seperti butir 2 adalah jaring pengaman, bukan cara utama peta geografis matang menampilkan banyak titik (`AI-PRIOR`, belum dibandingkan dengan dokumentasi produk tertentu). Penyaringan menurut area layar dan agregasi menurut level zoom dicatat sebagai **pengembangan lanjut** ([§7](#7-pengembangan-lanjut-di-luar-mvp)). Putusan Lanang 2026-11-23.
 
 ### SEM-13 — Provenance dan versi
 
@@ -217,7 +263,17 @@ Dasar: FR-13, US-13.
 | **KEP-02** | OUTSIDE di total nasional | Tidak dihitung; total = jumlah 38 provinsi (SEM-02) | Dihitung di total | Tim |
 | **KEP-03** | Filter tipe di rentang campuran SP+NRT | Nonaktifkan filter (SEM-05) | Terapkan ke SP saja; masker statis (Could) | Tim |
 | **KEP-04** | Default satelit | NOAA-20 saja; gabungan opsional dengan peringatan (SEM-07) | Gabungan sebagai default | Lanang (R1) + Abigail (R4) |
-| **KEP-05** | Ranking absolut; pemotongan titik peta deterministik (SEM-11, SEM-12) | Absolut; urut FRP menurun | Per luas (Could); sampel acak | Abigail (R4) + Lanang (R1) |
+| **KEP-05** | Ranking absolut; pemotongan titik peta deterministik (SEM-11, SEM-12) | Absolut; urut FRP menurun | Per luas (ditolak); sampel acak (ditolak) | Abigail (R4) + Lanang (R1) |
+
+**Putusan review Lanang (2026-11-23)**, menunggu persetujuan formal G2 dan pemilik lain bila disebut di kolom terakhir:
+
+| ID | Putusan |
+|---|---|
+| KEP-01 | Default confidence semua (didukung distribusi di SEM-04); butuh Abigail |
+| KEP-02 | OUTSIDE tidak dihitung; total nasional = jumlah 38 provinsi; OUTSIDE hanya di raw zone; poligon pertama untuk titik di >1 poligon |
+| KEP-03 | Opsi A (nonaktifkan filter di rentang yang memuat NRT), **filter tipe disertakan** untuk rentang seluruhnya SP |
+| KEP-04 | Default NOAA-20 saja; gabungan = penjumlahan dengan peringatan; **tanpa union/dedup** |
+| KEP-05 | Ranking absolut tanpa ranking per luas; pemotongan titik peta deterministik (FRP menurun); filter area layar dan agregasi per zoom = pengembangan lanjut |
 
 KEP-01 sampai KEP-05 belum tercatat di [12-human-decision-register.md](../../10-execution-plan/12-human-decision-register.md) selain HD-12. Pencatatan ID baru adalah tugas koordinator (X-P2-901). Agen ini tidak mengubah register itu.
 
@@ -259,8 +315,24 @@ Kriteria penerimaan: setiap angka dapat dijelaskan oleh satu aturan. Semua baris
 |---|---|
 | Konversi tanggal lokal (contoh §SEM-03) | Dihitung dengan perintah Python pada sesi ini; perintah dan output ditempel di deskripsi PR |
 | Aritmetika contoh (selisih NRT–SP 965 = 0,80%; OUTSIDE ≤ 2 km = 2,76%) | Dihitung dari angka Fase 1 yang sudah ter-commit |
-| Distribusi `l`/`n`/`h` pada data tim | `PENDING`: belum dijalankan. Dibutuhkan untuk KEP-01 |
+| Distribusi `l`/`n`/`h` pada data tim | `VERIFIED` 2026-11-23 (baris mentah, sebelum DQ), tabel di SEM-04. Pengaruh penghapusan low-confidence malam di NRT: `UNKNOWN` |
+| Jumlah baris SP per tahun dan awal NOAA-21 | `VERIFIED` 2026-11-23 (baris mentah), tabel di SEM-07 |
+| Gagasan pembatasan titik peta vs praktik peta geografis lain | `AI-PRIOR`: belum diverifikasi ke dokumentasi produk tertentu |
+| Luas provinsi (`LUASWH`) | Tidak dipakai (ranking per luas ditolak) |
 | Perilaku NRT NOAA-20 vs SP | `UNKNOWN`: NRT NOAA-20 baru mulai 2026-08-01 |
 | Jam lintasan NOAA-20 vs NOAA-21 (±50 menit) | `AI-PRIOR`: belum diukur |
 | Pemetaan provinsi → zona | `AI-PRIOR`: cocokkan dengan atribut BIG pada A-P5-005 |
 | Matriks jejak angka ↔ SEM (§4) | Selesai, perlu review manual oleh pemilik |
+
+## 7. Pengembangan lanjut (di luar MVP)
+
+Dicatat agar tidak hilang. Tidak ada yang di sini dikerjakan tanpa keputusan baru.
+
+| Gagasan | Catatan |
+|---|---|
+| **Union/dedup lintas satelit** | Ditolak untuk MVP (SEM-07). Bila diambil: pasangkan satu deteksi NOAA-20 dengan satu NOAA-21 bila jarak ≤ R dan selisih waktu ≤ ΔT, dicocokkan satu-ke-satu secara deterministik, pasangan diwakili satu baris (mis. FRP tertinggi) dan filter confidence berlaku pada wakil itu; pencocokan ulang saat NRT diganti SP. R dan ΔT harus diukur dari data (hipotesis awal R ≈ 375–750 m, ΔT ≈ 1–2 jam, `ASSUMPTION`). Tidak memperbaiki bias cakupan dua-satelit. |
+| **Filter area layar (viewport) untuk peta** | Peta meminta titik hanya untuk area yang sedang terlihat; pemotongan SEM-12 dipasang setelahnya. |
+| **Agregasi menurut zoom** | Zoom jauh: klaster/heatmap/grid; zoom dekat: titik individual. Menggantikan pemotongan keras sebagai mekanisme utama. |
+| **Rendering WebGL / vector tile** | Hanya bila pengukuran C-P2-001 menunjukkan Leaflet tidak cukup. |
+| **Masker lokasi statis dari SP untuk NRT** | Opsi D di SEM-05; *Could* menurut dokumen 06. |
+| **Pengukuran jumlah lintasan per hari NOAA-20 sepanjang waktu** | Untuk memastikan cakupan satu sensor stabil (`UNKNOWN` sekarang). |
