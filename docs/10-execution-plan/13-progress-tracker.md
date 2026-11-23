@@ -28,12 +28,12 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 
 | Bagian | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | Semua |
 |---|---|---|---|---|---|---|---|---|---|
-| Role A (R1) | 10 / 10 / 10 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **10 / 10 / 31** |
+| Role A (R1) | 10 / 10 / 10 | 1 / 1 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **11 / 11 / 31** |
 | Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
 | Role C (R3) | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 0 / 25** |
 | Role D (R4) | 0 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **0 / 1 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 13 / 14 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **13 / 14 / 110** |
+| **Tim** | 13 / 14 / 15 | 1 / 1 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **14 / 15 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
 Menunggu persetujuan manusia: D-P1-001.
@@ -68,7 +68,7 @@ Menunggu persetujuan manusia: D-P1-001.
 
 ### P2 — Requirements Engineering
 
-- [ ] **A-P2-001** Semantik data & aturan perhitungan · R1 · bukti: — · disetujui: —
+- [x] **A-P2-001** Semantik data & aturan perhitungan · R1 · bukti: PR #3 (2026-11-22, diperbarui 2026-11-23): docs/03-specs/data/01-data-semantics.md (SEM-00…SEM-13, KEP-01…05); putusan review Lanang atas KEP-01…05 tercatat di §3 dokumen; KEP-01/04/05 masih perlu dikonfirmasi Abigail sebelum G2 · disetujui: Lanang, 2026-11-23, dinyatakan langsung di sesi Claude Code
 
 ### P3 — Architecture & Technical Specs
 
