@@ -1,0 +1,61 @@
+# CODEOWNERS — NusaFire
+# Sumber: docs/10-execution-plan/07-file-ownership-matrix.md (C-P4-001).
+# Aturan GitHub: pola paling BAWAH yang cocok menang, jadi pengecualian ditulis setelah pola umum.
+#
+# TODO (C-P4-001): ganti placeholder berikut dengan handle GitHub asli sebelum branch protection
+# "Require review from Code Owners" diaktifkan (HD-18). Placeholder membuat file ini belum valid di GitHub.
+#   R1 Lanang   -> @TODO-lanang
+#   R2 Abi Funn -> @TODO-abi      (juga koordinator integrasi)
+#   R3 Zita     -> @nayraarr
+#   R4 Abigail  -> @TODO-abigail
+
+# --- Default: koordinator (R2) ---
+*                                   @TODO-abi
+
+# --- Direktori kode ---
+/pipeline/                          @TODO-lanang
+/db/                                @TODO-abi
+/experiments/                       @TODO-abi
+/api/                               @nayraarr
+/deploy/                            @nayraarr
+/web/                               @TODO-abigail
+/scratch/phase1/                    @TODO-lanang
+/data/                              @TODO-lanang
+
+# --- Dokumentasi ---
+/docs/00-discovery/                 @TODO-abi
+/docs/01-dataset/                   @TODO-lanang
+/docs/02-requirements/              @TODO-abigail
+/docs/03-specs/data/                @TODO-lanang
+/docs/03-specs/database/            @TODO-abi
+/docs/03-specs/api/                 @nayraarr
+/docs/03-specs/ui/                  @TODO-abigail
+/docs/03-specs/architecture/        @nayraarr
+/docs/03-specs/README.md            @TODO-abi
+/docs/08-delivery/                  @TODO-abigail
+/docs/10-execution-plan/            @TODO-abi
+/docs/change-requests/              @TODO-abi
+/docs/STATUS.md                     @TODO-abi
+
+# --- File bersama di root ---
+/docker-compose.yml                 @nayraarr
+/docker-compose.*.yml               @nayraarr
+/.env.example                       @nayraarr
+/.gitignore                         @nayraarr
+/.github/                           @nayraarr
+/README.md                          @nayraarr
+/ruff.toml                          @TODO-lanang
+/.pre-commit-config.yaml            @TODO-lanang
+/AGENTS.md                          @TODO-abigail
+/CLAUDE.md                          @TODO-abigail
+
+# --- Pengecualian (harus di bawah pola direktori induknya) ---
+/docs/02-requirements/02-non-functional-requirements.md   @nayraarr
+/docs/08-delivery/data.md           @TODO-lanang
+/docs/08-delivery/database.md       @TODO-abi
+/docs/08-delivery/api-deploy.md     @nayraarr
+/pipeline/resources/boundaries/     @TODO-lanang
+
+# Tracker: setiap implementer mengubah baris tugasnya sendiri (matriks §1). Tanpa owner = tidak
+# memicu permintaan review dari koordinator; persetujuan tetap lewat seorang manusia di PR.
+/docs/10-execution-plan/13-progress-tracker.md
