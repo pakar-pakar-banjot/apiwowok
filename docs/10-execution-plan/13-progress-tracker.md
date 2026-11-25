@@ -31,12 +31,12 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 | Role A (R1) | 10 / 10 / 10 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **10 / 10 / 31** |
 | Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
 | Role C (R3) | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 0 / 25** |
-| Role D (R4) | 0 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **0 / 1 / 23** |
+| Role D (R4) | 1 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **1 / 1 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 13 / 14 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **13 / 14 / 110** |
+| **Tim** | 14 / 14 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **14 / 14 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
-Menunggu persetujuan manusia: D-P1-001.
+Menunggu persetujuan manusia: tidak ada.
 <!-- progress:summary:end -->
 
 ## Gerbang
@@ -200,7 +200,7 @@ Menunggu persetujuan manusia: D-P1-001.
 
 ### P1 — Dataset Feasibility
 
-- [x] **D-P1-001** Draf user stories & FR dari charter · R4 · bukti: draf agen, PR #1 (2026-11-19): docs/02-requirements/00-draft-user-stories.md; menunggu review · disetujui: —
+- [x] **D-P1-001** Draf user stories & FR dari charter · R4 · bukti: draf agen, PR #1 (2026-11-19): docs/02-requirements/00-draft-user-stories.md; menunggu review · disetujui: Abigail (R4), 2026-11-25, sesi Claude Code
 
 ### P2 — Requirements Engineering
 
