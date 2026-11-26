@@ -14,7 +14,7 @@ LANGKAH WAJIB SEBELUM BEKERJA (protokol AGENTS.md §1; tidak boleh dilompati)
 2. Jalankan `python -I docs/10-execution-plan/tools/task.py check <TASK-ID>`. Output-nya adalah kartu tugas (kriteria
    penerimaan, file, dependensi dari graf). JANGAN membaca 02-work-breakdown-structure.md/.csv atau 03-dependency-matrix.md utuh.
    Exit 1 → STOP dan laporkan blocker apa adanya. Exit 2 → jangan dikerjakan. Jangan menebak.
-3. Bekerja hanya di worktree/branch `a/<TASK-ID>-<slug>` (perintahnya dicetak oleh `check`).
+3. Bekerja hanya di worktree/branch `a/<TASK-ID>-<slug>` dari `origin/main` (perintahnya dicetak oleh `check`). PR langsung ke `main`, judul `<type>(<TASK-ID>): <ringkasan>`; check `pr-meta` wajib hijau (AGENTS.md §5a). DILARANG push langsung ke `main`.
 4. Baca hanya file di kolom Input/Spesifikasi kartu dan kontrak terkait di 06-interface-contracts.md (bagian A).
 5. Sebelum melapor: `python -I docs/10-execution-plan/tools/task.py scope <TASK-ID>` (base default `origin/main`) harus exit 0.
 

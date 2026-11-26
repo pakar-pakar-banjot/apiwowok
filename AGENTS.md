@@ -18,7 +18,7 @@
 | 6 | Kerjakan | Hanya **File tugas** di kartu. Kriteria penerimaan tidak boleh dilonggarkan. | — |
 | 7 | Cek lingkup | `T scope <ID>` (default base `origin/main`) | Exit `0` |
 | 8 | Catat progres | Di [13-progress-tracker.md](docs/10-execution-plan/13-progress-tracker.md), baris `<ID>` saja: `[x]` + `bukti:` bila semua kriteria terpenuhi. Bila belum, tetap `[ ]` dan tulis keadaannya di `bukti:`. Lalu `python -I docs/10-execution-plan/tools/build_plan.py`. | `ISSUES: 0` |
-| 9 | Lapor & STOP | Format laporan di prompt peran. Commit/push/PR hanya bila diminta. | Tunggu manusia |
+| 9 | Lapor & STOP | Format laporan di prompt peran. Commit/push/PR hanya bila diminta. PR **langsung ke `main`** dengan nama branch dan judul sesuai §5a; check `pr-meta` wajib hijau. **DILARANG** push langsung ke `main` dan membuat branch fase. | Tunggu manusia |
 
 **Exit code `task.py`:** `0` lanjut · `1` **STOP** (terblokir, file di luar area, atau tugas sudah punya branch lain); laporkan ke manusia apa adanya · `2` **jangan dikerjakan** (selesai, menunggu persetujuan, atau tugas manusia saja) · `3` rencana tidak sinkron; jalankan `build_plan.py` lalu ulangi.
 
@@ -104,6 +104,7 @@ Alur:
 ## 6. STOP dan tanya manusia bila
 
 - `check` atau `scope` keluar dengan kode ≠ 0 dan tidak bisa diperbaiki di area sendiri.
+- Check `pr-meta` merah dan perbaikannya butuh rename branch (rename menutup PR, §5a alur 6).
 - Permintaan tidak cocok dengan task ID mana pun, atau cocok dengan beberapa task ID.
 - Butuh keputusan kebijakan, perubahan kontrak, file di luar area, dependensi baru, atau operasi destruktif.
 - Dokumen saling bertentangan. Dokumen sumber yang dirujuk mengalahkan `STATUS.md`, dan keduanya mengalahkan ingatan agen. Laporkan konfliknya.

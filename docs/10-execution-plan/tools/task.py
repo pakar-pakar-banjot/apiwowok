@@ -239,6 +239,9 @@ def check(tid):
         print(f"Catatan: branch aktif '{CURRENT}' bukan branch tugas ini. Buat worktree dulu "
               f"(WAJIB di dalam repo, AGENTS.md §3 aturan 7): "
               f"git -C \"{main_root}\" worktree add .claude/worktrees/{tid} -b {prefix}/{tid}-<slug> {BASE}")
+    if tid in CURRENT.upper() and not re.fullmatch(rf"{prefix}/{re.escape(tid)}-[a-z0-9]+(?:-[a-z0-9]+){{0,5}}", CURRENT):
+        print(f"PERINGATAN: nama branch '{CURRENT}' tidak sesuai AGENTS.md §5a ({prefix}/{tid}-<slug>, huruf kecil, kebab-case); "
+              "check pr-meta akan gagal. Jangan rename branch yang sudah punya PR tanpa izin manusia.")
     verdict(0, ("BERJALAN — boleh dilanjutkan" if st == "ACTIVE" else "SIAP — boleh mulai")
             + " setelah manusia mengonfirmasi tugas ini. Ubah hanya 'File tugas' (dan area peran bila perlu, dijelaskan di PR).")
 
