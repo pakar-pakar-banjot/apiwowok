@@ -180,3 +180,102 @@ Kebutuhan baca yang diturunkan dari FR di atas (bahan Q-xx, bukan desain tabel):
 ## 7. Di luar ruang lingkup
 
 Mengikuti charter §6.3: akun pengguna, notifikasi/alert, prediksi kebakaran, estimasi luas terbakar, klasifikasi penyebab, perbandingan lintas sensor, klaim tanggap darurat real-time, dan pengayaan kabupaten/kota (*Could*).
+
+## 8. Acceptance criteria (D-P2-002)
+
+> Draf agen 2026-11-26 · Label `RECOMMENDATION` sampai G2. Format Given/When/Then. Angka (limit, rentang, ambang, interval) **hanya dikutip dari** [NFR](02-non-functional-requirements.md) (C-P2-001); bila NFR berubah, AC mengikuti NFR.
+> **Penanda:** 🧪 = butuh data nyata di Cassandra/ETL untuk diverifikasi (belum bisa diuji dari dokumen); ⚖️ = bergantung keputusan terbuka (§5, KEP-xx di [A-P2-001](../03-specs/data/01-data-semantics.md)); ☁️ = hanya berlaku di cloud.
+> **ID:** `AC-<FR>.<n>`. Setiap FR punya ≥1 AC. Nilai pada contoh angka adalah ilustrasi, bukan hasil pengukuran.
+
+### 8.1 Aturan umum
+
+| AC | FR | Given | When | Then | Tanda |
+|---|---|---|---|---|---|
+| AC-G1.1 | FR-G1 | halaman mana pun | semua label, judul, dan tooltip dirender | istilah yang dipakai "deteksi hotspot"/"jumlah deteksi hotspot"; kata "kebakaran" tidak muncul di luar kalimat disclaimer | ⚖️ teks disclaimer (HD-25) |
+| AC-G2.1 | FR-G2 | halaman mana pun, data sudah termuat | halaman dibuka | disclaimer ilmiah dan waktu pembaruan data terakhir terlihat tanpa interaksi | ⚖️ HD-25 |
+| AC-G2.2 | FR-G2 | belum ada data termuat (sistem baru) | halaman dibuka | waktu pembaruan menampilkan "belum ada data", bukan kosong atau tanggal palsu | |
+| AC-G3.1 | FR-G3 | halaman mana pun | seluruh teks UI diperiksa | semua teks berbahasa Indonesia; istilah teknis/nama diri (NASA FIRMS, NOAA-20, FRP) boleh tidak diterjemahkan | |
+| AC-G4.1 | FR-G4 | satu deteksi diakuisisi 2025-08-01 18:30 UTC di provinsi WIB (UTC+7) | agregasi harian dihitung | deteksi dihitung pada tanggal lokal 2025-08-02 dan penyimpanan tetap UTC | contoh ilustrasi |
+| AC-G4.2 | FR-G4 | agregat nasional | provinsi berbeda zona waktu (WIB/WITA/WIT) | tiap deteksi dihitung pada tanggal lokal provinsinya sendiri; aturan nasional mengikuti Q-4 | ⚖️ Q-4 |
+| AC-G5.1 | FR-G5 | halaman mana pun | halaman dirender | atribusi NASA FIRMS, BIG (batas wilayah), dan penyedia basemap terlihat | |
+| AC-G6.1 | FR-G6 | filter global (rentang tanggal, provinsi, confidence, satelit) diubah | pengguna mengubah filter | semua panel di halaman ikut berubah dan URL memuat nilai filter | |
+| AC-G6.2 | FR-G6 | URL berisi filter lengkap | URL dibuka di tab/peramban lain | tampilan dan angka sama dengan sumber tautan | |
+| AC-G6.3 | FR-G6 | URL berisi nilai filter tidak valid | halaman dibuka | halaman kembali ke nilai default dan menampilkan pemberitahuan; tidak terjadi galat layar kosong | |
+| AC-G7.1 | FR-G7 | tanggal ditandai `INCOMPLETE_DAY` (DQ-12) di rentang terpilih | timeline/ringkasan/perbandingan ditampilkan | tanggal itu berlabel "data tidak lengkap" dan tidak ditampilkan sebagai 0 | 🧪 tanggal nyata dari tabel `missing_data` |
+| AC-G8.1 | FR-G8 | panel sedang mengambil data | permintaan belum selesai | panel menampilkan state memuat | |
+| AC-G8.2 | FR-G8 | permintaan sukses dengan 0 baris | respons diterima | panel menampilkan state kosong ("tidak ada deteksi hotspot untuk filter ini"), berbeda dari "data tidak lengkap" | |
+| AC-G8.3 | FR-G8 | API mengembalikan galat (5xx/timeout) | respons gagal | panel menampilkan state galat dengan pesan dan opsi coba lagi, berbeda dari state kosong | |
+
+### 8.2 Per fitur
+
+| AC | FR | Given | When | Then | Tanda |
+|---|---|---|---|---|---|
+| AC-01.1 | FR-01 | rentang tanggal terpilih (default ⚖️ Q-1) | halaman ringkasan dibuka | tampil total deteksi hotspot, jumlah provinsi dengan ≥1 deteksi, dan timeline nasional untuk rentang itu | ⚖️ Q-1 |
+| AC-01.2 | FR-01 | rentang yang sama | total dibandingkan dengan jumlah nilai harian di timeline | total = jumlah timeline (di luar tanggal `INCOMPLETE_DAY`, yang ditampilkan terpisah) | 🧪 |
+| AC-01.3 | FR-01 | rentang tanpa satu pun deteksi | halaman dibuka | total 0, provinsi aktif 0, dan state kosong; bukan galat | |
+| AC-02.1 | FR-02 | ada deteksi berstatus `OUTSIDE` di periode | ringkasan dibuka | jumlah `OUTSIDE` tampil terpisah dengan penjelasan singkat dan tidak dimasukkan ke total provinsi | ⚖️ Q-4 · 🧪 |
+| AC-02.2 | FR-02 | tidak ada deteksi `OUTSIDE` | ringkasan dibuka | nilai "0" tetap ditampilkan, bukan disembunyikan | |
+| AC-03.1 | FR-03 | satu provinsi, rentang ≤ 7 hari lokal, hasil ≤ `limit` | peta dibuka | semua titik tampil, tanpa notice pemotongan | NFR-06, NFR-08 |
+| AC-03.2 | FR-03 | hasil melebihi `limit` (default 2.000, maks 5.000) sehingga `truncated=true` | peta dibuka | peta menampilkan notice pemotongan beserta jumlah total dan jumlah yang tampil | NFR-06 · 🧪 |
+| AC-03.3 | FR-03 | pengguna memilih rentang > 7 hari | permintaan dikirim | UI mencegah atau memberi pesan jelas (API menolak 422); tidak ada peta kosong tanpa penjelasan | NFR-08 |
+| AC-03.4 | FR-03 | provinsi dan rentang tanpa titik | peta dibuka | state kosong pada peta | |
+| AC-03.5 | FR-03 | hasil terpotong | permintaan yang sama diulang | titik yang tampil identik (pemilihan deterministik) | ⚖️ KEP-05 · 🧪 |
+| AC-04.1 | FR-04 | titik terlihat di peta | pengguna mengklik titik | detail memuat waktu akuisisi (UTC dan lokal), satelit, confidence (low/nominal/high), FRP, `daynight`, SP/NRT, versi produk, versi batas wilayah | |
+| AC-04.2 | FR-04 | titik dengan nilai kosong (mis. `type` null pada NRT) | detail dibuka | field kosong ditulis "tidak tersedia", bukan "null" atau baris hilang | |
+| AC-05.1 | FR-05 | rentang, nasional atau satu provinsi | timeline dibuka | tampil jumlah per hari dan per bulan berdasarkan tanggal lokal | ⚖️ Q-2 (granularitas default) |
+| AC-05.2 | FR-05 | satu bulan penuh data lengkap | nilai bulanan dibandingkan dengan nilai harian | nilai bulanan = jumlah nilai hariannya | 🧪 |
+| AC-05.3 | FR-05 | rentang tanpa data | timeline dibuka | state kosong; hari `INCOMPLETE_DAY` tidak digambar sebagai 0 | AC-G7.1 |
+| AC-06.1 | FR-06 | periode dan filter terpilih | ranking dibuka | Top-N provinsi (dari 38 provinsi BIG) terurut menurun menurut jumlah deteksi | |
+| AC-06.2 | FR-06 | ada deteksi `OUTSIDE` | ranking dihitung | `OUTSIDE` tidak ikut dihitung di ranking | ⚖️ Q-4 |
+| AC-06.3 | FR-06 | dua provinsi berjumlah sama | ranking dibuka lalu dimuat ulang | urutan keduanya konsisten antarmuat (aturan tie-break ditetapkan di spesifikasi) | |
+| AC-06.4 | FR-06 | tidak ada deteksi di periode | ranking dibuka | state kosong | |
+| AC-07.1 | FR-07 | dua periode dipilih | perbandingan dibuka | dua periode tampil berdampingan dengan satelit/produk dan versi batas wilayah yang sama, serta catatan metodologi | |
+| AC-07.2 | FR-07 | halaman perbandingan | pengguna mencoba membandingkan NOAA-20 dengan NOAA-21 | opsi perbandingan lintas sensor tidak tersedia | |
+| AC-07.3 | FR-07 | salah satu periode memuat tanggal `INCOMPLETE_DAY` | perbandingan ditampilkan | ada peringatan "data tidak lengkap" untuk periode itu | AC-G7.1 |
+| AC-08.1 | FR-08 | filter confidence | pengguna memilih low/nominal/high | UI memakai kata low/nominal/high (bukan `l`/`n`/`h`) dan semua panel menyesuaikan | |
+| AC-08.2 | FR-08 | filter confidence | bantuan filter dibuka | bantuan menyatakan bahwa kelas `low` tidak muncul pada malam hari di Indonesia | |
+| AC-08.3 | FR-08 | pengguna belum mengubah filter | halaman dibuka pertama kali | nilai default sesuai keputusan HD-12 | ⚖️ HD-12 / KEP-01 |
+| AC-09.1 | FR-09 | filter satelit | pengguna memilih NOAA-20, NOAA-21, atau keduanya | semua panel menyesuaikan dengan pilihan itu | ⚖️ KEP-04 (default) |
+| AC-09.2 | FR-09 | filter satelit | bantuan dibuka | bantuan menjelaskan bahwa jumlah deteksi bergantung pada jumlah lintasan dan NOAA-21 baru tersedia sejak 2023-03-01 | |
+| AC-09.3 | FR-09 | NOAA-21 dipilih dengan rentang sebelum 2023-03-01 | data diminta | UI menampilkan pemberitahuan ketersediaan (bukan galat) dan tidak menampilkan angka palsu | |
+| AC-10.1 | FR-10 | filter tipe tidak diubah | data dihitung | semua tipe deteksi ikut dihitung | |
+| AC-10.2 | FR-10 | filter pengecualian tipe non-vegetasi (`type` 1, 2, 3) aktif pada data SP | data dihitung | deteksi `type` 1, 2, 3 tidak dihitung | ⚖️ Q-5 · 🧪 |
+| AC-10.3 | FR-10 | rentang berisi data NRT (`type` = null) | filter aktif | UI menyatakan bahwa filter tidak berlaku untuk NRT sebagai keterbatasan | |
+| AC-11.1 | FR-11 | wilayah dan periode terpilih | histogram dibuka | histogram FRP tampil memakai filter global yang sama | 🧪 pengelompokan bin ditetapkan di D-P3-001 |
+| AC-11.2 | FR-11 | tidak ada deteksi pada filter | histogram dibuka | state kosong | |
+| AC-12.1 | FR-12 | pemilih provinsi | provinsi dipilih | ringkasan, timeline, dan peta terfilter ke provinsi itu, provinsi tersorot di ranking, dan URL memuat provinsi | |
+| AC-12.2 | FR-12 | provinsi sedang dipilih | pilihan dihapus | tampilan kembali ke nasional | |
+| AC-12.3 | FR-12 | aplikasi | rute atau halaman provinsi terpisah dicari | tidak ada halaman provinsi terpisah | |
+| AC-13.1 | FR-13 | satu run ingest selesai (backfill atau incremental) | catatan run diperiksa | tercatat waktu mulai/selesai, mode, source ID, file/rentang sumber, status, serta jumlah diterima, ditolak (per kode alasan DQ), duplikat, dan `OUTSIDE` | 🧪 |
+| AC-13.2 | FR-13 | run dengan baris ditolak | catatan run dibuka | jumlah ditolak terurai per kode DQ-xx dan dapat direkonsiliasi dengan jumlah baris sumber (aturan rekonsiliasi dirinci di spesifikasi ETL) | 🧪 |
+| AC-14.1 | FR-14 | beberapa run tercatat | endpoint status pipeline dan halamannya dibuka | tampil daftar run terbaru, waktu poll terakhir yang berhasil, dan run yang gagal | 🧪 |
+| AC-14.2 | FR-14 | belum ada run | halaman dibuka | state kosong yang jelas, bukan galat | |
+| AC-15.1 | FR-15 | dokumen eksperimen partisi/bucketing | dokumen diperiksa | memuat hipotesis, prosedur, hasil aktual, interpretasi, keterbatasan, dan skrip yang dapat dijalankan ulang | 🧪 |
+| AC-15.2 | FR-15 | lingkungan bersih | skrip dijalankan ulang mengikuti dokumen | hasil dihasilkan tanpa langkah tersembunyi | 🧪 |
+| AC-16.1 | FR-16 | dokumen eksperimen replikasi dan kegagalan node (3 node) | dokumen diperiksa | format sama dengan AC-15.1 | 🧪 Should |
+| AC-17.1 | FR-17 | deployment cloud | URL publik dibuka | aplikasi dapat diakses lewat HTTPS dari image container yang sama dengan lokal | ☁️ 🧪 |
+| AC-17.2 | FR-17 | deployment cloud | port Cassandra dicoba dari luar | koneksi publik ke Cassandra gagal | ☁️ 🧪 |
+| AC-17.3 | FR-17 | integrasi lokal belum berjalan | deployment dicoba | deployment tidak dimulai sebelum integrasi lokal berjalan | proses |
+| AC-18.1 | FR-18 | clone baru oleh anggota yang bukan pemilik harness | mengikuti README (start layanan + perintah ingest) | dashboard berisi data tanpa langkah di luar README | 🧪 |
+| AC-19.1 | FR-19 | poller berjalan | beberapa poll berurutan | interval antar-poll mengikuti NFR-10 | NFR-10 · 🧪 |
+| AC-19.2 | FR-19 | batch NRT yang sama diproses dua kali | poller dijalankan ulang dengan input sama | jumlah baris dan agregat tidak berubah (upsert idempoten) dan checkpoint maju hanya untuk data baru | 🧪 |
+| AC-20.1 | FR-20 | data terbaru tertentu | halaman dibuka | waktu data terakhir tampil per satelit | |
+| AC-20.2 | FR-20 | umur data terbaru per satelit | dihitung terhadap waktu server | ≤ 18 jam: status ok; > 18 jam: peringatan; > 30 jam: basi | NFR-13 · 🧪 uji dengan mock waktu |
+| AC-20.3 | FR-20 | halaman mana pun | teks UI diperiksa | tidak ada klaim "real-time"; ada teks "biasanya 2–3 jam, kadang hingga ±9 jam" | NFR-12 |
+| AC-21.1 | FR-21 | rentang 2023-01-01 sampai akhir ketersediaan SP | mode backfill dijalankan | seluruh rentang termuat dengan kode transformasi yang sama dengan mode incremental | 🧪 |
+| AC-21.2 | FR-21 | satu berkas masukan yang sama | diproses lewat backfill dan lewat incremental | record tersimpan identik | 🧪 |
+| AC-22.1 | FR-22 | (satelit, tanggal UTC) yang punya SP | agregasi dibuat | hanya baris SP yang dihitung untuk (satelit, tanggal) itu | 🧪 |
+| AC-22.2 | FR-22 | (satelit, tanggal UTC) yang hanya punya NRT | agregasi dibuat | baris NRT dihitung | |
+| AC-22.3 | FR-22 | SP terbit untuk tanggal D | penggantian dijalankan | tidak ada tanggal D yang berisi campuran NRT dan SP | 🧪 |
+| AC-23.1 | FR-23 | tanggal yang SP-nya sudah terbit | perintah penggantian manual dijalankan | baris NRT tanggal itu diganti SP | 🧪 Should |
+| AC-23.2 | FR-23 | tanggal yang SP-nya belum terbit | perintah dijalankan | perintah menolak dengan pesan jelas dan NRT tetap | |
+| AC-23.3 | FR-23 | penggantian yang sama | perintah dijalankan dua kali | hasil sama (idempoten) | 🧪 |
+| AC-24.1 | FR-24 | deteksi tersimpan | record diperiksa | source ID, SP/NRT, versi produk, checksum file sumber, dan versi batas wilayah terisi | 🧪 |
+| AC-24.2 | FR-24 | seluruh data tersimpan | dicari record dengan field provenance kosong | tidak ada | 🧪 |
+
+### 8.3 Cek kriteria penerimaan D-P2-002
+
+Diperiksa dengan skrip yang mem-parse §2, §3, dan §8 (hasil ditempel di `bukti:` tracker dan deskripsi PR):
+- Setiap FR (FR-01 … FR-24, FR-G1 … FR-G8), termasuk setiap FR Must, punya ≥1 AC.
+- Setiap AC merujuk FR yang ada.
+- AC yang butuh data nyata (🧪) dan yang bergantung keputusan (⚖️) ditandai; AC itu diverifikasi ulang setelah ETL (Fase 5) dan keputusan G2.
