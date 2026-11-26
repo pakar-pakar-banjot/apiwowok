@@ -166,7 +166,7 @@ Menunggu persetujuan manusia: D-P1-001, C-P4-001.
 
 ### P4 — Development Harness
 
-- [x] **C-P4-001** Kerangka repo + CODEOWNERS + template PR · R3 · bukti: branch `c/C-P4-001-repo-skeleton`, commit c6e3a55, 2026-11-25; CODEOWNERS mencakup 29/29 path matriks (skrip cek: MISSING=0); template PR + DoD; README api/ dan deploy/; README peran lain tidak dibuat (di luar area, scope exit 1). Handle CODEOWNERS R1/R2/R4 masih placeholder · disetujui: —
+- [x] **C-P4-001** Kerangka repo + CODEOWNERS + template PR · R3 · bukti: branch `c/C-P4-001-repo-skeleton`, commit c6e3a55, 2026-11-25; CODEOWNERS mencakup 29/29 path matriks (skrip cek: MISSING=0); template PR + DoD; README api/ dan deploy/; README peran lain tidak dibuat (di luar area, scope exit 1). handle CODEOWNERS R1/R2/R4 diisi 2026-11-26 (@r3gulus-4rcturus, @Benhanan14406, @namarabigail) · disetujui: —
 - [ ] **C-P4-004** Docker Compose dasar + validasi environment · R3 · bukti: — · disetujui: —
 - [ ] **C-P4-005** CI: lint + unit test per komponen · R3 · bukti: — · disetujui: —
 
