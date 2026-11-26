@@ -24,3 +24,4 @@ n,case,detection_id,source_file,source_line
 23,confidence l (low),2d5cd72104b8626a74c0156a4404de39c667653920ba37bd9f13f0efafc250f9,VIIRS_NOAA20_NRT/2026-08-01_5d.csv,296
 24,frp = 0 → FRP_ZERO,a3010857328e810eefb6d16dec771eb7c8a7b19cf7e1c0e7151fc7fb0d9a8001,VIIRS_NOAA20_NRT/2026-09-15_5d.csv,31426
 25,titik di >1 poligon → MULTI_POLYGON (poligon pertama),aaa497e4c498501a6dec0c9f17ebcfc4d43285b9b2f8cd086e7fa6e4c1b17e47,VIIRS_NOAA20_NRT/2026-08-21_5d.csv,28004
+26,"latitude ditulis FIRMS dalam notasi ilmiah (dekat ekuator, mis. -7e-05)",842e3fe8b2a34fa0627d93b73220ddad51c840cc45d9f481b6534443c6d6d57d,VIIRS_NOAA20_NRT/2026-08-01_5d.csv,10572

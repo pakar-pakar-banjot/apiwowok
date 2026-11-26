@@ -137,6 +137,10 @@ CASES += [
     ("confidence l (low)", lambda e: e["confidence_raw"] == "l" and e["region_status"] == "INSIDE"),
     ("frp = 0 → FRP_ZERO", lambda e: "FRP_ZERO" in e["dq_flags"]),
     ("titik di >1 poligon → MULTI_POLYGON (poligon pertama)", lambda e: "MULTI_POLYGON" in e["dq_flags"]),
+    (
+        "latitude ditulis FIRMS dalam notasi ilmiah (dekat ekuator, mis. -7e-05)",
+        lambda e: 0 < abs(e["latitude"]) < 1e-4,
+    ),
 ]
 
 
@@ -165,7 +169,7 @@ def main() -> int:
             if r["n_hits"] not in ("0", "1"):
                 multi.add((r["latitude"], r["longitude"]))
     print(f"phase-1 multi-polygon coordinates: {len(multi)}")
-    n_multi = 0
+    n_multi = n_exp = 0  # n_exp: rows whose coordinate FIRMS writes in scientific notation (near equator)
 
     # 1. Candidates: first PER_BUCKET rows of each bucket, in sorted file / line order.
     buckets: dict[tuple, int] = {}
@@ -185,6 +189,9 @@ def main() -> int:
                     elif n_multi < PER_BUCKET and (row["latitude"], row["longitude"]) in multi:
                         n_multi += 1
                         cand.append((src, rel, line_no, row))
+                    elif n_exp < PER_BUCKET and "e" in (row["latitude"] + row["longitude"]).lower():
+                        n_exp += 1
+                        cand.append((src, rel, line_no, row))
     print(f"raw rows scanned: {n_rows}; buckets: {len(buckets)}; candidates: {len(cand)}")
 
     # 2. Region for candidates only.
@@ -203,7 +210,7 @@ def main() -> int:
         prov = {
             "source_file": rel,
             "source_file_sha256": m["sha256"],
-            "fetched_at_utc": m["fetched_at_utc"].replace("+00:00", "Z"),
+            "fetched_at_utc": ce.normalize_utc_timestamp(m["fetched_at_utc"]),
             "ingest_run_id": SAMPLE_RUN_ID,
         }
         events.append((ce.build_event(src, row, region, BOUNDARY_VERSION, prov), rel, line_no))
@@ -219,7 +226,9 @@ def main() -> int:
         out.append((name, *pick))
 
     with open(HERE / "canonical-events.sample.jsonl", "w", encoding="utf-8", newline="\n") as fh:
-        fh.writelines(json.dumps(e, ensure_ascii=False, separators=(",", ":")) + "\n" for _, e, _, _ in out)
+        fh.writelines(
+            json.dumps(e, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n" for _, e, _, _ in out
+        )
     with open(HERE / "canonical-events.sample.cases.csv", "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh, lineterminator="\n")
         w.writerow(["n", "case", "detection_id", "source_file", "source_line"])

@@ -3,13 +3,13 @@
 ```yaml
 contract: B (ETL → Cassandra), bagian event
 contract_version: 1.0.0
-status: DRAF            # PENDING: konfirmasi R1 atas CE-01…CE-07 (§2), konfirmasi R2 pemetaan CQL (§3), persetujuan G3
+status: DRAF            # CE-01…CE-09 disetujui R1 (Lanang, 2026-11-26). PENDING: pemetaan CQL + CE-01/03/04 (R2, §3); G3
 owner: R1 (Lanang)      # pemilik event; R2 (Abi Funn) pemilik persistensi dan validator wajib
 schema: docs/03-specs/data/samples/canonical-event.schema.json   # JSON Schema 2020-12
-samples: docs/03-specs/data/samples/canonical-events.sample.jsonl  # 25 record dari data nyata
+samples: docs/03-specs/data/samples/canonical-events.sample.jsonl  # 26 record dari data nyata
 ```
 
-> Fase 3 · Draf agen 2026-11-26 · Label: [legenda](../../00-discovery/README.md#label-status-informasi). Isi berasal dari keputusan yang sudah disetujui (OQ-08…OQ-12, HD-08…HD-11, [CR-03](../../change-requests/CR-03.md)), [data dictionary](../../01-dataset/02-data-dictionary.md), [aturan DQ](../../01-dataset/06-data-quality-rules.md), [semantik data](01-data-semantics.md), dan kerangka [06 §B](../../10-execution-plan/06-interface-contracts.md#b-etl--cassandra-canonical-event). Pilihan baru yang dibuat dokumen ini diberi ID **CE-xx** dan berstatus `RECOMMENDATION` sampai dikonfirmasi ([§2](#2-keputusan-yang-butuh-konfirmasi)).
+> Fase 3 · Draf agen 2026-11-26 · Label: [legenda](../../00-discovery/README.md#label-status-informasi). Isi berasal dari keputusan yang sudah disetujui (OQ-08…OQ-12, HD-08…HD-11, [CR-03](../../change-requests/CR-03.md)), [data dictionary](../../01-dataset/02-data-dictionary.md), [aturan DQ](../../01-dataset/06-data-quality-rules.md), [semantik data](01-data-semantics.md), dan kerangka [06 §B](../../10-execution-plan/06-interface-contracts.md#b-etl--cassandra-canonical-event). Pilihan baru yang dibuat dokumen ini diberi ID **CE-xx** ([§2](#2-keputusan-yang-butuh-konfirmasi)). CE-01…CE-07 disetujui Lanang (R1) 2026-11-26 di sesi Claude Code. CE-08 dan CE-09 muncul dari pemeriksaan edge case ([§11a](#11a-edge-case)) dan disetujui Lanang pada sesi yang sama ("yes I allow that").
 
 ## 0. Artefak
 
@@ -18,9 +18,11 @@ samples: docs/03-specs/data/samples/canonical-events.sample.jsonl  # 25 record d
 | `02-canonical-event-contract.md` (dokumen ini) | Arti setiap field dan aturan | Ya |
 | `samples/canonical-event.schema.json` | Bentuk record (tipe, null, enum, aturan bersyarat) | Ya, untuk bentuk |
 | `samples/canonical_event.py` | Fungsi referensi: identitas, waktu, zona, flag. Satu definisi yang dipakai builder dan validator | Bentuk yang bisa dijalankan dari §4–§7 |
-| `samples/canonical-events.sample.jsonl` | 25 event dari raw zone Fase 1 | Contoh |
+| `samples/canonical-events.sample.jsonl` | 26 event dari raw zone Fase 1 | Contoh |
 | `samples/canonical-events.sample.cases.csv` | Kasus tiap sampel + file dan nomor baris sumbernya | Jejak |
-| `samples/build_samples.py`, `samples/validate_samples.py` | Pembangun sampel (deterministik) dan validator | Alat |
+| `samples/build_samples.py`, `samples/validate_samples.py` | Pembangun sampel (deterministik) dan validator (termasuk unit edge case) | Alat |
+| `samples/audit_raw_zone.py` | Audit kontrak terhadap **semua** baris raw zone Fase 1 | Alat |
+| `samples/.gitattributes` | Memaksa akhir baris LF agar sampel identik byte di semua OS | Alat |
 
 Bila dokumen ini dan skema berbeda, **dokumen ini yang berlaku** dan skema wajib diperbaiki (patch).
 
@@ -39,17 +41,21 @@ Tidak termasuk kontrak ini (pemilik lain):
 
 ## 2. Keputusan yang butuh konfirmasi
 
-Semua baris di bawah adalah **rekomendasi agen** (`RECOMMENDATION`). Dokumen, skema, dan sampel sudah ditulis memakai rekomendasi ini, supaya tinggal disetujui atau diubah. Mengubah satu pilihan = membangun ulang sampel dengan `build_samples.py`.
+Baris di bawah berawal dari **rekomendasi agen**. Dokumen, skema, dan sampel ditulis memakai rekomendasi ini. **CE-01…CE-07 disetujui Lanang (R1), 2026-11-26, di sesi Claude Code** ("aku setuju semua, outside hitung di run log aja, boundary version ok, dan version_raw tetap disimpan"). Untuk CE-01, CE-03, dan CE-04 yang juga dimiliki R2, persetujuan R2 diberikan bersama konfirmasi pemetaan CQL (§3). CE-08 dan CE-09 ditemukan saat pemeriksaan edge case dan disetujui Lanang (R1) pada hari yang sama. Mengubah satu pilihan = membangun ulang sampel dengan `build_samples.py`.
 
 | ID | Keputusan | Rekomendasi (dipakai di draf ini) | Alternatif | Pemilik | Status |
 |---|---|---|---|---|---|
-| **CE-01** | Bentuk `detection_id` | SHA-256 hex (64 karakter) dari string identitas `processing_level\|satellite\|YYYY-MM-DDTHH:MMZ\|lat\|lon`, koordinat dinormalisasi dari **teks sumber** ([§4](#4-identitas-detection_id)) | (a) 128 bit pertama saja (32 hex): lebih hemat ±32 B/baris, risiko tabrakan tetap dapat diabaikan; (b) UUIDv5 dari string yang sama | R1 + R2 | `PENDING` |
-| **CE-02** | Nama field dan nilai enum | Nama 06 §B dipertahankan bila ada (`province_code`, `confidence_raw`, …). Nama baru: `local_date`, `local_tz`, `source_acq_date_utc`, `dq_flags`, `source_file`. `region_status` ∈ {`INSIDE`, `OUTSIDE`} mengikuti SEM-02, bukan `PROVINCE` dari 06 | Ikuti nama SEM (`province`, `zone`, `confidence`) | R1 | `PENDING` |
-| **CE-03** | Event OUTSIDE | OUTSIDE **adalah** canonical event yang sah (`province_code`, `province_name`, `local_date`, `local_tz` = null), agar satu bentuk dipakai untuk hitungan run log dan monitoring. Sesuai KEP-02 (Lanang, 2026-11-23: "OUTSIDE hanya di raw zone"), **pipeline tidak mengirim event OUTSIDE ke writer tabel layanan**; jumlahnya masuk run log ([§9](#9-aturan-pemuatan)) | Writer menerima OUTSIDE dan R2 menyimpannya di tabel terpisah | R1 + R2 | `PENDING` |
-| **CE-04** | Provenance vs idempotensi | Field dibagi dua: **isi** (ditentukan baris sumber + batas wilayah) dan **muat** (`source_file`, `source_file_sha256`, `fetched_at_utc`, `ingest_run_id`). Upsert menimpa field muat dengan nilai pemuatan terakhir. Uji idempotensi = jumlah baris + checksum atas field **isi** ([§8](#8-provenance-dan-idempotensi)) | Field muat ditulis sekali (first-seen) → butuh LWT `IF NOT EXISTS` (mahal di Cassandra) | R1 + R2 | `PENDING` |
-| **CE-05** | Flag DQ di event | Hanya flag yang merupakan fungsi baris + batas: `TI4_SATURATED`, `FRP_ZERO`, `NON_VEGETATION_TYPE`, `MULTI_POLYGON`. `DUPLICATE`/`DUPLICATE_CONFLICT` dan `INCOMPLETE_DAY` dicatat di run log/tabel cakupan, bukan di event. `OUTSIDE` tidak diulang sebagai flag (sudah di `region_status`) | Semua flag DQ di event | R1 | `PENDING` |
-| **CE-06** | Format `boundary_version` | `BIG-2026-06-g0.001-0382eeeeb559` (sumber-edisi-generalisasi-12 hex pertama SHA-256 snapshot) | SHA-256 penuh; nama bebas | R1 | `PENDING` |
-| **CE-07** | Format `ingest_run_id` | Kontrak hanya mewajibkan teks 1–128 karakter, tidak kosong. Formatnya ditetapkan A-P3-002 (run log). Sampel memakai `sample-A-P3-001` (`ILUSTRASI`) | Tetapkan UUID sekarang | R1 (A-P3-002) | `PENDING` |
+| **CE-01** | Bentuk `detection_id` | SHA-256 hex (64 karakter) dari string identitas `processing_level\|satellite\|YYYY-MM-DDTHH:MMZ\|lat\|lon`, koordinat dinormalisasi dari **teks sumber** ([§4](#4-identitas-detection_id)) | (a) 128 bit pertama saja (32 hex): lebih hemat ±32 B/baris, risiko tabrakan tetap dapat diabaikan; (b) UUIDv5 dari string yang sama | R1 + R2 | **Disetujui** R1 2026-11-26; R2 ⏳ (§3) |
+| **CE-02** | Nama field dan nilai enum | Nama 06 §B dipertahankan bila ada (`province_code`, `confidence_raw`, …). Nama baru: `local_date`, `local_tz`, `source_acq_date_utc`, `dq_flags`, `source_file`. `region_status` ∈ {`INSIDE`, `OUTSIDE`} mengikuti SEM-02, bukan `PROVINCE` dari 06 | Ikuti nama SEM (`province`, `zone`, `confidence`) | R1 | **Disetujui** R1 2026-11-26 |
+| **CE-03** | Event OUTSIDE | OUTSIDE **adalah** canonical event yang sah (`province_code`, `province_name`, `local_date`, `local_tz` = null), agar satu bentuk dipakai untuk hitungan run log dan monitoring. Sesuai KEP-02 (Lanang, 2026-11-23: "OUTSIDE hanya di raw zone"), **pipeline tidak mengirim event OUTSIDE ke writer tabel layanan**; jumlahnya masuk run log ([§9](#9-aturan-pemuatan)) | Writer menerima OUTSIDE dan R2 menyimpannya di tabel terpisah | R1 + R2 | **Disetujui** R1 2026-11-26; R2 ⏳ (§3) |
+| **CE-04** | Provenance vs idempotensi | Field dibagi dua: **isi** (ditentukan baris sumber + batas wilayah) dan **muat** (`source_file`, `source_file_sha256`, `fetched_at_utc`, `ingest_run_id`). Upsert menimpa field muat dengan nilai pemuatan terakhir. Uji idempotensi = jumlah baris + checksum atas field **isi** ([§8](#8-provenance-dan-idempotensi)) | Field muat ditulis sekali (first-seen) → butuh LWT `IF NOT EXISTS` (mahal di Cassandra) | R1 + R2 | **Disetujui** R1 2026-11-26; R2 ⏳ (§3) |
+| **CE-05** | Flag DQ di event | Hanya flag yang merupakan fungsi baris + batas: `TI4_SATURATED`, `FRP_ZERO`, `NON_VEGETATION_TYPE`, `MULTI_POLYGON`. `DUPLICATE`/`DUPLICATE_CONFLICT` dan `INCOMPLETE_DAY` dicatat di run log/tabel cakupan, bukan di event. `OUTSIDE` tidak diulang sebagai flag (sudah di `region_status`) | Semua flag DQ di event | R1 | **Disetujui** R1 2026-11-26 |
+| **CE-06** | Format `boundary_version` | `BIG-2026-06-g0.001-0382eeeeb559` (sumber-edisi-generalisasi-12 hex pertama SHA-256 snapshot) | SHA-256 penuh; nama bebas | R1 | **Disetujui** R1 2026-11-26 |
+| **CE-07** | Format `ingest_run_id` | Kontrak hanya mewajibkan teks 1–128 karakter, tidak kosong. Formatnya ditetapkan A-P3-002 (run log). Sampel memakai `sample-A-P3-001` (`ILUSTRASI`) | Tetapkan UUID sekarang | R1 (A-P3-002) | **Disetujui** R1 2026-11-26 |
+| **CE-08** | Nilai yang bisa di-parse tetapi di luar domain kontrak dan tidak tercakup DQ-01…DQ-15 (`type` ∉ {0,1,2,3}, `daynight` ∉ {D,N}, `instrument` ≠ `VIIRS`, `bright_ti4`/`bright_ti5`/`scan`/`track` ≤ 0, `frp` < 0, tanggal tidak nyata, kode provinsi di luar 38) | **Tolak baris** dengan reason code baru `CONTRACT_VIOLATION`, tercatat di run log seperti penolakan DQ lain. Setiap event diperiksa terhadap skema sebelum dikirim ke writer. Dampak di data Fase 1: lihat [§11a](#11a-edge-case) | (a) Simpan + flag baru; (b) biarkan writer/Cassandra menolak (gagal di tempat yang salah, tanpa reason code) | R1 | **Disetujui** R1 2026-11-26 |
+| **CE-09** | Baris **SP** dengan `type` kosong | **Terima**, `type = null` (DQ-02 yang disetujui G1 mengecualikan `type` dari aturan nilai kosong; perlakuannya sama dengan NRT: dihitung, tidak ikut filter tipe) | Tolak sebagai `MISSING_FIELD` (mengubah arti DQ-02 → CR) | R1 | **Disetujui** R1 2026-11-26 |
+
+Keputusan terkait yang juga disetujui Lanang 2026-11-26: **`version_raw` tetap disimpan** di samping `processing_level` (alasan di [§3](#3-field), catatan `version_raw`).
 
 Keputusan lain di dokumen ini hanya **menerapkan** keputusan yang sudah final: CR-03 (`processing_level` masuk identitas), OQ-08 (UTC + tanggal lokal per provinsi), OQ-09 (semua confidence disimpan), OQ-11 (titik luar provinsi diberi status khusus), OQ-12 (`type` nullable), HD-10 (satu produk per `(satellite, tanggal UTC)`), HD-11 (DQ-01…DQ-15, tanpa snapping), SEM-02 butir 2 (poligon pertama).
 
@@ -62,7 +68,7 @@ Urutan = urutan di skema. "Null" = boleh `null` di JSON. Kolom **CQL (usulan)** 
 | 1 | `detection_id` | string `^[0-9a-f]{64}$` | tidak | isi | [§4](#4-identitas-detection_id) | `text` |
 | 2 | `source_id` | enum 4 nilai | tidak | isi | Metadata request (`VIIRS_NOAA20_SP`, `VIIRS_NOAA21_SP`, `VIIRS_NOAA20_NRT`, `VIIRS_NOAA21_NRT`), bukan ditebak dari isi | `text` |
 | 3 | `processing_level` | `SP` \| `NRT` | tidak | isi | Dari `source_id` | `text` |
-| 4 | `version_raw` | `2` \| `2.0NRT` | tidak | isi | Kolom `version` apa adanya; harus cocok dengan `source_id` (DQ-14) | `text` |
+| 4 | `version_raw` | `2` \| `2.0NRT` | tidak | isi | Kolom `version` apa adanya; harus cocok dengan `source_id` (DQ-14). Disimpan walau saat ini bisa diturunkan dari `processing_level` (lihat catatan di bawah tabel) | `text` |
 | 5 | `satellite` | `N20` \| `N21` | tidak | isi | Kolom `satellite`; harus cocok dengan `source_id` (DQ-15) | `text` |
 | 6 | `instrument` | `VIIRS` | tidak | isi | Kolom `instrument` | `text` |
 | 7 | `acq_datetime_utc` | string `YYYY-MM-DDTHH:MM:00Z` | tidak | isi | `acq_date` + `acq_time` di-pad 4 digit ([§5](#5-waktu)) | `timestamp` |
@@ -83,18 +89,21 @@ Urutan = urutan di skema. "Null" = boleh `null` di JSON. Kolom **CQL (usulan)** 
 | 22 | `confidence_raw` | `l` \| `n` \| `h` | tidak | isi | Kolom `confidence` (DQ-13) | `text` |
 | 23 | `confidence_class` | `low` \| `nominal` \| `high` | tidak | isi | Pemetaan tetap dari `confidence_raw` | `text` |
 | 24 | `daynight` | `D` \| `N` | tidak | isi | Kolom sumber. Aturan SP (zenit matahari) ≠ NRT (orbit) | `text` |
-| 25 | `type` | 0 \| 1 \| 2 \| 3 | **ya**: null ⇔ NRT | isi | Kolom `type` (SP saja); NRT tidak punya kolom ini (OQ-12) | `int` |
+| 25 | `type` | 0 \| 1 \| 2 \| 3 | **ya**: selalu null di NRT; di SP null hanya bila kolomnya kosong (CE-09) | isi | Kolom `type` (SP saja); NRT tidak punya kolom ini (OQ-12) | `int` |
 | 26 | `dq_flags` | array unik, terurut | tidak (boleh `[]`) | isi | [§7](#7-flag-dq) | `set<text>` |
-| 27 | `source_file` | string `<source_id>/<nama>.csv` | tidak | muat | Path relatif raw zone (`data/firms/raw/`) dari file yang dimuat | `text` |
+| 27 | `source_file` | string `<source_id>/[subfolder/…]<nama>.csv` | tidak | muat | Path relatif raw zone (`data/firms/raw/`) dari file yang dimuat. Subfolder diperbolehkan (tata letak raw zone incremental ditetapkan A-P3-002); segmen `..` dilarang | `text` |
 | 28 | `source_file_sha256` | string 64 hex | tidak | muat | SHA-256 file sumber dari `manifest.csv` | `text` |
 | 29 | `fetched_at_utc` | string ISO-8601 UTC `…Z` | tidak | muat | Waktu ambil file dari `manifest.csv` | `timestamp` |
 | 30 | `ingest_run_id` | string 1–128 | tidak | muat | ID run (CE-07) | `text` |
 
 Aturan bersyarat (ditegakkan skema):
 - `region_status = INSIDE` ⇔ `province_code`, `province_name`, `local_date`, `local_tz` terisi; `OUTSIDE` ⇔ keempatnya `null`.
-- `processing_level = SP` ⇔ `version_raw = "2"`, `source_id` berakhiran `_SP`, `type` bilangan bulat; `NRT` ⇔ `"2.0NRT"`, `_NRT`, `type = null`.
+- `processing_level = SP` ⇔ `version_raw = "2"`, `source_id` dan `source_file` produk `_SP`, `type` ∈ {0,1,2,3} atau null (CE-09); `NRT` ⇔ `"2.0NRT"`, `_NRT`, `type = null`.
+- `province_name` = nama BIG untuk `province_code` (tabel di `canonical_event.py`, dicocokkan dengan snapshot); tanggal harus tanggal kalender nyata; angka harus berhingga (bukan NaN/Infinity). Ketiganya diperiksa validator (`[rules]`), bukan skema.
 - `satellite` cocok dengan `source_id` dan `source_file`; `confidence_class` cocok dengan `confidence_raw`.
 - Tidak ada field lain (`additionalProperties: false`). Field opsional baru = versi *minor* ([§10](#10-versi-dan-perubahan)).
+
+Catatan `version_raw` (disetujui Lanang 2026-11-26): dengan DQ-14 saat ini nilainya selalu berpasangan dengan `processing_level` (`2` ↔ SP, `2.0NRT` ↔ NRT). Field ini tetap disimpan karena (1) FR-13/US-13 meminta tingkat pemrosesan **dan** versi produk sebagai dua hal; (2) `version` mengandung **koleksi** (Collection 2), sedangkan `processing_level` hanya level. Bila koleksi baru diterima lewat CR atas DQ-14, hanya `version_raw` yang membedakan event SP koleksi lama dan baru selama transisi. Ketidakkonsistenan dicegah skema (mutasi "version_raw tidak cocok" ditolak).
 
 Catatan untuk R2 (`RECOMMENDATION`, keputusan di B-P3-002): `source_file_sha256` (64 B) dan `fetched_at_utc` bergantung pada file, bukan deteksi. Secara fisik keduanya bisa disimpan di tabel file dan cukup dirujuk lewat `source_file` ([00-volume-estimates](../database/00-volume-estimates.md)). Kontrak logis tetap seperti di atas.
 
@@ -105,7 +114,8 @@ Dasar: [04 §2](../../01-dataset/04-nrt-vs-sp-and-latency.md#2-aturan-tumpang-ti
 ```
 identity = processing_level "|" satellite "|" acq_datetime_utc("YYYY-MM-DDTHH:MMZ") "|" canon(latitude_text) "|" canon(longitude_text)
 detection_id = lowercase_hex(SHA-256(ASCII(identity)))
-canon(x) = desimal dari teks sumber tanpa eksponen, tanpa nol di belakang, tanpa titik di akhir, "-0" → "0"
+canon(x) = teks sumber (desimal biasa ATAU notasi ilmiah, mis. "-7e-05") → desimal tanpa eksponen, tanpa nol di belakang,
+           tanpa titik di akhir, "-0" → "0".   Contoh: "-7e-05" → "-0.00007";  "-2.886740" → "-2.88674"
 ```
 
 Contoh dari sampel #1 (`VERIFIED`, dihitung sesi ini; baris 2 `VIIRS_NOAA20_SP/2023-01-01_5d.csv`: `-2.88674,116.2264,…,2023-01-01,508,N20,…`):
@@ -156,7 +166,7 @@ Zona per kode provinsi. Diturunkan dari tabel SEM-03, yang memakai nama; dipetak
 | `TI4_SATURATED` | `bright_ti4` = 367,0 | DQ-09 |
 | `FRP_ZERO` | `frp` = 0 | DQ-10 |
 | `NON_VEGETATION_TYPE` | `type` ∈ {1, 2, 3} | DQ-11 |
-| `MULTI_POLYGON` | titik di >1 poligon provinsi | DQ-07b |
+| `MULTI_POLYGON` | titik di >1 poligon snapshot. Poligon BIG adalah **kab/kota**, jadi flag ini juga muncul bila kedua poligon berada di provinsi yang sama (94 dari 101 koordinat Fase 1; hanya 7 melintasi batas provinsi, [§11a](#11a-edge-case)) | DQ-07b |
 
 Bukan flag event: `OUTSIDE` (= `region_status`), `DUPLICATE`/`DUPLICATE_CONFLICT` (DQ-08, hitungan run log), `INCOMPLETE_DAY` (DQ-12, sifat tanggal di tabel cakupan, bukan deteksi). Baris yang ditolak tidak pernah menjadi event.
 
@@ -177,8 +187,9 @@ Mengikat pipeline (R1) dan writer (R2). Butir 1–5 dari 06 §B, butir 6 dari CE
 3. Batch hanya untuk partisi yang sama.
 4. Rekaman yang ditolak tidak masuk tabel event, tetapi tercatat dengan reason code di run log/rejected store (A-P3-002).
 5. Writer milik R2 (`db/`). Pipeline memanggil API writer, bukan menulis CQL sendiri.
-6. Event `OUTSIDE` tidak dikirim ke writer tabel layanan. Jumlahnya per run dilaporkan di run log (FR-13); barisnya tetap di raw zone (KEP-02). Validasi bentuk event tetap berlaku untuk OUTSIDE.
+6. Event `OUTSIDE` tidak dikirim ke writer dan tidak disimpan di Cassandra (CE-03, disetujui Lanang 2026-11-26). Jumlahnya per run dicatat di run log (FR-13, format di A-P3-002); barisnya tetap di raw zone (KEP-02) dan dapat dibentuk ulang kapan saja karena pipeline deterministik. Validasi bentuk event tetap berlaku untuk OUTSIDE.
 7. Penggantian NRT→SP (*Should*, A-P7-003) menghapus semua event `(satellite, source_acq_date_utc)` produk NRT lalu memuat SP, kemudian menghitung ulang agregat untuk dua `local_date` yang terdampak. Ini operasi destruktif yang butuh persetujuan (HD-27); kontrak ini hanya menjamin field kuncinya tersedia.
+8. Setiap event diperiksa terhadap skema dan aturan sebelum dikirim ke writer. Yang gagal ditolak dengan reason code (`CONTRACT_VIOLATION`, CE-08) dan tidak dikirim.
 
 ## 10. Versi dan perubahan
 
@@ -194,7 +205,7 @@ Setelah G3, perubahan apa pun dilakukan lewat CR. Sebelum G3, konfirmasi CE-xx b
 
 ## 11. Sampel dan verifikasi
 
-**Sampel** (`VERIFIED`, dibangun sesi ini dari raw zone Fase 1: 629 file, 2.705.905 baris). Builder membaca file berurutan, mengambil kandidat per bucket (produk × siang/malam × jam UTC malam × confidence × type × FRP 0 × TI4 jenuh × pita bujur), menetapkan wilayah dengan point-in-polygon, lalu memilih kandidat pertama yang memenuhi tiap kasus. Kasus MULTI_POLYGON (jarang: 101 koordinat) diambil dengan bantuan `coord_assign.csv` Fase 1. Membangun ulang menghasilkan file yang identik byte demi byte (diuji dengan `sha256sum`).
+**Sampel** (`VERIFIED`, dibangun sesi ini dari raw zone Fase 1: 629 file, 2.705.905 baris). Builder membaca file berurutan, mengambil kandidat per bucket (produk × siang/malam × jam UTC malam × confidence × type × FRP 0 × TI4 jenuh × pita bujur), menetapkan wilayah dengan point-in-polygon, lalu memilih kandidat pertama yang memenuhi tiap kasus. Dua kasus jarang diambil dengan bantuan: MULTI_POLYGON (101 koordinat, lewat `coord_assign.csv` Fase 1) dan latitude dalam notasi ilmiah (22 baris). Membangun ulang menghasilkan file yang identik byte demi byte (diuji dengan `sha256sum`).
 
 | # | Kasus | Produk | UTC | Tanggal lokal | Provinsi | `type` | conf | flag |
 |---|---|---|---|---|---|---|---|---|
@@ -223,6 +234,7 @@ Setelah G3, perubahan apa pun dilakukan lewat CR. Sebelum G3, konfirmasi CE-xx b
 | 23 | confidence l | N20 NRT | 2026-08-01 04:21 | 2026-08-01 WIT | 93 Papua Selatan | null | l | — |
 | 24 | frp = 0 | N20 NRT | 2026-09-19 05:46 | 2026-09-19 WIB | 62 Kalimantan Tengah | null | l | FRP_ZERO, TI4_SATURATED |
 | 25 | >1 poligon | N20 NRT | 2026-08-25 05:14 | 2026-08-25 WITA | 64 Kalimantan Timur | null | n | MULTI_POLYGON |
+| 26 | latitude ditulis `-7e-05` (dekat ekuator) | N20 NRT | 2026-08-05 06:29 | 2026-08-05 WIB | 61 Kalimantan Barat | null | n | — |
 
 File dan nomor baris sumber tiap sampel ada di `canonical-events.sample.cases.csv`. Satu-satunya nilai buatan adalah `ingest_run_id = sample-A-P3-001` (`ILUSTRASI`, CE-07).
 
@@ -233,18 +245,58 @@ Pengamatan dari sampel (`VERIFIED`, hanya contoh; bukan statistik): #24 menunjuk
 ```
 python -I docs/03-specs/data/samples/build_samples.py    --data-dir <repo>/data   # bangun ulang (deterministik)
 python -I docs/03-specs/data/samples/validate_samples.py --data-dir <repo>/data   # semua cek; tanpa --data-dir: tanpa [trace]
+python -I docs/03-specs/data/samples/audit_raw_zone.py   --data-dir <repo>/data   # audit semua baris raw zone (±9 menit)
 ```
 
 | Cek | Isi | Hasil sesi ini |
 |---|---|---|
-| `[schema]` | Setiap record terhadap `canonical-event.schema.json` (validator subset 2020-12 berbasis stdlib; kata kunci yang tidak dikenal = error) | PASS 25/25 |
-| `[rules]` | `detection_id` dihitung ulang, `source_acq_date_utc`, `local_tz` = zona provinsi, `local_date`, flag sesuai nilai, pemetaan `source_id`, `source_file` di direktori produk | PASS 25/25 |
+| `[schema]` | Setiap record terhadap `canonical-event.schema.json` (validator subset 2020-12 berbasis stdlib; kata kunci yang tidak dikenal = error) | PASS 26/26 |
+| `[rules]` | `detection_id` dihitung ulang, `source_acq_date_utc`, `local_tz` = zona provinsi, `local_date`, flag sesuai nilai, pemetaan `source_id`, `source_file` di direktori produk, nama provinsi = nama BIG, tanggal kalender nyata, angka berhingga | PASS 26/26 |
 | `[coverage]` | ≥ 20; SP & NRT; N20 & N21; keempat `source_id`; OUTSIDE; lintas tanggal di WIB, WITA, WIT; `type` null dan 0–3; confidence l/n/h; keempat flag; ID unik | PASS |
-| `[selftest]` | 15 record mutasi (NRT ber-`type`, INSIDE tanpa provinsi, OUTSIDE ber-tanggal lokal, ID salah, zona salah, field tambahan, field hilang, …) wajib ditolak; set ID tidak bergantung urutan | PASS |
+| `[selftest]` | 34 record mutasi (NRT ber-`type`, `type` 4, INSIDE tanpa provinsi, nama provinsi salah, OUTSIDE ber-tanggal lokal, ID salah, zona salah, NaN/Infinity, tanggal 30 Februari, jam 24:00, path `..`, field tambahan/hilang, …) wajib ditolak; CE-09 (SP `type` null) wajib diterima; set ID tidak bergantung urutan | PASS |
+| `[edge]` | 156 unit edge case pada input sintetis ([§11a](#11a-edge-case)) | PASS 156/156 |
 | `[trace]` | Setiap record = hasil bangun ulang dari baris mentahnya; SHA-256 file = manifest = event; checksum snapshot batas; wilayah = `coord_assign.csv` Fase 1 (penetapan independen) | PASS |
-| Silang | Library resmi `jsonschema` 4.26.0 (venv sementara, **bukan** dependensi proyek): `check_schema` lolos, 0 error pada 25 record, 6 mutasi ditolak | PASS |
+| Silang | Library resmi `jsonschema` 4.26.0 (venv sementara, **bukan** dependensi proyek): `check_schema` lolos, 0 error pada 26 record, 6 mutasi ditolak | PASS |
 
-Lint: `ruff check` dan `ruff format --check` (line length 120) bersih. Repo belum punya `ruff.toml`/pre-commit (dibuat di Fase 4). Skrip hanya memakai stdlib + numpy (sudah dipakai `scratch/phase1/`); tidak ada dependensi baru.
+Lint: `ruff check` dan `ruff format --check` (line length 120) bersih. Repo belum punya `ruff.toml`/pre-commit (dibuat di Fase 4). Skrip hanya memakai stdlib + numpy (sudah dipakai `scratch/phase1/`); tidak ada dependensi baru. Python ≥ 3.11.
+
+## 11a. Edge case
+
+Dua lapis pemeriksaan: **unit** (input sintetis, `validate_samples.py [edge]`) dan **data nyata** (semua baris raw zone, `audit_raw_zone.py`). Suite unit diuji dengan sabotase: delapan kerusakan sengaja pada fungsi referensi (offset WIB salah, tanpa normalisasi desimal, regex angka longgar, notasi ilmiah ditolak, `acq_time` longgar, flag kosong, ID tanpa `processing_level`, CE-09 dimatikan) semuanya terdeteksi.
+
+### Aturan parsing (berlaku untuk pipeline A-P5)
+
+| Input | Perlakuan | Reason code |
+|---|---|---|
+| `acq_time` 1–4 digit ASCII (`0` → 00:00, `5` → 00:05, `508` → 05:08) | Pad ke 4 digit | — |
+| `acq_time` `2400`, `1260`, `12345`, `-5`, `5.0`, `+508`, digit non-ASCII, berspasi di tengah | Tolak | `INVALID_TIME` (DQ-05) |
+| `acq_date` bukan `YYYY-MM-DD` atau bukan tanggal nyata (`2023-02-29`) | Tolak | `CONTRACT_VIOLATION` (CE-08) |
+| Angka: desimal biasa **atau notasi ilmiah** (`-7e-05`) | Terima; ID memakai bentuk desimal kanonis | — |
+| Angka: `NaN`, `Infinity`, `+1.5`, `1_000`, `1.`, `.5`, `1,5`, hex, kosong | Tolak | `NON_NUMERIC` (DQ-03) / `MISSING_FIELD` (DQ-02) |
+| Angka yang meluap (`1e400`) | Tolak | `COORD_OUT_OF_RANGE` (koordinat) / `NON_NUMERIC` |
+| `type` SP kosong | Terima, `type = null` | — (CE-09) |
+| `type` ∉ {0,1,2,3}, `daynight` ∉ {D,N}, `instrument` ≠ VIIRS, `bright_ti4/ti5/scan/track` ≤ 0, `frp` < 0 | Tolak | `CONTRACT_VIOLATION` (CE-08) |
+| Baris NRT yang punya kolom `type` | Tolak | `SCHEMA_MISMATCH` (DQ-01) |
+| Spasi di awal/akhir nilai | Dibuang sebelum diproses | — |
+| Nilai JSON `NaN`/`Infinity` | Ditolak pembaca JSONL dan tidak pernah ditulis (`allow_nan=False`) | — |
+| `fetched_at_utc` tanpa offset zona | Tolak | `CONTRACT_VIOLATION` |
+
+Batas tanggal lokal yang diuji: 16:59/17:00 UTC (WIB), 15:59/16:00 (WITA), 14:59/15:00 (WIT), pergantian tahun (2023-12-31 → 2024-01-01), hari kabisat (2024-02-28 → 02-29, 2024-02-29 → 03-01, 2023-02-28 → 03-01).
+
+### Temuan pada data nyata (`VERIFIED`, `audit_raw_zone.py`, 2026-11-26, 517 detik)
+
+| Pemeriksaan | Hasil |
+|---|---|
+| Semua 2.705.905 baris → event | **0 ditolak** (sesuai DQ-01…DQ-15 Fase 1) |
+| Schema + rules (1 dari 10 baris, dipilih dari hash ID: 270.682 baris) | 0 gagal |
+| **Notasi ilmiah di latitude** | **22 baris** (N20 NRT 9 · N20 SP 4 · N21 NRT 6 · N21 SP 3), mis. `-7e-05`, `1e-05`: titik dalam ±0,0001° dari ekuator. Data dictionary Fase 1 tidak mencatat bentuk ini. Parser yang hanya menerima desimal biasa akan salah menolaknya (terjadi pada draf parser ketat sesi ini, lalu diperbaiki). Sampel #26 |
+| Duplikat `detection_id` per produk (DQ-08) | N20 SP 0 · N21 SP 1 · N20 NRT 1 · N21 NRT 0: **sama persis** dengan DQ-08 dan dengan kunci teks mentah A-08. Kedua pasangan adalah baris berurutan (`VIIRS_NOAA21_SP/2023-10-22_5d.csv:4061–4062`, `VIIRS_NOAA20_NRT/2026-08-26_5d.csv:6311–6312`) yang berbeda di `bright_ti4`, `bright_ti5`, `frp` → `DUPLICATE_CONFLICT`, diselesaikan pipeline (FRP tertinggi) |
+| Tabrakan ID antar-produk | 0. Juga 0 bila ID dipotong ke 64 bit (alternatif CE-01(a) aman untuk volume ini) |
+| `acq_time` | Hanya 3 digit (1.747.373, siang) dan 4 digit (958.532, malam). Bentuk 1–2 digit (00:00–00:59 UTC) tidak muncul di data, tetapi diuji di `[edge]` |
+| Koordinat | Desimal 0–5; **tidak ada** teks dengan nol di belakang; 0 di luar bbox (DQ-04); 0 di luar jendela request (DQ-06) |
+| Wilayah (sampel 1%: 26.972 baris) | INSIDE 23.510 · OUTSIDE 3.462 · MULTI_POLYGON 1; provinsi = `coord_assign.csv` Fase 1 untuk 26.957/26.957 koordinat |
+| Pergeseran tanggal lokal (INSIDE) | Siang: selalu 0 hari. Malam: +1 hari (WIB 5.344, WITA 1.833, WIT 1.420) atau 0 hari (WIB 28, UTC < 17:00). Tidak pernah lebih dari 1 hari |
+| Titik di >1 poligon (101 koordinat) | **94 di dua poligon kab/kota dalam provinsi yang sama; 7 di perbatasan dua provinsi** (mis. 92/96, 62/63, 73/74, 16/18, 33/35). Hanya 7 titik ini yang provinsinya bergantung pada aturan "poligon pertama" (SEM-02 butir 2) |
 
 ## 12. Selisih terhadap kerangka 06 §B
 
@@ -266,7 +318,7 @@ Lint: `ruff check` dan `ruff format --check` (line length 120) bersih. Repo belu
 | Penerima | Masukan |
 |---|---|
 | B-P3-001/002 (R2) | Konfirmasi tipe CQL §3. Dimensi query: `province_code`, `local_date`, `satellite`, `confidence_raw`, `type` (nullable). Operasi ganti/hapus per `(satellite, source_acq_date_utc, processing_level)` harus bisa tanpa scan. Pertimbangkan tabel file untuk field muat |
-| B-P5-002 (R2) | Writer diuji dengan `canonical-events.sample.jsonl` yang sama (risiko tipe/null A↔B, [09](../../10-execution-plan/09-risk-capacity-plan.md)). Event OUTSIDE tidak dikirim (CE-03) |
+| B-P5-002 (R2) | Writer diuji dengan `canonical-events.sample.jsonl` yang sama (risiko tipe/null A↔B, [09](../../10-execution-plan/09-risk-capacity-plan.md)). Event OUTSIDE tidak dikirim (CE-03). Edge case Cassandra (`AI-PRIOR`, perlu diuji di B-P5-002): koleksi kosong (`set<text>` = `[]`) dibaca kembali sebagai `null`, jadi `dq_flags` harus dipetakan `null` ↔ `[]` saat membaca; `timestamp` beresolusi milidetik (aman, kontrak beresolusi detik); `double` menyimpan koordinat persis seperti nilai JSON |
 | A-P3-002 (R1) | Format `ingest_run_id` (CE-07); pemilihan nilai DQ-08 antar-run; pengecualian field muat dari checksum idempotensi (CE-04) |
 | A-P5-005 (R1) | Cocokkan zona per `province_code` (§6) dengan atribut BIG; uji tepat 38 kode |
 | X-P3-901 (koordinator) | Selaraskan 06 §B dengan §12 |
@@ -280,4 +332,4 @@ Lint: `ruff check` dan `ruff format --check` (line length 120) bersih. Repo belu
 | FIRMS tidak mengubah format koordinat antar-file untuk deteksi yang sama; bila berubah, `canon` tetap menyamakan nol di belakang | `ASSUMPTION` (Fase 1: `changed` = 0 dalam 106 poll, [04 §3](../../01-dataset/04-nrt-vs-sp-and-latency.md#3-latensi-nrt-a-p1-008)) |
 | Kunci spasial untuk peta (grid/geohash) | `PENDING`: menunggu B-P2-001/B-P3-001 |
 | Lisensi batas BIG | `UNKNOWN` (HD-08), tidak memengaruhi bentuk kontrak |
-| CE-01…CE-07 | `PENDING` (§2) |
+| CE-01…CE-09 | Disetujui R1 (Lanang, 2026-11-26). CE-01, CE-03, CE-04: konfirmasi R2 bersama pemetaan CQL (§3) |
