@@ -31,13 +31,12 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 | Role A (R1) | 10 / 10 / 10 | 1 / 1 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **11 / 11 / 31** |
 | Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
 | Role C (R3) | 0 / 0 / 1 | 1 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **1 / 1 / 25** |
-| Role D (R4) | 1 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **1 / 1 / 23** |
+| Role D (R4) | 1 / 1 / 1 | 0 / 1 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **1 / 2 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 14 / 14 / 15 | 2 / 2 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **16 / 16 / 110** |
+| **Tim** | 14 / 14 / 15 | 2 / 3 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **16 / 17 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
-Menunggu persetujuan manusia: tidak ada.
-<!-- progress:summary:end -->
+Menunggu persetujuan manusia: D-P2-001.
 
 ## Gerbang
 
@@ -204,7 +203,7 @@ Menunggu persetujuan manusia: tidak ada.
 
 ### P2 — Requirements Engineering
 
-- [ ] **D-P2-001** Functional requirements final · R4 · bukti: — · disetujui: —
+- [x] **D-P2-001** Functional requirements final · R4 · bukti: draf agen 2026-11-25, branch D/D-P2-001-functional-requirements: docs/02-requirements/01-functional-requirements.md (24 FR + 8 FR-G); cek traceability: 10/10 fitur Must punya ≥1 FR, 0 FR tanpa fitur; 6 keputusan G2 terbuka (Q-1…Q-6) · disetujui: —
 - [ ] **D-P2-002** Acceptance criteria per FR · R4 · bukti: — · disetujui: —
 - [ ] **D-P2-003** Kunci MVP + urutan pemotongan cakupan · R4 · bukti: — · disetujui: —
 
