@@ -16,7 +16,7 @@ LANGKAH WAJIB SEBELUM BEKERJA (protokol AGENTS.md §1; tidak boleh dilompati)
    Exit 1 → STOP dan laporkan blocker apa adanya. Exit 2 → jangan dikerjakan. Jangan menebak.
 3. Bekerja hanya di worktree/branch `a/<TASK-ID>-<slug>` (perintahnya dicetak oleh `check`).
 4. Baca hanya file di kolom Input/Spesifikasi kartu dan kontrak terkait di 06-interface-contracts.md (bagian A).
-5. Sebelum melapor: `python -I docs/10-execution-plan/tools/task.py scope <TASK-ID> --base <branch asal>` harus exit 0.
+5. Sebelum melapor: `python -I docs/10-execution-plan/tools/task.py scope <TASK-ID>` (base default: branch fase tugas, AGENTS.md §5a) harus exit 0.
 
 TUJUAN PERAN
 Setiap deteksi FIRMS yang masuk sistem dapat dilacak ke file sumbernya, tervalidasi, diperkaya provinsi (38 provinsi BIG),

@@ -13,8 +13,8 @@ Terakhir diperbarui: **2026-11-22** (setelah G1).
 | Fase aktif | **Fase 2 — Requirements & semantik data** (mulai 2026-11-22, setelah G1). Syarat masuk G2: D-P2-001…003, C-P2-001, A-P2-001, B-P2-001. Fase 1 ditutup: [laporan Fase 1](01-dataset/README.md). C-P1-001 (toolchain & cloud) belum dikerjakan; bukan syarat G1. |
 | Gerbang terakhir | **G1 (dataset feasibility) disetujui 2026-11-22** (4/4); sebelumnya GATE-EP dan G0 disetujui 2026-11-19 |
 | Kalender kerja | D1 = 2026-11-19 … D21 = 2026-12-09 (asumsi A-22; presentasi diasumsikan 2026-12-10, HD-23). Jadwal yang berlaku: [05-project-schedule](10-execution-plan/05-project-schedule.md) (CR-04): G1 D3 · G2 D7 · G3/G4 D8 · G5/G6 D14 · freeze D17 · G7 D18 · G8 D20 |
-| Tim | R1/A **Lanang** (Data/ETL) · R2/B **Abi Funn** (Cassandra + **koordinator**) · R3/C **Zita** (Backend & DevOps) · R4/D **Abigail** (Frontend & Delivery). 4 jam/hari; R1 & R3 ±5 jam/hari pada D9–D15 ([01-role-charters](10-execution-plan/01-role-charters.md)) |
-| Repo | `github.com/pakar-pakar-banjot/apiwowok`; Fase 0 dan awal Fase 1 di `main`; rencana eksekusi + hasil Fase 1 + G1 di PR #1 (`docs/execution-plan`, belum di-merge) |
+| Tim | R1/A **Lanang** (Data/ETL; GitHub `r3gulus-4rcturus`) · R2/B **Abi Funn** (Cassandra + **koordinator**; `Benhanan14406`) · R3/C **Zita** (Backend & DevOps; `nayraarr`) · R4/D **Abigail** (Frontend & Delivery; `namarabigail`). 4 jam/hari; R1 & R3 ±5 jam/hari pada D9–D15 ([01-role-charters](10-execution-plan/01-role-charters.md)) |
+| Repo | `github.com/pakar-pakar-banjot/apiwowok`. Fase 0, rencana eksekusi, Fase 1, dan G1 sudah di `main` (PR #1). **Satu branch + PR per fase** ([AGENTS.md §5a](../AGENTS.md#5a-branch--pr-per-fase-wajib)): Fase 2 di `phase/p2-requirements`, PR #9 (menggantikan #2). PR tugas ber-base branch fase, bukan `main`. |
 | Kode aplikasi | Belum ada |
 
 ## 1a. Rencana eksekusi & progres
@@ -35,7 +35,7 @@ Diringkas dari brief tim; brief lengkap disimpan tim di luar repo.
 5. **Cassandra:** query-driven modeling, tanpa `ALLOW FILTERING`/full scan di jalur aplikasi, prepared statements, ingestion idempoten, dan **tanpa counter table untuk agregat**.
 6. **Integritas ilmiah:** hotspot ≠ kebakaran terkonfirmasi. Jangan membandingkan jumlah deteksi antar sensor.
 7. **Bahasa:** dokumentasi dalam bahasa Indonesia; identifier kode, path API, dan konvensi teknis dalam bahasa Inggris.
-8. **Git:** commit/push hanya bila diminta. Jangan pernah commit `.env`.
+8. **Git:** commit/push hanya bila diminta. Jangan pernah commit `.env`. Semua perubahan suatu fase masuk ke branch fase lewat PR; `main` hanya menerima PR fase setelah gerbangnya disetujui ([AGENTS.md §5a](../AGENTS.md#5a-branch--pr-per-fase-wajib)).
 9. **Format laporan per fase:** 12 bagian (lihat [00-discovery/README.md](00-discovery/README.md#laporan-fase-0-format-12-bagian)).
 10. Laporan akhir, presentasi, dan video **ditangani tim**, bukan agen.
 

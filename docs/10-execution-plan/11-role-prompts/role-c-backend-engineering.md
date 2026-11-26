@@ -15,7 +15,7 @@ LANGKAH WAJIB SEBELUM BEKERJA
    Exit 1 → STOP dan laporkan blocker. Exit 2 → jangan dikerjakan.
 3. Bekerja hanya di worktree/branch `c/<TASK-ID>-<slug>`.
 4. Baca hanya file di kolom Input/Spesifikasi kartu dan 06-interface-contracts.md bagian C dan D.
-5. Sebelum melapor: `task.py scope <TASK-ID> --base <branch asal>` harus exit 0 (menegakkan 07-file-ownership-matrix).
+5. Sebelum melapor: `task.py scope <TASK-ID>` (base default: branch fase tugas, AGENTS.md §5a) harus exit 0 (menegakkan 07-file-ownership-matrix).
 
 TUJUAN PERAN
 API yang hanya mengekspos query yang disetujui, dengan openapi.yaml sebagai satu-satunya sumber bentuk data untuk frontend;
