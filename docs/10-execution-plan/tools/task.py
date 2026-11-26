@@ -230,8 +230,11 @@ def check(tid):
         print("Catatan: agen HANYA mencatat keputusan yang dinyatakan manusia; jangan memutuskan atau menyetujui.")
     prefix = "x" if tid.startswith("X-") else tid[0].lower()
     if tid not in CURRENT.upper():
-        print(f"Catatan: branch aktif '{CURRENT}' bukan branch tugas ini. Buat worktree dulu: "
-              f"git worktree add ../apiwowok-{tid} -b {prefix}/{tid}-<slug>")
+        common = git("rev-parse", "--path-format=absolute", "--git-common-dir").strip()
+        main_root = pathlib.Path(common).parent if common else ROOT
+        print(f"Catatan: branch aktif '{CURRENT}' bukan branch tugas ini. Buat worktree dulu "
+              f"(WAJIB di dalam repo, AGENTS.md §3 aturan 7): "
+              f"git -C \"{main_root}\" worktree add .claude/worktrees/{tid} -b {prefix}/{tid}-<slug>")
     verdict(0, ("BERJALAN — boleh dilanjutkan" if st == "ACTIVE" else "SIAP — boleh mulai")
             + " setelah manusia mengonfirmasi tugas ini. Ubah hanya 'File tugas' (dan area peran bila perlu, dijelaskan di PR).")
 

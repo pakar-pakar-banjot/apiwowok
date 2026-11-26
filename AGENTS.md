@@ -14,7 +14,7 @@
 | 2 | Brief | `T brief --role <A\|B\|C\|D>`, yaitu peran manusia yang kamu bantu. Tanya bila belum tahu. | — |
 | 3 | Pilih tugas | Manusia menyebut task ID → pakai itu. Tidak menyebut → usulkan **satu** tugas dari baris `USULAN`/`SIAP` di brief, lalu **tunggu konfirmasi**. **DILARANG** memilih sendiri lalu langsung bekerja. | Manusia mengonfirmasi task ID |
 | 4 | Cek kesiapan (DoR) | `T check <ID>`: kartu tugas + status setiap dependensi dari graf | Exit `0` |
-| 5 | Isolasi | `git worktree add ../apiwowok-<ID> -b <peran>/<ID>-<slug>` (perintahnya dicetak oleh `check`) | Bekerja hanya di worktree itu |
+| 5 | Isolasi | `git worktree add .claude/worktrees/<ID> -b <peran>/<ID>-<slug>`, dijalankan dari checkout utama; worktree **WAJIB** di dalam repo (§3 aturan 7). Perintahnya dicetak oleh `check`. | Bekerja hanya di worktree itu |
 | 6 | Kerjakan | Hanya **File tugas** di kartu. Kriteria penerimaan tidak boleh dilonggarkan. | — |
 | 7 | Cek lingkup | `T scope <ID> --base <branch asal>` | Exit `0` |
 | 8 | Catat progres | Di [13-progress-tracker.md](docs/10-execution-plan/13-progress-tracker.md), baris `<ID>` saja: `[x]` + `bukti:` bila semua kriteria terpenuhi. Bila belum, tetap `[ ]` dan tulis keadaannya di `bukti:`. Lalu `python -I docs/10-execution-plan/tools/build_plan.py`. | `ISSUES: 0` |
@@ -48,6 +48,7 @@ Jika STATUS.md dan kartu tugas tidak cukup untuk memutuskan, **tanya manusia**, 
 4. Satu tugas = satu branch = satu implementer. Jika `check` melaporkan branch lain untuk tugas itu: STOP. **DILARANG** menulis di worktree agen lain atau mengganti branch di working directory yang sedang dipakai orang/agen lain.
 5. Konflik merge di `13-progress-tracker.md`: pertahankan kedua sisi (setiap baris milik satu tugas). Konflik di `04-dependency-graph.mmd`: jangan diselesaikan manual; jalankan ulang `build_plan.py`.
 6. Lihat isi file sebelum menghapus atau menimpanya. Operasi destruktif (hapus data, reset, force push, menghentikan proses orang lain) wajib persetujuan eksplisit.
+7. **Lokasi worktree.** Setiap worktree **WAJIB** dibuat di `<root repo apiwowok>/.claude/worktrees/<nama>` (folder ini diabaikan Git). **DILARANG** membuat worktree di luar direktori repo (mis. `../apiwowok-<ID>`, `D:\...\apiwowok-<ID>`). Bila `git worktree list` menunjukkan worktree di luar `.claude/worktrees/`, jangan dipakai untuk tugas baru; laporkan ke manusia. Claude Code: pakai `EnterWorktree` dengan `name` (otomatis ke folder itu); `path` hanya untuk worktree yang sudah ada di folder itu.
 
 ## 4. Data, rahasia, integritas
 

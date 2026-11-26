@@ -3,9 +3,14 @@
 .env.*
 !.env.example
 
-# Local data (raw downloads, profiling outputs)
+# Local data (raw downloads, profiling outputs): abaikan semua direktori bernama data/ ...
 data/
 *.csv.gz
+# ... KECUALI spesifikasi data yang memang harus di-commit
+!/docs/03-specs/data/
+
+# Worktree git lokal (lihat AGENTS.md §3 aturan 7)
+/.claude/worktrees/
 
 # Python
 __pycache__/
