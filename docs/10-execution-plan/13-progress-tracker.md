@@ -30,13 +30,13 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 |---|---|---|---|---|---|---|---|---|---|
 | Role A (R1) | 10 / 10 / 10 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **10 / 10 / 31** |
 | Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
-| Role C (R3) | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 0 / 25** |
+| Role C (R3) | 0 / 0 / 1 | 0 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 1 / 25** |
 | Role D (R4) | 1 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **1 / 1 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 14 / 14 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **14 / 14 / 110** |
+| **Tim** | 14 / 14 / 15 | 0 / 1 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **14 / 15 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
-Menunggu persetujuan manusia: tidak ada.
+Menunggu persetujuan manusia: C-P2-001.
 <!-- progress:summary:end -->
 
 ## Gerbang
@@ -156,7 +156,7 @@ Menunggu persetujuan manusia: tidak ada.
 
 ### P2 — Requirements Engineering
 
-- [ ] **C-P2-001** Non-functional requirements kuantitatif · R3 · bukti: — · disetujui: —
+- [x] **C-P2-001** Non-functional requirements kuantitatif · R3 · bukti: branch `c/C-P2-001-nfr`, commit 5faaa00, 2026-11-25; 36 NFR (angka + metode ukur + label + lokal/cloud) di docs/02-requirements/02-non-functional-requirements.md; angka final menunggu G2 (HD-13) · disetujui: —
 
 ### P3 — Architecture & Technical Specs
 
