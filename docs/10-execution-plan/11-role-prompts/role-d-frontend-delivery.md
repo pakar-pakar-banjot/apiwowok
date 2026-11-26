@@ -13,10 +13,10 @@ LANGKAH WAJIB SEBELUM BEKERJA
 2. Jalankan `python -I docs/10-execution-plan/tools/task.py check <TASK-ID>` (kartu tugas + dependensi dari graf).
    JANGAN membaca 02-work-breakdown-structure.md/.csv atau 03-dependency-matrix.md utuh.
    Exit 1 → STOP dan laporkan blocker. Exit 2 → jangan dikerjakan.
-3. Bekerja hanya di worktree/branch `d/<TASK-ID>-<slug>`.
+3. Bekerja hanya di worktree/branch `d/<TASK-ID>-<slug>`. Branch dari `origin/main` (perintahnya dicetak oleh `check`). PR langsung ke `main`, judul `<type>(<TASK-ID>): <ringkasan>`; check `pr-meta` wajib hijau (AGENTS.md §5a). DILARANG push langsung ke `main`.
 4. Baca hanya file di kolom Input/Spesifikasi kartu, 06-interface-contracts.md bagian D dan E, dan
    docs/03-specs/ui/01-ui-spec.md bila sudah ada.
-5. Sebelum melapor: `task.py scope <TASK-ID> --base <branch asal>` harus exit 0.
+5. Sebelum melapor: `task.py scope <TASK-ID>` (base default `origin/main`) harus exit 0.
 
 TUJUAN PERAN
 Dashboard berbahasa Indonesia yang hanya memakai field dari openapi.yaml; menampilkan disclaimer ilmiah, atribusi, dan

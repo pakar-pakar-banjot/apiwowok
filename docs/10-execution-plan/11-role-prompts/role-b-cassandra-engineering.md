@@ -13,9 +13,9 @@ LANGKAH WAJIB SEBELUM BEKERJA
 2. Jalankan `python -I docs/10-execution-plan/tools/task.py check <TASK-ID>` (kartu tugas + dependensi dari graf).
    JANGAN membaca 02-work-breakdown-structure.md/.csv atau 03-dependency-matrix.md utuh.
    Exit 1 → STOP dan laporkan blocker. Exit 2 → jangan dikerjakan.
-3. Bekerja hanya di worktree/branch `b/<TASK-ID>-<slug>` (atau `x/<TASK-ID>-<slug>` untuk koordinasi).
+3. Bekerja hanya di worktree/branch `b/<TASK-ID>-<slug>` (atau `x/<TASK-ID>-<slug>` untuk koordinasi). Branch dari `origin/main` (perintahnya dicetak oleh `check`). PR langsung ke `main`, judul `<type>(<TASK-ID>): <ringkasan>`; check `pr-meta` wajib hijau (AGENTS.md §5a). DILARANG push langsung ke `main`.
 4. Baca hanya file di kolom Input/Spesifikasi kartu dan 06-interface-contracts.md bagian B dan C.
-5. Sebelum melapor: `task.py scope <TASK-ID> --base <branch asal>` harus exit 0.
+5. Sebelum melapor: `task.py scope <TASK-ID>` (base default `origin/main`) harus exit 0.
 
 TUJUAN PERAN
 Model data yang sepenuhnya query-driven: setiap tabel melayani ≥1 query aplikasi (Q-xx) yang disetujui. Ingestion idempoten.

@@ -14,11 +14,11 @@
 | 2 | Brief | `T brief --role <A\|B\|C\|D>`, yaitu peran manusia yang kamu bantu. Tanya bila belum tahu. | — |
 | 3 | Pilih tugas | Manusia menyebut task ID → pakai itu. Tidak menyebut → usulkan **satu** tugas dari baris `USULAN`/`SIAP` di brief, lalu **tunggu konfirmasi**. **DILARANG** memilih sendiri lalu langsung bekerja. | Manusia mengonfirmasi task ID |
 | 4 | Cek kesiapan (DoR) | `T check <ID>`: kartu tugas + status setiap dependensi dari graf | Exit `0` |
-| 5 | Isolasi | `git worktree add .claude/worktrees/<ID> -b <peran>/<ID>-<slug>`, dijalankan dari checkout utama; worktree **WAJIB** di dalam repo (§3 aturan 7). Perintahnya dicetak oleh `check`. | Bekerja hanya di worktree itu |
+| 5 | Isolasi | `git worktree add .claude/worktrees/<ID> -b <peran>/<ID>-<slug> origin/main` (§5a), dijalankan dari checkout utama; worktree **WAJIB** di dalam repo (§3 aturan 7). Perintahnya dicetak oleh `check`. | Bekerja hanya di worktree itu |
 | 6 | Kerjakan | Hanya **File tugas** di kartu. Kriteria penerimaan tidak boleh dilonggarkan. | — |
-| 7 | Cek lingkup | `T scope <ID> --base <branch asal>` | Exit `0` |
+| 7 | Cek lingkup | `T scope <ID>` (default base `origin/main`) | Exit `0` |
 | 8 | Catat progres | Di [13-progress-tracker.md](docs/10-execution-plan/13-progress-tracker.md), baris `<ID>` saja: `[x]` + `bukti:` bila semua kriteria terpenuhi. Bila belum, tetap `[ ]` dan tulis keadaannya di `bukti:`. Lalu `python -I docs/10-execution-plan/tools/build_plan.py`. | `ISSUES: 0` |
-| 9 | Lapor & STOP | Format laporan di prompt peran. Commit/push/PR hanya bila diminta. | Tunggu manusia |
+| 9 | Lapor & STOP | Format laporan di prompt peran. Commit/push/PR hanya bila diminta. PR **langsung ke `main`** dengan nama branch dan judul sesuai §5a; check `pr-meta` wajib hijau. **DILARANG** push langsung ke `main` dan membuat branch fase. | Tunggu manusia |
 
 **Exit code `task.py`:** `0` lanjut · `1` **STOP** (terblokir, file di luar area, atau tugas sudah punya branch lain); laporkan ke manusia apa adanya · `2` **jangan dikerjakan** (selesai, menunggu persetujuan, atau tugas manusia saja) · `3` rencana tidak sinkron; jalankan `build_plan.py` lalu ulangi.
 
@@ -62,13 +62,49 @@ Jika STATUS.md dan kartu tugas tidak cukup untuk memutuskan, **tanya manusia**, 
 - Kerjakan hanya fase/tugas yang diminta. Di akhir tugas atau fase: STOP dan tunggu persetujuan.
 - Keputusan di daftar [STATUS §2 butir 4](docs/STATUS.md#2-aturan-kerja-wajib) (lingkup, produk, periode, kualitas data, skema, partisi, arsitektur, keamanan, …) hanya diambil manusia. Agen menyusun opsi → rekomendasi → bukti, lalu menunggu.
 - Keputusan yang sudah disetujui hanya berubah lewat CR.
-- Commit/push/PR/merge hanya bila diminta. Nama branch `<peran>/<ID>-<slug>`. Commit kecil, satu tujuan, pesan bahasa Inggris (`docs:`, `feat:`, `fix:`, …). **DILARANG** commit `.env` atau `data/`.
+- Commit/push/PR/merge hanya bila diminta. Nama branch dan PR mengikuti §5a. Commit kecil, satu tujuan, pesan bahasa Inggris (`docs:`, `feat:`, `fix:`, …). **DILARANG** commit `.env` atau `data/`.
 - `docs/STATUS.md` diperbarui (oleh koordinator) setiap kali gerbang dilewati atau ada keputusan baru.
 - Dokumentasi berbahasa Indonesia; identifier kode, path API, dan konvensi teknis berbahasa Inggris.
+
+## 5a. Branch, PR, dan milestone (WAJIB)
+
+**Aturan:** setiap tugas = satu branch pendek = satu PR **langsung ke `main`**. Pengelompokan per fase memakai **GitHub Milestone**, bukan branch fase. Fase sebuah tugas = kode `P<N>` di task ID-nya (C-P4-001 → Fase 4), bukan fase yang sedang aktif. Gerbang tetap dijaga oleh tracker (`disetujui:`) dan `task.py check`.
+
+| Jenis | Nama branch | Base PR | Judul PR | Milestone |
+|---|---|---|---|---|
+| **Tugas WBS** | `<peran>/<ID>-<slug>`; peran huruf kecil `a`/`b`/`c`/`d`/`x` (`x` = tugas koordinator `X-`) | `main` | `<type>(<ID>): <ringkasan>` | `P<N>` dari ID (otomatis) |
+| **Di luar WBS** (diminta manusia, tanpa task ID) | `chore/p<N>-<slug>` | `main` | `<type>(P<N>): <ringkasan>` | `P<N>` (otomatis) |
+
+Milestone (dibuat 2026-11-26; tenggat = target gerbang di [05-project-schedule](docs/10-execution-plan/05-project-schedule.md)):
+
+| Milestone | Tenggat |
+|---|---|
+| `P1 · Dataset Feasibility (G1)` | ditutup (G1 disetujui 2026-11-22) |
+| `P2 · Requirements Engineering (G2)` | D7, 2026-11-25 |
+| `P3 · Architecture & Technical Specs (G3)` | D8, 2026-11-26 |
+| `P4 · Development Harness (G4)` | D8, 2026-11-26 |
+| `P5 · ETL & Cassandra Implementation (G5)` | D14, 2026-12-02 |
+| `P6 · Backend & Frontend Implementation (G6)` | D14, 2026-12-02 |
+| `P7 · Integration, Testing & Experiments (G7)` | D18, 2026-12-06 |
+| `P8 · Documentation & Final Delivery (G8)` | D20, 2026-12-08 |
+
+Format nama:
+- `<slug>`: bahasa Inggris, huruf kecil, kebab-case, 2–5 kata (mis. `functional-requirements`). Tanpa spasi, garis bawah, atau huruf besar.
+- `<type>`: `docs`, `feat`, `fix`, `test`, `chore`, `refactor`, `ci`. Ringkasan PR dan pesan commit dalam bahasa Inggris, bentuk perintah (`add …`, `record …`).
+- Contoh: branch `d/D-P2-002-acceptance-criteria`, PR `docs(D-P2-002): add acceptance criteria`, base `main`.
+
+Alur:
+1. Buat branch dari `origin/main` terbaru (perintahnya dicetak `task.py check`). Branch berumur pendek: buka PR segera, merge secepatnya.
+2. **Otomatis** (workflow [`pr-meta.yml`](.github/workflows/pr-meta.yml)): saat PR dibuka atau diubah, milestone `P<N>` dan label peran (`role:A`…`role:D`, `role:X`) dipasang dari task ID, dan check **`pr-meta`** gagal bila nama branch atau judul PR tidak sesuai format di atas.
+3. PR di-merge ke `main` **oleh manusia** setelah tugasnya ✅ (`disetujui:` terisi), atau lebih awal bila manusia memintanya. Pakai merge commit; jangan squash.
+4. **Sinkronisasi:** bila `main` berubah, merge `main` ke branch tugas (`git merge origin/main`). **DILARANG** rebase atau force push pada branch yang sudah punya PR. Konflik di file hasil generator diselesaikan dengan menjalankan ulang `build_plan.py` (§3 aturan 5).
+5. **Otomatis** (workflow [`gate-tag.yml`](.github/workflows/gate-tag.yml)): setiap push ke `main`, gerbang yang tercantum di baris `Gerbang disetujui:` tracker diberi tag `g<N>-approved` (snapshot resmi fase), dan milestone fasenya ditutup.
+6. **Rename branch:** GitHub **menutup** PR yang head branch-nya di-rename, dan head PR tidak bisa diganti. Rename branch yang punya PR terbuka hanya dengan izin manusia; setelahnya buka PR baru dan tautkan dari PR lama.
 
 ## 6. STOP dan tanya manusia bila
 
 - `check` atau `scope` keluar dengan kode ≠ 0 dan tidak bisa diperbaiki di area sendiri.
+- Check `pr-meta` merah dan perbaikannya butuh rename branch (rename menutup PR, §5a alur 6).
 - Permintaan tidak cocok dengan task ID mana pun, atau cocok dengan beberapa task ID.
 - Butuh keputusan kebijakan, perubahan kontrak, file di luar area, dependensi baru, atau operasi destruktif.
 - Dokumen saling bertentangan. Dokumen sumber yang dirujuk mengalahkan `STATUS.md`, dan keduanya mengalahkan ingatan agen. Laporkan konfliknya.
