@@ -81,7 +81,7 @@ Jika STATUS.md dan kartu tugas tidak cukup untuk memutuskan, **tanya manusia**, 
 | P1 Dataset Feasibility | `phase/p1-dataset-feasibility` (Fase 1 sudah di `main` lewat PR #1; tidak dibuat lagi) |
 | P2 Requirements Engineering | `phase/p2-requirements` (PR #9) |
 | P3 Architecture & Technical Specs | `phase/p3-specs` |
-| P4 Development Harness | `phase/p4-harness` |
+| P4 Development Harness | `phase/p4-harness` (PR #11) |
 | P5 ETL & Cassandra Implementation | `phase/p5-etl-cassandra` |
 | P6 Backend & Frontend Implementation | `phase/p6-backend-frontend` |
 | P7 Integration, Testing & Experiments | `phase/p7-integration-testing` |
@@ -93,7 +93,7 @@ Format nama:
 - Contoh: branch `d/D-P2-001-functional-requirements`, PR `docs(D-P2-001): add functional requirements`, base `phase/p2-requirements`.
 
 Alur:
-1. **Membuat branch fase:** koordinator (atau anggota pertama yang memulai tugas fase itu, dengan izin koordinator) membuat branch dari `main` (`git push origin origin/main:refs/heads/phase/p<N>-<slug-fase>`), lalu langsung membuka PR fase ke `main` sebagai **draft**. Bila fase itu butuh hasil fase lain yang belum di-merge ke `main`, buat dari branch fase tersebut dan tulis alasannya di deskripsi PR fase.
+1. **Membuat branch fase:** koordinator (atau anggota pertama yang memulai tugas fase itu, dengan izin koordinator) membuat branch dari `main` (`git push origin origin/main:refs/heads/phase/p<N>-<slug-fase>`), lalu langsung membuka PR fase ke `main` sebagai **draft**. GitHub menolak PR tanpa commit, jadi buat dulu satu commit kosong `chore(P<N>): open phase <N> branch` (contoh: `phase/p4-harness`, PR #11). Bila fase itu butuh hasil fase lain yang belum di-merge ke `main`, buat dari branch fase tersebut dan tulis alasannya di deskripsi PR fase.
 2. **PR tugas** (base branch fase) di-merge **oleh manusia** setelah tugasnya ✅ (`disetujui:` terisi), atau lebih awal bila manusia memintanya. Pakai merge commit; jangan squash.
 3. **Commit langsung ke branch fase** hanya untuk pencatatan gerbang oleh koordinator (tugas `X-P<N>-90x`, STATUS.md) dan sinkronisasi dari `main`.
 4. **Sinkronisasi:** bila `main` berubah, merge `main` ke branch fase (`git merge origin/main`). **DILARANG** rebase atau force push pada branch fase. Konflik di file hasil generator diselesaikan dengan menjalankan ulang `build_plan.py` (§3 aturan 5).
