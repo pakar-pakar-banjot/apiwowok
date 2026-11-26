@@ -30,14 +30,13 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 |---|---|---|---|---|---|---|---|---|---|
 | Role A (R1) | 10 / 10 / 10 | 1 / 1 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **11 / 11 / 31** |
 | Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
-| Role C (R3) | 0 / 0 / 1 | 0 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 1 / 25** |
+| Role C (R3) | 0 / 0 / 1 | 1 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **1 / 1 / 25** |
 | Role D (R4) | 1 / 1 / 1 | 0 / 1 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **1 / 2 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 14 / 14 / 15 | 1 / 3 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **15 / 17 / 110** |
+| **Tim** | 14 / 14 / 15 | 2 / 3 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **16 / 17 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
-Menunggu persetujuan manusia: D-P2-001, C-P2-001.
-<!-- progress:summary:end -->
+Menunggu persetujuan manusia: D-P2-001.
 
 ## Gerbang
 
@@ -156,7 +155,7 @@ Menunggu persetujuan manusia: D-P2-001, C-P2-001.
 
 ### P2 — Requirements Engineering
 
-- [x] **C-P2-001** Non-functional requirements kuantitatif · R3 · bukti: branch `c/C-P2-001-nfr`, commit 5faaa00, 2026-11-25; 36 NFR (angka + metode ukur + label + lokal/cloud) di docs/02-requirements/02-non-functional-requirements.md; angka final menunggu G2 (HD-13) · disetujui: —
+- [x] **C-P2-001** Non-functional requirements kuantitatif · R3 · bukti: branch `c/C-P2-001-nfr`, commit 5faaa00, 2026-11-25; 36 NFR (angka + metode ukur + label + lokal/cloud) di docs/02-requirements/02-non-functional-requirements.md; angka final menunggu G2 (HD-13); di-merge via PR #6 (2026-11-26) · disetujui: Abigail (R4), 2026-11-26, approve PR #6 di GitHub
 
 ### P3 — Architecture & Technical Specs
 
