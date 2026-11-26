@@ -14,9 +14,9 @@
 | 2 | Brief | `T brief --role <A\|B\|C\|D>`, yaitu peran manusia yang kamu bantu. Tanya bila belum tahu. | — |
 | 3 | Pilih tugas | Manusia menyebut task ID → pakai itu. Tidak menyebut → usulkan **satu** tugas dari baris `USULAN`/`SIAP` di brief, lalu **tunggu konfirmasi**. **DILARANG** memilih sendiri lalu langsung bekerja. | Manusia mengonfirmasi task ID |
 | 4 | Cek kesiapan (DoR) | `T check <ID>`: kartu tugas + status setiap dependensi dari graf | Exit `0` |
-| 5 | Isolasi | `git worktree add .claude/worktrees/<ID> -b <peran>/<ID>-<slug>`, dijalankan dari checkout utama; worktree **WAJIB** di dalam repo (§3 aturan 7). Perintahnya dicetak oleh `check`. | Bekerja hanya di worktree itu |
+| 5 | Isolasi | `git worktree add .claude/worktrees/<ID> -b <peran>/<ID>-<slug> origin/phase/p<N>-<slug-fase>`, yaitu branch dari **branch fase tugas itu** (§5a), dijalankan dari checkout utama; worktree **WAJIB** di dalam repo (§3 aturan 7). Perintahnya dicetak oleh `check`. | Bekerja hanya di worktree itu |
 | 6 | Kerjakan | Hanya **File tugas** di kartu. Kriteria penerimaan tidak boleh dilonggarkan. | — |
-| 7 | Cek lingkup | `T scope <ID> --base <branch asal>` | Exit `0` |
+| 7 | Cek lingkup | `T scope <ID>` (default base = branch fase tugas, §5a) | Exit `0` |
 | 8 | Catat progres | Di [13-progress-tracker.md](docs/10-execution-plan/13-progress-tracker.md), baris `<ID>` saja: `[x]` + `bukti:` bila semua kriteria terpenuhi. Bila belum, tetap `[ ]` dan tulis keadaannya di `bukti:`. Lalu `python -I docs/10-execution-plan/tools/build_plan.py`. | `ISSUES: 0` |
 | 9 | Lapor & STOP | Format laporan di prompt peran. Commit/push/PR hanya bila diminta. | Tunggu manusia |
 
@@ -62,9 +62,43 @@ Jika STATUS.md dan kartu tugas tidak cukup untuk memutuskan, **tanya manusia**, 
 - Kerjakan hanya fase/tugas yang diminta. Di akhir tugas atau fase: STOP dan tunggu persetujuan.
 - Keputusan di daftar [STATUS §2 butir 4](docs/STATUS.md#2-aturan-kerja-wajib) (lingkup, produk, periode, kualitas data, skema, partisi, arsitektur, keamanan, …) hanya diambil manusia. Agen menyusun opsi → rekomendasi → bukti, lalu menunggu.
 - Keputusan yang sudah disetujui hanya berubah lewat CR.
-- Commit/push/PR/merge hanya bila diminta. Nama branch `<peran>/<ID>-<slug>`. Commit kecil, satu tujuan, pesan bahasa Inggris (`docs:`, `feat:`, `fix:`, …). **DILARANG** commit `.env` atau `data/`.
+- Commit/push/PR/merge hanya bila diminta. Nama branch dan PR mengikuti §5a. Commit kecil, satu tujuan, pesan bahasa Inggris (`docs:`, `feat:`, `fix:`, …). **DILARANG** commit `.env` atau `data/`.
 - `docs/STATUS.md` diperbarui (oleh koordinator) setiap kali gerbang dilewati atau ada keputusan baru.
 - Dokumentasi berbahasa Indonesia; identifier kode, path API, dan konvensi teknis berbahasa Inggris.
+
+## 5a. Branch & PR per fase (WAJIB)
+
+**Aturan:** semua perubahan dari semua anggota di suatu fase **WAJIB** di-merge ke **branch fase** itu, lewat PR ke branch fase, bukan langsung ke `main`. `main` hanya menerima PR fase, setelah gerbangnya disetujui. Fase sebuah tugas = kode `P<N>` di task ID-nya (C-P4-001 → Fase 4), bukan fase yang sedang aktif.
+
+| Jenis | Nama branch | Base PR | Judul PR |
+|---|---|---|---|
+| **Fase** | `phase/p<N>-<slug-fase>` (tabel di bawah) | `main` | `Phase <N>: <Nama fase> (G<N>)` |
+| **Tugas WBS** | `<peran>/<ID>-<slug>`; peran huruf kecil `a`/`b`/`c`/`d`/`x` (`x` = tugas koordinator `X-`) | branch fase dari `P<N>` di ID | `<type>(<ID>): <ringkasan>` |
+| **Di luar WBS** (diminta manusia, tanpa task ID) | `chore/p<N>-<slug>` | branch fase yang sedang aktif | `<type>(P<N>): <ringkasan>` |
+
+| Fase | Branch fase |
+|---|---|
+| P1 Dataset Feasibility | `phase/p1-dataset-feasibility` (Fase 1 sudah di `main` lewat PR #1; tidak dibuat lagi) |
+| P2 Requirements Engineering | `phase/p2-requirements` (PR #9) |
+| P3 Architecture & Technical Specs | `phase/p3-specs` |
+| P4 Development Harness | `phase/p4-harness` |
+| P5 ETL & Cassandra Implementation | `phase/p5-etl-cassandra` |
+| P6 Backend & Frontend Implementation | `phase/p6-backend-frontend` |
+| P7 Integration, Testing & Experiments | `phase/p7-integration-testing` |
+| P8 Documentation & Final Delivery | `phase/p8-final-delivery` |
+
+Format nama:
+- `<slug>`: bahasa Inggris, huruf kecil, kebab-case, 2–5 kata (mis. `functional-requirements`). Tanpa spasi, garis bawah, atau huruf besar.
+- `<type>`: `docs`, `feat`, `fix`, `test`, `chore`, `refactor`, `ci`. Ringkasan PR dan pesan commit dalam bahasa Inggris, bentuk perintah (`add …`, `record …`).
+- Contoh: branch `d/D-P2-001-functional-requirements`, PR `docs(D-P2-001): add functional requirements`, base `phase/p2-requirements`.
+
+Alur:
+1. **Membuat branch fase:** koordinator (atau anggota pertama yang memulai tugas fase itu, dengan izin koordinator) membuat branch dari `main` (`git push origin origin/main:refs/heads/phase/p<N>-<slug-fase>`), lalu langsung membuka PR fase ke `main` sebagai **draft**. Bila fase itu butuh hasil fase lain yang belum di-merge ke `main`, buat dari branch fase tersebut dan tulis alasannya di deskripsi PR fase.
+2. **PR tugas** (base branch fase) di-merge **oleh manusia** setelah tugasnya ✅ (`disetujui:` terisi), atau lebih awal bila manusia memintanya. Pakai merge commit; jangan squash.
+3. **Commit langsung ke branch fase** hanya untuk pencatatan gerbang oleh koordinator (tugas `X-P<N>-90x`, STATUS.md) dan sinkronisasi dari `main`.
+4. **Sinkronisasi:** bila `main` berubah, merge `main` ke branch fase (`git merge origin/main`). **DILARANG** rebase atau force push pada branch fase. Konflik di file hasil generator diselesaikan dengan menjalankan ulang `build_plan.py` (§3 aturan 5).
+5. **PR fase** di-merge ke `main` oleh manusia setelah `GATE-G<N>` ✅, dengan merge commit. Branch fase tidak dihapus, sebagai jejak.
+6. **Rename branch:** GitHub **menutup** PR yang head branch-nya di-rename, dan head PR tidak bisa diganti. Rename branch yang punya PR terbuka hanya dengan izin manusia; setelahnya buka PR baru dan tautkan dari PR lama.
 
 ## 6. STOP dan tanya manusia bila
 

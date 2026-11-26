@@ -6,12 +6,12 @@
 
 Ditetapkan tim pada **2026-11-19** (GATE-EP). Peran dibagikan langsung oleh tim; matriks skill tidak dipakai.
 
-| Peran | Anggota | Kapasitas |
-|---|---|---|
-| A — R1 Data Engineering / ETL | **Lanang** | 4 jam/hari; **±5 jam/hari pada D9–D15** (HD-07b) |
-| B — R2 Cassandra & Data Platform **+ koordinator integrasi** (HD-02) | **Abi Funn** | 4 jam/hari |
-| C — R3 Backend, Integration & DevOps | **Zita** | 4 jam/hari; **±5 jam/hari pada D9–D15** (HD-07b) |
-| D — R4 Frontend, Visualization & Delivery | **Abigail** | 4 jam/hari |
+| Peran | Anggota | GitHub | Kapasitas |
+|---|---|---|---|
+| A — R1 Data Engineering / ETL | **Lanang** | `r3gulus-4rcturus` | 4 jam/hari; **±5 jam/hari pada D9–D15** (HD-07b) |
+| B — R2 Cassandra & Data Platform **+ koordinator integrasi** (HD-02) | **Abi Funn** | `Benhanan14406` | 4 jam/hari |
+| C — R3 Backend, Integration & DevOps | **Zita** | `nayraarr` | 4 jam/hari; **±5 jam/hari pada D9–D15** (HD-07b) |
+| D — R4 Frontend, Visualization & Delivery | **Abigail** | `namarabigail` | 4 jam/hari |
 
 Aturan penugasan:
 1. Tidak ada reviewer wajib antar peran (keputusan 2026-11-19, menggantikan HD-06). Tugas selesai saat seorang manusia, anggota tim mana pun, mengisi `disetujui:`.
