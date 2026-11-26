@@ -14,7 +14,7 @@ Terakhir diperbarui: **2026-11-22** (setelah G1).
 | Gerbang terakhir | **G1 (dataset feasibility) disetujui 2026-11-22** (4/4); sebelumnya GATE-EP dan G0 disetujui 2026-11-19 |
 | Kalender kerja | D1 = 2026-11-19 … D21 = 2026-12-09 (asumsi A-22; presentasi diasumsikan 2026-12-10, HD-23). Jadwal yang berlaku: [05-project-schedule](10-execution-plan/05-project-schedule.md) (CR-04): G1 D3 · G2 D7 · G3/G4 D8 · G5/G6 D14 · freeze D17 · G7 D18 · G8 D20 |
 | Tim | R1/A **Lanang** (Data/ETL; GitHub `r3gulus-4rcturus`) · R2/B **Abi Funn** (Cassandra + **koordinator**; `Benhanan14406`) · R3/C **Zita** (Backend & DevOps; `nayraarr`) · R4/D **Abigail** (Frontend & Delivery; `namarabigail`). 4 jam/hari; R1 & R3 ±5 jam/hari pada D9–D15 ([01-role-charters](10-execution-plan/01-role-charters.md)) |
-| Repo | `github.com/pakar-pakar-banjot/apiwowok`. Fase 0, rencana eksekusi, Fase 1, dan G1 sudah di `main` (PR #1). **Satu branch + PR per fase** ([AGENTS.md §5a](../AGENTS.md#5a-branch--pr-per-fase-wajib)): Fase 2 di `phase/p2-requirements`, PR #9 (menggantikan #2); Fase 4 di `phase/p4-harness`, PR #11 (draft). PR tugas ber-base branch fase, bukan `main`. |
+| Repo | `github.com/pakar-pakar-banjot/apiwowok`. Fase 0, rencana eksekusi, Fase 1, dan G1 sudah di `main` (PR #1). **PR tugas langsung ke `main`; pengelompokan per fase lewat GitHub Milestone `P1`…`P8`** ([AGENTS.md §5a](../AGENTS.md#5a-branch-pr-dan-milestone-wajib)); tag `g<N>-approved` di `main` saat gerbang disetujui. Branch fase (`phase/p2-requirements`, `phase/p4-harness`) tidak dipakai lagi sejak 2026-11-26. |
 | Kode aplikasi | Belum ada |
 
 ## 1a. Rencana eksekusi & progres
@@ -35,7 +35,7 @@ Diringkas dari brief tim; brief lengkap disimpan tim di luar repo.
 5. **Cassandra:** query-driven modeling, tanpa `ALLOW FILTERING`/full scan di jalur aplikasi, prepared statements, ingestion idempoten, dan **tanpa counter table untuk agregat**.
 6. **Integritas ilmiah:** hotspot ≠ kebakaran terkonfirmasi. Jangan membandingkan jumlah deteksi antar sensor.
 7. **Bahasa:** dokumentasi dalam bahasa Indonesia; identifier kode, path API, dan konvensi teknis dalam bahasa Inggris.
-8. **Git:** commit/push hanya bila diminta. Jangan pernah commit `.env`. Semua perubahan suatu fase masuk ke branch fase lewat PR; `main` hanya menerima PR fase setelah gerbangnya disetujui ([AGENTS.md §5a](../AGENTS.md#5a-branch--pr-per-fase-wajib)).
+8. **Git:** commit/push hanya bila diminta. Jangan pernah commit `.env`. Satu tugas = satu PR langsung ke `main`, dikelompokkan per fase dengan milestone ([AGENTS.md §5a](../AGENTS.md#5a-branch-pr-dan-milestone-wajib)).
 9. **Format laporan per fase:** 12 bagian (lihat [00-discovery/README.md](00-discovery/README.md#laporan-fase-0-format-12-bagian)).
 10. Laporan akhir, presentasi, dan video **ditangani tim**, bukan agen.
 

@@ -16,7 +16,7 @@ LANGKAH WAJIB SEBELUM BEKERJA
 3. Bekerja hanya di worktree/branch `d/<TASK-ID>-<slug>`.
 4. Baca hanya file di kolom Input/Spesifikasi kartu, 06-interface-contracts.md bagian D dan E, dan
    docs/03-specs/ui/01-ui-spec.md bila sudah ada.
-5. Sebelum melapor: `task.py scope <TASK-ID>` (base default: branch fase tugas, AGENTS.md §5a) harus exit 0.
+5. Sebelum melapor: `task.py scope <TASK-ID>` (base default `origin/main`) harus exit 0.
 
 TUJUAN PERAN
 Dashboard berbahasa Indonesia yang hanya memakai field dari openapi.yaml; menampilkan disclaimer ilmiah, atribusi, dan

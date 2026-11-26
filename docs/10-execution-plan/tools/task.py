@@ -4,7 +4,7 @@ Run it instead of reading the large plan files. Read-only: it never writes a fil
 
   python -I docs/10-execution-plan/tools/task.py brief [--role A|B|C|D]   # session start: what is ready / blocked
   python -I docs/10-execution-plan/tools/task.py check <TASK-ID>          # task card + Definition of Ready verdict
-  python -I docs/10-execution-plan/tools/task.py scope <TASK-ID> [--base REF]   # before reporting: files touched (default base: origin/<phase branch>)
+  python -I docs/10-execution-plan/tools/task.py scope <TASK-ID> [--base REF]   # before reporting: files touched (default base: origin/main)
 
 Inputs: 04-dependency-graph.mmd (edges, the graph the team reads), 02-work-breakdown-structure.csv (task card),
 13-progress-tracker.md (status), git branches (who is already working on a task). Rules: plan_status.py.
@@ -25,10 +25,8 @@ import plan_status as PS
 GRAPH, WBS, TRACKER = PLAN / "04-dependency-graph.mmd", PLAN / "02-work-breakdown-structure.csv", PLAN / "13-progress-tracker.md"
 REL_TRACKER, REL_GRAPH = "docs/10-execution-plan/13-progress-tracker.md", "docs/10-execution-plan/04-dependency-graph.mmd"
 ROLE_CODE = {"A": "R1", "B": "R2", "C": "R3", "D": "R4"}
-# AGENTS.md §5a: every task branch starts from, and every task PR targets, the branch of its own phase.
-PHASE_BRANCH = {"P1": "phase/p1-dataset-feasibility", "P2": "phase/p2-requirements", "P3": "phase/p3-specs",
-                "P4": "phase/p4-harness", "P5": "phase/p5-etl-cassandra", "P6": "phase/p6-backend-frontend",
-                "P7": "phase/p7-integration-testing", "P8": "phase/p8-final-delivery"}
+# AGENTS.md §5a: task branches start from origin/main and every task PR targets main; phases are milestones.
+BASE = "origin/main"
 TYPE_OF_NAME = {v: k for k, v in PS.DEP_NAMES.items()}
 ARROW = {"-->": "H", "==>": "I", "--o": "HA", "-.->": "S"}  # -.-> is Soft or Review; neither blocks a start
 EDGE_RE = re.compile(r"^\s+([A-Z][A-Z0-9_]*) (-->|-\.->|==>|--o) ([A-Z][A-Z0-9_]*)\s*$")
@@ -233,17 +231,14 @@ def check(tid):
     if mode(tid) == "RECORDER":
         print("Catatan: agen HANYA mencatat keputusan yang dinyatakan manusia; jangan memutuskan atau menyetujui.")
     prefix = "x" if tid.startswith("X-") else tid[0].lower()
-    pb = PHASE_BRANCH[T["phase_id"]]
-    pb_ok = bool(git("rev-parse", "--verify", "--quiet", "origin/" + pb).strip())
-    print(f"Branch fase (AGENTS.md §5a): {pb}" + ("" if pb_ok else
-          " — BELUM ADA di origin. Minta koordinator membuatnya dari main dan membuka PR fase (draft) dulu."))
-    print(f"PR tugas: base {pb}, judul `<type>({tid}): <ringkasan>`")
+    print(f"PR (AGENTS.md §5a): base main, judul `<type>({tid}): <ringkasan>`, milestone {T['phase_id']} "
+          "(dipasang otomatis oleh workflow pr-meta)")
     if tid not in CURRENT.upper():
         common = git("rev-parse", "--path-format=absolute", "--git-common-dir").strip()
         main_root = pathlib.Path(common).parent if common else ROOT
         print(f"Catatan: branch aktif '{CURRENT}' bukan branch tugas ini. Buat worktree dulu "
               f"(WAJIB di dalam repo, AGENTS.md §3 aturan 7): "
-              f"git -C \"{main_root}\" worktree add .claude/worktrees/{tid} -b {prefix}/{tid}-<slug> origin/{pb}")
+              f"git -C \"{main_root}\" worktree add .claude/worktrees/{tid} -b {prefix}/{tid}-<slug> {BASE}")
     verdict(0, ("BERJALAN — boleh dilanjutkan" if st == "ACTIVE" else "SIAP — boleh mulai")
             + " setelah manusia mengonfirmasi tugas ini. Ubah hanya 'File tugas' (dan area peran bila perlu, dijelaskan di PR).")
 
@@ -345,7 +340,5 @@ elif len(args) < 2:
 elif args[0] == "check":
     check(args[1])
 else:
-    tid0 = args[1].upper()
-    pb = "origin/" + PHASE_BRANCH[TASK[tid0]["phase_id"]] if tid0 in TASK else "main"
-    default = pb if git("rev-parse", "--verify", "--quiet", pb).strip() else "main"
+    default = BASE if git("rev-parse", "--verify", "--quiet", BASE).strip() else "main"
     scope(args[1], args[args.index("--base") + 1] if "--base" in args and len(args) > args.index("--base") + 1 else default)

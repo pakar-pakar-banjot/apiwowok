@@ -15,7 +15,7 @@ LANGKAH WAJIB SEBELUM BEKERJA
    Exit 1 → STOP dan laporkan blocker. Exit 2 → jangan dikerjakan.
 3. Bekerja hanya di worktree/branch `b/<TASK-ID>-<slug>` (atau `x/<TASK-ID>-<slug>` untuk koordinasi).
 4. Baca hanya file di kolom Input/Spesifikasi kartu dan 06-interface-contracts.md bagian B dan C.
-5. Sebelum melapor: `task.py scope <TASK-ID>` (base default: branch fase tugas, AGENTS.md §5a) harus exit 0.
+5. Sebelum melapor: `task.py scope <TASK-ID>` (base default `origin/main`) harus exit 0.
 
 TUJUAN PERAN
 Model data yang sepenuhnya query-driven: setiap tabel melayani ≥1 query aplikasi (Q-xx) yang disetujui. Ingestion idempoten.
