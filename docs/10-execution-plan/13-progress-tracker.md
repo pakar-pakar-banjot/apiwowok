@@ -29,14 +29,14 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 | Bagian | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | Semua |
 |---|---|---|---|---|---|---|---|---|---|
 | Role A (R1) | 10 / 10 / 10 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **10 / 10 / 31** |
-| Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
+| Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 1 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 2 / 20** |
 | Role C (R3) | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 0 / 25** |
 | Role D (R4) | 1 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **1 / 1 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 14 / 14 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **14 / 14 / 110** |
+| **Tim** | 14 / 14 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 1 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **14 / 15 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
-Menunggu persetujuan manusia: tidak ada.
+Menunggu persetujuan manusia: B-P4-001.
 <!-- progress:summary:end -->
 
 ## Gerbang
@@ -124,7 +124,7 @@ Menunggu persetujuan manusia: tidak ada.
 
 ### P4 — Development Harness
 
-- [ ] **B-P4-001** Konfigurasi Cassandra single-node untuk dev · R2 · bukti: — · disetujui: —
+- [x] **B-P4-001** Konfigurasi Cassandra single-node untuk dev · R2 · bukti: db/docker/, db/scripts/, db/README.md; wait-for-cassandra.sh exit 0 (63s), Heap 1024.00 MB, cqlsh describe keyspaces OK (2026-11-26) · disetujui: —
 - [ ] **B-P4-002** Smoke test 3 node di laptop (dokumen 07 §4) (Should) · R2 · bukti: — · disetujui: —
 
 ### P5 — ETL & Cassandra Implementation
