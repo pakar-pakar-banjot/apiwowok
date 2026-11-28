@@ -29,14 +29,14 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 | Bagian | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | Semua |
 |---|---|---|---|---|---|---|---|---|---|
 | Role A (R1) | 10 / 10 / 10 | 1 / 1 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **11 / 11 / 31** |
-| Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
+| Role B (R2) | 1 / 1 / 1 | 0 / 1 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 2 / 20** |
 | Role C (R3) | 0 / 0 / 1 | 1 / 1 / 1 | 0 / 0 / 3 | 1 / 1 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **2 / 2 / 25** |
 | Role D (R4) | 1 / 1 / 1 | 3 / 3 / 3 | 0 / 0 / 1 | 1 / 1 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **5 / 5 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 14 / 14 / 15 | 5 / 5 / 7 | 0 / 0 / 11 | 2 / 2 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **21 / 21 / 110** |
+| **Tim** | 14 / 14 / 15 | 5 / 6 / 7 | 0 / 0 / 11 | 2 / 2 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **21 / 22 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
-Menunggu persetujuan manusia: tidak ada.
+Menunggu persetujuan manusia: B-P2-001.
 <!-- progress:summary:end -->
 
 ## Gerbang
@@ -113,7 +113,7 @@ Menunggu persetujuan manusia: tidak ada.
 
 ### P2 — Requirements Engineering
 
-- [ ] **B-P2-001** Kebutuhan query aplikasi (Q-xx) · R2 · bukti: — · disetujui: —
+- [x] **B-P2-001** Kebutuhan query aplikasi (Q-xx) · R2 · bukti: docs/03-specs/database/01-query-requirements.md (Q-01..Q-08, matriks lengkap 32/32 FR, 2026-11-28) · disetujui: —
 
 ### P3 — Architecture & Technical Specs
 
