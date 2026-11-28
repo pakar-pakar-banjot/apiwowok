@@ -72,7 +72,7 @@ Menunggu persetujuan manusia: tidak ada.
 
 ### P3 — Architecture & Technical Specs
 
-- [ ] **A-P3-001** Kontrak canonical event v1 + sampel record · R1 · bukti: — · disetujui: —
+- [ ] **A-P3-001** Kontrak canonical event v1 + sampel record · R1 · bukti: DRAF PR #16 (branch `a/A-P3-001-canonical-event-contract`), 2026-11-26: docs/03-specs/data/02-canonical-event-contract.md (v1.0.0) + 26 sampel nyata + JSON Schema; `validate_samples.py` PASS (schema/rules/coverage/selftest 34/edge 156/trace); `audit_raw_zone.py` PASS pada 2.705.905 baris (0 ditolak, DQ-08 cocok); CE-01…CE-09 disetujui R1 2026-11-26. Belum dicentang: menunggu konfirmasi pemetaan CQL + CE-01/03/04 oleh R2 (kriteria penerimaan) · disetujui: —
 - [ ] **A-P3-002** Spesifikasi ETL (dua mode) · R1 · bukti: — · disetujui: —
 
 ### P4 — Development Harness
