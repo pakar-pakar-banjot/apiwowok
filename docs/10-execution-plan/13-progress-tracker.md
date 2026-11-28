@@ -30,10 +30,10 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 |---|---|---|---|---|---|---|---|---|---|
 | Role A (R1) | 10 / 10 / 10 | 1 / 1 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **11 / 11 / 31** |
 | Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
-| Role C (R3) | 0 / 0 / 1 | 1 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **1 / 1 / 25** |
+| Role C (R3) | 0 / 0 / 1 | 1 / 1 / 1 | 0 / 0 / 3 | 1 / 1 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **2 / 2 / 25** |
 | Role D (R4) | 1 / 1 / 1 | 2 / 2 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **3 / 3 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 14 / 14 / 15 | 4 / 4 / 7 | 0 / 0 / 11 | 0 / 0 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **18 / 18 / 110** |
+| **Tim** | 14 / 14 / 15 | 4 / 4 / 7 | 0 / 0 / 11 | 1 / 1 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **19 / 19 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
 Menunggu persetujuan manusia: tidak ada.
@@ -166,7 +166,7 @@ Menunggu persetujuan manusia: tidak ada.
 
 ### P4 — Development Harness
 
-- [ ] **C-P4-001** Kerangka repo + CODEOWNERS + template PR · R3 · bukti: — · disetujui: —
+- [x] **C-P4-001** Kerangka repo + CODEOWNERS + template PR · R3 · bukti: branch `c/C-P4-001-repo-skeleton`, commit c6e3a55, 2026-11-25; CODEOWNERS mencakup 29/29 path matriks (skrip cek: MISSING=0); template PR + DoD; README api/ dan deploy/; README peran lain tidak dibuat (di luar area, scope exit 1). handle CODEOWNERS R1/R2/R4 diisi 2026-11-26 (@r3gulus-4rcturus, @Benhanan14406, @namarabigail); PR #8 · disetujui: Abigail (R4), 2026-11-26, approve PR #8 di GitHub
 - [ ] **C-P4-004** Docker Compose dasar + validasi environment · R3 · bukti: — · disetujui: —
 - [ ] **C-P4-005** CI: lint + unit test per komponen · R3 · bukti: — · disetujui: —
 

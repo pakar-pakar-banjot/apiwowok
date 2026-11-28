@@ -1,0 +1,60 @@
+# CODEOWNERS — NusaFire
+# Sumber: docs/10-execution-plan/07-file-ownership-matrix.md (C-P4-001).
+# Aturan GitHub: pola paling BAWAH yang cocok menang, jadi pengecualian ditulis setelah pola umum.
+#
+# Handle GitHub per peran (dikonfirmasi Zita/R3, 2026-11-26):
+#   R1 Lanang   -> @r3gulus-4rcturus
+#   R2 Abi Funn -> @Benhanan14406      (juga koordinator integrasi)
+#   R3 Zita     -> @nayraarr
+#   R4 Abigail  -> @namarabigail
+
+# --- Default: koordinator (R2) ---
+*                                   @Benhanan14406
+
+# --- Direktori kode ---
+/pipeline/                          @r3gulus-4rcturus
+/db/                                @Benhanan14406
+/experiments/                       @Benhanan14406
+/api/                               @nayraarr
+/deploy/                            @nayraarr
+/web/                               @namarabigail
+/scratch/phase1/                    @r3gulus-4rcturus
+/data/                              @r3gulus-4rcturus
+
+# --- Dokumentasi ---
+/docs/00-discovery/                 @Benhanan14406
+/docs/01-dataset/                   @r3gulus-4rcturus
+/docs/02-requirements/              @namarabigail
+/docs/03-specs/data/                @r3gulus-4rcturus
+/docs/03-specs/database/            @Benhanan14406
+/docs/03-specs/api/                 @nayraarr
+/docs/03-specs/ui/                  @namarabigail
+/docs/03-specs/architecture/        @nayraarr
+/docs/03-specs/README.md            @Benhanan14406
+/docs/08-delivery/                  @namarabigail
+/docs/10-execution-plan/            @Benhanan14406
+/docs/change-requests/              @Benhanan14406
+/docs/STATUS.md                     @Benhanan14406
+
+# --- File bersama di root ---
+/docker-compose.yml                 @nayraarr
+/docker-compose.*.yml               @nayraarr
+/.env.example                       @nayraarr
+/.gitignore                         @nayraarr
+/.github/                           @nayraarr
+/README.md                          @nayraarr
+/ruff.toml                          @r3gulus-4rcturus
+/.pre-commit-config.yaml            @r3gulus-4rcturus
+/AGENTS.md                          @namarabigail
+/CLAUDE.md                          @namarabigail
+
+# --- Pengecualian (harus di bawah pola direktori induknya) ---
+/docs/02-requirements/02-non-functional-requirements.md   @nayraarr
+/docs/08-delivery/data.md           @r3gulus-4rcturus
+/docs/08-delivery/database.md       @Benhanan14406
+/docs/08-delivery/api-deploy.md     @nayraarr
+/pipeline/resources/boundaries/     @r3gulus-4rcturus
+
+# Tracker: setiap implementer mengubah baris tugasnya sendiri (matriks §1). Tanpa owner = tidak
+# memicu permintaan review dari koordinator; persetujuan tetap lewat seorang manusia di PR.
+/docs/10-execution-plan/13-progress-tracker.md
