@@ -1,0 +1,39 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app__header {
+  padding: 0.5rem 1rem;
+}
+
+.app__header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.app__header p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.base-map {
+  flex: 1;
+  min-height: 0;
+}
+
+.base-map__canvas {
+  height: 100%;
+}
