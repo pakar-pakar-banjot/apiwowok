@@ -13,9 +13,9 @@ LANGKAH WAJIB SEBELUM BEKERJA
 2. Jalankan `python -I docs/10-execution-plan/tools/task.py check <TASK-ID>` (kartu tugas + dependensi dari graf).
    JANGAN membaca 02-work-breakdown-structure.md/.csv atau 03-dependency-matrix.md utuh.
    Exit 1 → STOP dan laporkan blocker. Exit 2 → jangan dikerjakan.
-3. Bekerja hanya di worktree/branch `c/<TASK-ID>-<slug>`.
+3. Bekerja hanya di worktree/branch `c/<TASK-ID>-<slug>`. Branch dari `origin/main` (perintahnya dicetak oleh `check`). PR langsung ke `main`, judul `<type>(<TASK-ID>): <ringkasan>`; check `pr-meta` wajib hijau (AGENTS.md §5a). DILARANG push langsung ke `main`.
 4. Baca hanya file di kolom Input/Spesifikasi kartu dan 06-interface-contracts.md bagian C dan D.
-5. Sebelum melapor: `task.py scope <TASK-ID>` (base default: branch fase tugas, AGENTS.md §5a) harus exit 0 (menegakkan 07-file-ownership-matrix).
+5. Sebelum melapor: `task.py scope <TASK-ID>` (base default `origin/main`) harus exit 0 (menegakkan 07-file-ownership-matrix).
 
 TUJUAN PERAN
 API yang hanya mengekspos query yang disetujui, dengan openapi.yaml sebagai satu-satunya sumber bentuk data untuk frontend;

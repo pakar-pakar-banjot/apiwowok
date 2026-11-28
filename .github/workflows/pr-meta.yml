@@ -1,0 +1,53 @@
+# AGENTS.md §5a: set milestone + role label from the task ID, and check branch/PR naming.
+name: pr-meta
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+permissions:
+  pull-requests: write
+  issues: write
+jobs:
+  pr-meta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const branch = pr.head.ref, title = pr.title;
+            const slug = '[a-z0-9]+(?:-[a-z0-9]+){0,5}';
+            const task = branch.match(new RegExp(`^([abcdx])/(([A-DX])-P([1-8])-\\d{3})-${slug}$`));
+            const chore = branch.match(new RegExp(`^chore/p([1-8])-${slug}$`));
+            const errors = [];
+            let phase = null, scope = null, role = null;
+            if (task) {
+              if (task[1] !== task[3].toLowerCase()) errors.push(`Huruf peran '${task[1]}/' tidak cocok dengan task ID ${task[2]}.`);
+              phase = task[4]; scope = task[2]; role = task[3];
+            } else if (chore) {
+              phase = chore[1]; scope = `P${phase}`;
+            } else {
+              errors.push(`Nama branch '${branch}' tidak sesuai: pakai '<a|b|c|d|x>/<ID>-<slug>' atau 'chore/p<N>-<slug>' (huruf kecil, kebab-case).`);
+              const id = (branch + ' ' + title).match(/\b([A-DX])-P([1-8])-\d{3}\b/i);
+              if (id) { phase = id[2]; scope = id[0].toUpperCase(); role = id[1].toUpperCase(); }
+            }
+            if (pr.base.ref !== 'main') errors.push(`Base PR '${pr.base.ref}': PR tugas harus ke 'main'.`);
+            const esc = (scope || '').replace(/[-]/g, '\\-');
+            const tre = new RegExp(`^(docs|feat|fix|test|chore|refactor|ci)\\(${esc || '[^)]+'}\\): \\S.*$`);
+            if (!tre.test(title)) errors.push(`Judul PR '${title}' tidak sesuai: pakai '<type>(${scope || '<ID>'}): <ringkasan>'.`);
+
+            const { owner, repo } = context.repo;
+            if (phase) {
+              const ms = await github.paginate(github.rest.issues.listMilestones, { owner, repo, state: 'all' });
+              const m = ms.find(x => x.title.startsWith(`P${phase} `));
+              if (m && (!pr.milestone || pr.milestone.number !== m.number))
+                await github.rest.issues.update({ owner, repo, issue_number: pr.number, milestone: m.number });
+              if (!m) core.warning(`Milestone P${phase} tidak ditemukan.`);
+            }
+            if (role) {
+              const name = `role:${role}`;
+              try { await github.rest.issues.getLabel({ owner, repo, name }); }
+              catch { await github.rest.issues.createLabel({ owner, repo, name, color: 'ededed' }); }
+              await github.rest.issues.addLabels({ owner, repo, issue_number: pr.number, labels: [name] });
+            }
+            if (errors.length) core.setFailed(errors.join('\n') + '\nLihat AGENTS.md §5a.');
+            else core.info(`OK: ${scope}, milestone P${phase}`);
