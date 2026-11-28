@@ -36,7 +36,7 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 | **Tim** | 14 / 14 / 15 | 5 / 5 / 7 | 0 / 0 / 11 | 2 / 2 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **21 / 21 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
-Menunggu persetujuan manusia: tidak ada.
+Menunggu persetujuan manusia: B-P4-001.
 <!-- progress:summary:end -->
 
 ## Gerbang
@@ -124,7 +124,7 @@ Menunggu persetujuan manusia: tidak ada.
 
 ### P4 — Development Harness
 
-- [ ] **B-P4-001** Konfigurasi Cassandra single-node untuk dev · R2 · bukti: — · disetujui: —
+- [x] **B-P4-001** Konfigurasi Cassandra single-node untuk dev · R2 · bukti: db/docker/, db/scripts/, db/README.md; wait-for-cassandra.sh exit 0 (63s), Heap 1024.00 MB, cqlsh describe keyspaces OK (2026-11-26) · disetujui: —
 - [ ] **B-P4-002** Smoke test 3 node di laptop (dokumen 07 §4) (Should) · R2 · bukti: — · disetujui: —
 
 ### P5 — ETL & Cassandra Implementation
