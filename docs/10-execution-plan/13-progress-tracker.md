@@ -31,12 +31,12 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 | Role A (R1) | 10 / 10 / 10 | 1 / 1 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **11 / 11 / 31** |
 | Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
 | Role C (R3) | 0 / 0 / 1 | 1 / 1 / 1 | 0 / 0 / 3 | 1 / 1 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **2 / 2 / 25** |
-| Role D (R4) | 1 / 1 / 1 | 3 / 3 / 3 | 0 / 0 / 1 | 0 / 1 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **4 / 5 / 23** |
+| Role D (R4) | 1 / 1 / 1 | 3 / 3 / 3 | 0 / 0 / 1 | 1 / 1 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **5 / 5 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 14 / 14 / 15 | 5 / 5 / 7 | 0 / 0 / 11 | 1 / 2 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **20 / 21 / 110** |
+| **Tim** | 14 / 14 / 15 | 5 / 5 / 7 | 0 / 0 / 11 | 2 / 2 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **21 / 21 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
-Menunggu persetujuan manusia: D-P4-001.
+Menunggu persetujuan manusia: tidak ada.
 <!-- progress:summary:end -->
 
 ## Gerbang
@@ -215,7 +215,7 @@ Menunggu persetujuan manusia: D-P4-001.
 ### P4 — Development Harness
 
 - [ ] **D-P4-003** AGENTS.md & CLAUDE.md lengkap · R4 · bukti: — · disetujui: —
-- [x] **D-P4-001** Scaffold React + Leaflet + lint/test · R4 · bukti: draf agen 2026-11-28, branch d/D-P4-001-react-scaffold: web/ (Vite + React 19 + TypeScript + Leaflet; peta dasar statis dengan atribusi OSM sementara); `npm run lint && npm test && npm run build` lulus (exit 0; 4 test lulus, 0 vulnerabilities); belum diuji di peramban nyata dan belum ada CI untuk web (C-P4-005) · disetujui: —
+- [x] **D-P4-001** Scaffold React + Leaflet + lint/test · R4 · bukti: draf agen 2026-11-28, branch d/D-P4-001-react-scaffold: web/ (Vite + React 19 + TypeScript + Leaflet; peta dasar statis dengan atribusi OSM sementara); `npm run lint && npm test && npm run build` lulus (exit 0; 4 test lulus, 0 vulnerabilities); belum diuji di peramban nyata dan belum ada CI untuk web (C-P4-005) · disetujui: Abigail (R4), 2026-11-28, dinyatakan langsung di sesi Claude Code; PR #19
 - [ ] **D-P4-002** Mock API dari contoh OpenAPI · R4 · bukti: — · disetujui: —
 
 ### P6 — Backend & Frontend Implementation
