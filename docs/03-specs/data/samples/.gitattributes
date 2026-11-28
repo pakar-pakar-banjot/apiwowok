@@ -1,0 +1,2 @@
+# Samples are compared byte-for-byte (determinism check) and hashed; keep LF on every OS (core.autocrlf).
+* text eol=lf

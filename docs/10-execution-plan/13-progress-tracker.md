@@ -28,12 +28,12 @@ Format sel: **disetujui (Done) / dicentang / total**. Diperbarui otomatis oleh `
 
 | Bagian | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | Semua |
 |---|---|---|---|---|---|---|---|---|---|
-| Role A (R1) | 10 / 10 / 10 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **10 / 10 / 31** |
-| Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 1 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 2 / 20** |
-| Role C (R3) | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 3 | 0 / 0 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **0 / 0 / 25** |
-| Role D (R4) | 1 / 1 / 1 | 0 / 0 / 3 | 0 / 0 / 1 | 0 / 0 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **1 / 1 / 23** |
+| Role A (R1) | 10 / 10 / 10 | 1 / 1 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | 0 / 0 / 10 | · | 0 / 0 / 4 | 0 / 0 / 2 | **11 / 11 / 31** |
+| Role B (R2) | 1 / 1 / 1 | 0 / 0 / 1 | 0 / 0 / 4 | 0 / 0 / 2 | 0 / 0 / 7 | · | 0 / 0 / 4 | 0 / 0 / 1 | **1 / 1 / 20** |
+| Role C (R3) | 0 / 0 / 1 | 1 / 1 / 1 | 0 / 0 / 3 | 1 / 1 / 3 | · | 0 / 0 / 10 | 0 / 0 / 5 | 0 / 0 / 2 | **2 / 2 / 25** |
+| Role D (R4) | 1 / 1 / 1 | 3 / 3 / 3 | 0 / 0 / 1 | 1 / 1 / 3 | · | 0 / 0 / 9 | 0 / 0 / 3 | 0 / 0 / 3 | **5 / 5 / 23** |
 | Koordinator integrasi (tugas X-) | 2 / 2 / 2 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 1 | 0 / 0 / 2 | 0 / 0 / 2 | **2 / 2 / 11** |
-| **Tim** | 14 / 14 / 15 | 0 / 0 / 7 | 0 / 0 / 11 | 0 / 1 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **14 / 15 / 110** |
+| **Tim** | 14 / 14 / 15 | 5 / 5 / 7 | 0 / 0 / 11 | 2 / 2 / 11 | 0 / 0 / 18 | 0 / 0 / 20 | 0 / 0 / 18 | 0 / 0 / 10 | **21 / 21 / 110** |
 
 Gerbang disetujui: GATE-EP, GATE-G1.
 Menunggu persetujuan manusia: B-P4-001.
@@ -68,11 +68,11 @@ Menunggu persetujuan manusia: B-P4-001.
 
 ### P2 — Requirements Engineering
 
-- [ ] **A-P2-001** Semantik data & aturan perhitungan · R1 · bukti: — · disetujui: —
+- [x] **A-P2-001** Semantik data & aturan perhitungan · R1 · bukti: PR #3 (2026-11-22, diperbarui 2026-11-23): docs/03-specs/data/01-data-semantics.md (SEM-00…SEM-13, KEP-01…05); putusan review Lanang atas KEP-01…05 tercatat di §3 dokumen; KEP-01/04/05 masih perlu dikonfirmasi Abigail sebelum G2 · disetujui: Lanang, 2026-11-23, dinyatakan langsung di sesi Claude Code
 
 ### P3 — Architecture & Technical Specs
 
-- [ ] **A-P3-001** Kontrak canonical event v1 + sampel record · R1 · bukti: — · disetujui: —
+- [ ] **A-P3-001** Kontrak canonical event v1 + sampel record · R1 · bukti: DRAF PR #16 (branch `a/A-P3-001-canonical-event-contract`), 2026-11-26: docs/03-specs/data/02-canonical-event-contract.md (v1.0.0) + 26 sampel nyata + JSON Schema; `validate_samples.py` PASS (schema/rules/coverage/selftest 34/edge 156/trace); `audit_raw_zone.py` PASS pada 2.705.905 baris (0 ditolak, DQ-08 cocok); CE-01…CE-09 disetujui R1 2026-11-26. Belum dicentang: menunggu konfirmasi pemetaan CQL + CE-01/03/04 oleh R2 (kriteria penerimaan) · disetujui: —
 - [ ] **A-P3-002** Spesifikasi ETL (dua mode) · R1 · bukti: — · disetujui: —
 
 ### P4 — Development Harness
@@ -156,7 +156,7 @@ Menunggu persetujuan manusia: B-P4-001.
 
 ### P2 — Requirements Engineering
 
-- [ ] **C-P2-001** Non-functional requirements kuantitatif · R3 · bukti: — · disetujui: —
+- [x] **C-P2-001** Non-functional requirements kuantitatif · R3 · bukti: branch `c/C-P2-001-nfr`, commit 5faaa00, 2026-11-25; 36 NFR (angka + metode ukur + label + lokal/cloud) di docs/02-requirements/02-non-functional-requirements.md; angka final menunggu G2 (HD-13); di-merge via PR #6 (2026-11-26) · disetujui: Abigail (R4), 2026-11-26, approve PR #6 di GitHub
 
 ### P3 — Architecture & Technical Specs
 
@@ -166,7 +166,7 @@ Menunggu persetujuan manusia: B-P4-001.
 
 ### P4 — Development Harness
 
-- [ ] **C-P4-001** Kerangka repo + CODEOWNERS + template PR · R3 · bukti: — · disetujui: —
+- [x] **C-P4-001** Kerangka repo + CODEOWNERS + template PR · R3 · bukti: branch `c/C-P4-001-repo-skeleton`, commit c6e3a55, 2026-11-25; CODEOWNERS mencakup 29/29 path matriks (skrip cek: MISSING=0); template PR + DoD; README api/ dan deploy/; README peran lain tidak dibuat (di luar area, scope exit 1). handle CODEOWNERS R1/R2/R4 diisi 2026-11-26 (@r3gulus-4rcturus, @Benhanan14406, @namarabigail); PR #8 · disetujui: Abigail (R4), 2026-11-26, approve PR #8 di GitHub
 - [ ] **C-P4-004** Docker Compose dasar + validasi environment · R3 · bukti: — · disetujui: —
 - [ ] **C-P4-005** CI: lint + unit test per komponen · R3 · bukti: — · disetujui: —
 
@@ -204,9 +204,9 @@ Menunggu persetujuan manusia: B-P4-001.
 
 ### P2 — Requirements Engineering
 
-- [ ] **D-P2-001** Functional requirements final · R4 · bukti: — · disetujui: —
-- [ ] **D-P2-002** Acceptance criteria per FR · R4 · bukti: — · disetujui: —
-- [ ] **D-P2-003** Kunci MVP + urutan pemotongan cakupan · R4 · bukti: — · disetujui: —
+- [x] **D-P2-001** Functional requirements final · R4 · bukti: draf agen 2026-11-25, branch D/D-P2-001-functional-requirements: docs/02-requirements/01-functional-requirements.md (24 FR + 8 FR-G); cek traceability: 10/10 fitur Must punya ≥1 FR, 0 FR tanpa fitur; 6 keputusan G2 terbuka (Q-1…Q-6) · disetujui: Abigail (R4), 2026-11-26, dinyatakan langsung di sesi Claude Code; PR #10
+- [x] **D-P2-002** Acceptance criteria per FR · R4 · bukti: draf agen 2026-11-26, branch d/D-P2-002-acceptance-criteria: bagian §8 di docs/02-requirements/01-functional-requirements.md (76 AC untuk 32 FR; 27 FR Must semua punya AC); cek skrip: 0 FR tanpa AC, 0 AC merujuk FR tidak ada; AC bertanda 🧪 menunggu data nyata, ⚖️ menunggu keputusan G2 · disetujui: Abigail (R4), 2026-11-26, dinyatakan langsung di sesi Claude Code; PR #14
+- [x] **D-P2-003** Kunci MVP + urutan pemotongan cakupan · R4 · bukti: draf agen 2026-11-26, branch d/D-P2-003-mvp-lock: docs/02-requirements/03-mvp-lock.md (27 Must + 5 Should = 32 FR; 5 tugas Should WBS = 17,34 jam, urutan potong 4 tingkat); cek skrip: Must/Should identik dengan FR, 0 tugas Should di luar urutan; persetujuan tim = G2 · disetujui: Abigail (R4), 2026-11-28, dinyatakan langsung di sesi Claude Code; PR #17. Persetujuan tim atas urutan descoping = keputusan G2
 
 ### P3 — Architecture & Technical Specs
 
@@ -215,7 +215,7 @@ Menunggu persetujuan manusia: B-P4-001.
 ### P4 — Development Harness
 
 - [ ] **D-P4-003** AGENTS.md & CLAUDE.md lengkap · R4 · bukti: — · disetujui: —
-- [ ] **D-P4-001** Scaffold React + Leaflet + lint/test · R4 · bukti: — · disetujui: —
+- [x] **D-P4-001** Scaffold React + Leaflet + lint/test · R4 · bukti: draf agen 2026-11-28, branch d/D-P4-001-react-scaffold: web/ (Vite + React 19 + TypeScript + Leaflet; peta dasar statis dengan atribusi OSM sementara); `npm run lint && npm test && npm run build` lulus (exit 0; 4 test lulus, 0 vulnerabilities); belum diuji di peramban nyata dan belum ada CI untuk web (C-P4-005) · disetujui: Abigail (R4), 2026-11-28, dinyatakan langsung di sesi Claude Code; PR #19
 - [ ] **D-P4-002** Mock API dari contoh OpenAPI · R4 · bukti: — · disetujui: —
 
 ### P6 — Backend & Frontend Implementation

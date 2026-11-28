@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/pakar-pakar-banjot/apiwowok/docs/03-specs/data/samples/canonical-event.schema.json",
+  "title": "NusaFire canonical event",
+  "description": "contract_version 1.0.0 (A-P3-001). Normative text: docs/03-specs/data/02-canonical-event-contract.md. One object = one FIRMS VIIRS 375 m detection after DQ and dedup.",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "detection_id", "source_id", "processing_level", "version_raw", "satellite", "instrument",
+    "acq_datetime_utc", "source_acq_date_utc", "local_date", "local_tz",
+    "latitude", "longitude", "region_status", "province_code", "province_name", "boundary_version",
+    "bright_ti4", "bright_ti5", "scan", "track", "frp", "confidence_raw", "confidence_class",
+    "daynight", "type", "dq_flags",
+    "source_file", "source_file_sha256", "fetched_at_utc", "ingest_run_id"
+  ],
+  "properties": {
+    "detection_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_id": {"enum": ["VIIRS_NOAA20_SP", "VIIRS_NOAA21_SP", "VIIRS_NOAA20_NRT", "VIIRS_NOAA21_NRT"]},
+    "processing_level": {"enum": ["SP", "NRT"]},
+    "version_raw": {"enum": ["2", "2.0NRT"]},
+    "satellite": {"enum": ["N20", "N21"]},
+    "instrument": {"const": "VIIRS"},
+    "acq_datetime_utc": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T([01]\\d|2[0-3]):[0-5]\\d:00Z$"},
+    "source_acq_date_utc": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "local_date": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "local_tz": {"enum": ["WIB", "WITA", "WIT", null]},
+    "latitude": {"type": "number", "minimum": -90, "maximum": 90},
+    "longitude": {"type": "number", "minimum": -180, "maximum": 180},
+    "region_status": {"enum": ["INSIDE", "OUTSIDE"]},
+    "province_code": {
+      "enum": ["11", "12", "13", "14", "15", "16", "17", "18", "19", "21", "31", "32", "33", "34", "35", "36",
+               "51", "52", "53", "61", "62", "63", "64", "65", "71", "72", "73", "74", "75", "76",
+               "81", "82", "91", "92", "93", "94", "95", "96", null]
+    },
+    "province_name": {"type": ["string", "null"], "minLength": 1},
+    "boundary_version": {"type": "string", "pattern": "^BIG-\\d{4}-\\d{2}-g[0-9.]+-[0-9a-f]{12}$"},
+    "bright_ti4": {"type": "number", "exclusiveMinimum": 0},
+    "bright_ti5": {"type": "number", "exclusiveMinimum": 0},
+    "scan": {"type": "number", "exclusiveMinimum": 0},
+    "track": {"type": "number", "exclusiveMinimum": 0},
+    "frp": {"type": "number", "minimum": 0},
+    "confidence_raw": {"enum": ["l", "n", "h"]},
+    "confidence_class": {"enum": ["low", "nominal", "high"]},
+    "daynight": {"enum": ["D", "N"]},
+    "type": {"enum": [0, 1, 2, 3, null]},
+    "dq_flags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["FRP_ZERO", "MULTI_POLYGON", "NON_VEGETATION_TYPE", "TI4_SATURATED"]}
+    },
+    "source_file": {"type": "string", "pattern": "^VIIRS_NOAA2[01]_(SP|NRT)/([^/\\\\]+/)*[^/\\\\]+\\.csv$"},
+    "source_file_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "fetched_at_utc": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$"},
+    "ingest_run_id": {"type": "string", "minLength": 1, "maxLength": 128}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"region_status": {"const": "INSIDE"}}},
+      "then": {"properties": {
+        "province_code": {"type": "string"}, "province_name": {"type": "string"},
+        "local_tz": {"type": "string"}, "local_date": {"type": "string"}
+      }},
+      "else": {"properties": {
+        "province_code": {"type": "null"}, "province_name": {"type": "null"},
+        "local_tz": {"type": "null"}, "local_date": {"type": "null"}
+      }}
+    },
+    {
+      "if": {"properties": {"processing_level": {"const": "SP"}}},
+      "then": {"properties": {
+        "version_raw": {"const": "2"}, "source_id": {"pattern": "_SP$"}, "source_file": {"pattern": "^VIIRS_NOAA2[01]_SP/"}
+      }},
+      "else": {"properties": {
+        "version_raw": {"const": "2.0NRT"}, "source_id": {"pattern": "_NRT$"}, "source_file": {"pattern": "^VIIRS_NOAA2[01]_NRT/"},
+        "type": {"type": "null"}
+      }}
+    },
+    {
+      "if": {"properties": {"satellite": {"const": "N20"}}},
+      "then": {"properties": {"source_id": {"pattern": "^VIIRS_NOAA20_"}, "source_file": {"pattern": "^VIIRS_NOAA20_"}}},
+      "else": {"properties": {"source_id": {"pattern": "^VIIRS_NOAA21_"}, "source_file": {"pattern": "^VIIRS_NOAA21_"}}}
+    },
+    {"if": {"properties": {"confidence_raw": {"const": "l"}}}, "then": {"properties": {"confidence_class": {"const": "low"}}}},
+    {"if": {"properties": {"confidence_raw": {"const": "n"}}}, "then": {"properties": {"confidence_class": {"const": "nominal"}}}},
+    {"if": {"properties": {"confidence_raw": {"const": "h"}}}, "then": {"properties": {"confidence_class": {"const": "high"}}}}
+  ]
+}

@@ -36,6 +36,8 @@ H. Integritas ilmiah: label "deteksi hotspot"; disclaimer; tidak ada perbandinga
 I. Kesederhanaan: tidak ada dependensi/alat baru tanpa alasan tertulis; tidak ada kode mati atau fitur di luar tugas.
 J. Progres: baris <TASK-ID> di docs/10-execution-plan/13-progress-tracker.md dicentang di PR ini dengan `bukti:` terisi;
    `disetujui:` masih kosong; tidak ada baris tugas lain yang ikut berubah; centang tidak dipasang bila kriteria belum terpenuhi.
+K. Git (AGENTS.md §5a): base PR = `main`; branch `<peran>/<TASK-ID>-<slug>` (huruf kecil); judul
+   `<type>(<TASK-ID>): <ringkasan>`; check `pr-meta` hijau. Pelanggaran = temuan MAJOR.
 
 FORMAT LAPORAN
 - Verdict: APPROVE / REQUEST CHANGES / BLOCKED (input kurang).
